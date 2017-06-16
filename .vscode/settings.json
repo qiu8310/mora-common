@@ -1,0 +1,23 @@
+// Place your settings in this file to overwrite default and user settings.
+{
+  "jest.autoEnable": false,
+
+  "files.exclude": {
+    "coverage": true,
+    /*# INJECT_START folders #*/
+    "candidate": true,
+    "component": true,
+    "dom": true,
+    "feature": true,
+    "helper": true,
+    "style": true,
+    "util": true,
+    "widget": true,
+    /*# INJECT_END #*/
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true
+  }
+}
