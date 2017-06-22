@@ -1,12 +1,12 @@
 ## INJECT_START folders ##
-./candidate
-./component
-./dom
-./feature
-./helper
-./style
-./util
-./widget
+candidate
+component
+dom
+feature
+helper
+style
+util
+widget
 ## INJECT_END ##
 
 # Logs

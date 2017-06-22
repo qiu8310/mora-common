@@ -1,28 +1,33 @@
 import warn from '../util/warn'
 
 export interface IOptions {
-  type?: 'local' | 'session'
   id?: string
-  enableMemoryCache?: boolean // 是否开启 cache 加速
+  type?: 'local' | 'session'
+  memory?: boolean // 是否开启 cache 加速
   maxMemoryValueLength?: number
 }
 
 const DEFAULT_OPTIONS: IOptions = {
-  type: 'local',
   id: 'v1',
-  enableMemoryCache: true,
+  type: 'local',
+  memory: true,
   maxMemoryValueLength: 300
 }
 
+let globalCache: {[key: string]: any} = {}
+
 export default class CustomStorage {
+  public id: string
+  public memory: boolean
   private options: IOptions
-  private cache: {[key: string]: any}
 
   // localStorage
   private store: Storage
+  private cache: {[key: string]: any} = globalCache
 
   constructor(options: IOptions = {}) {
     this.options = {...DEFAULT_OPTIONS, ...options}
+    let {id, memory} = this.options
 
     let store
 
@@ -36,7 +41,10 @@ export default class CustomStorage {
       store = null
     }
 
-    if (!store || this.options.enableMemoryCache) this.cache = {}
+    if (!store) memory = true
+
+    this.id = id
+    this.memory = memory
     this.store = store
   }
 
@@ -46,13 +54,13 @@ export default class CustomStorage {
    * @param {(id: string) => void} fn - 执行更新的回调函数
    * @memberof CustomStorage
    */
-  sync(ids: string | string[], fn: (id: string) => void): void {
+  sync(ids: string | string[], fn: (this: CustomStorage, id: string) => void): void {
     let originalId = this.options.id
 
     ids = [].concat(ids)
     ids.forEach(id => {
       this.options.id = id
-      fn(id)
+      fn.call(this, id)
     })
     this.options.id = originalId
   }
@@ -69,7 +77,7 @@ export default class CustomStorage {
     let expiredAt = seconds ? Date.now() + seconds * 1000 : 0
     value = JSON.stringify([value, expiredAt])
 
-    if (this.cache) {
+    if (this.memory) {
       if (value.length <= this.options.maxMemoryValueLength) this.cache[storeKey] = value
       else delete this.cache[storeKey]
     }
@@ -88,7 +96,7 @@ export default class CustomStorage {
    */
   get<T>(key: string, defaultValue?: any): T {
     let storeKey = this.getStoreKey(key)
-    let rawVal = this.cache && this.cache[storeKey] || this.store && this.store.getItem(storeKey)
+    let rawVal = this.memory && this.cache[storeKey] || this.store && this.store.getItem(storeKey)
     if (!rawVal) return defaultValue
 
     try {
@@ -120,7 +128,7 @@ export default class CustomStorage {
    */
   del(key: string): void {
     let storeKey = this.getStoreKey(key)
-    if (this.cache) delete this.cache[storeKey]
+    if (this.memory) delete this.cache[storeKey]
     if (this.store) this.store.removeItem(storeKey)
   }
 
@@ -129,13 +137,19 @@ export default class CustomStorage {
    * @memberof CustomStorage
    */
   empty(): void {
-    if (this.cache) this.cache = {}
-    if (this.store) {
-      let keyPrefix = this.getKeyPrefix()
-      Object.keys(this.store).forEach(storeKey => {
-        if (storeKey.indexOf(keyPrefix)) this.store.removeItem(storeKey)
-      })
+    if (this.memory) {
+      this.filter(this.cache, storeKey => delete this.cache[storeKey])
     }
+    if (this.store) {
+      this.filter(this.store, storeKey => this.store.removeItem(storeKey))
+    }
+  }
+
+  private filter(obj, fn) {
+    let keyPrefix = this.getKeyPrefix()
+    Object.keys(obj).forEach(storeKey => {
+      if (storeKey.indexOf(keyPrefix) === 0) fn(storeKey)
+    })
   }
 
   private getKeyPrefix(): string {
@@ -147,3 +161,5 @@ export default class CustomStorage {
     return this.getKeyPrefix() + key
   }
 }
+
+export const storage = new CustomStorage({id: 'default'})
