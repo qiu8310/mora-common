@@ -1,13 +1,13 @@
 import warn from '../util/warn'
 
-export interface IOptions {
+export interface ICustomStorageOptions {
   id?: string
   type?: 'local' | 'session'
   memory?: boolean // 是否开启 cache 加速
   maxMemoryValueLength?: number
 }
 
-const DEFAULT_OPTIONS: IOptions = {
+const DEFAULT_OPTIONS: ICustomStorageOptions = {
   id: 'v1',
   type: 'local',
   memory: true,
@@ -19,13 +19,13 @@ let globalCache: {[key: string]: any} = {}
 export default class CustomStorage {
   public id: string
   public memory: boolean
-  private options: IOptions
+  private options: ICustomStorageOptions
 
   // localStorage
   private store: Storage
   private cache: {[key: string]: any} = globalCache
 
-  constructor(options: IOptions = {}) {
+  constructor(options: ICustomStorageOptions = {}) {
     this.options = {...DEFAULT_OPTIONS, ...options}
     let {id, memory} = this.options
 

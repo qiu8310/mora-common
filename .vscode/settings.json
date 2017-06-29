@@ -4,6 +4,7 @@
 
   "files.exclude": {
     "coverage": true,
+
     /*# INJECT_START folders #*/
     "candidate": true,
     "component": true,

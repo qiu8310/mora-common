@@ -6,7 +6,7 @@
  * @param {Object} objB - 对象 B
  * @returns {boolean} - 是否浅相等
  */
-export function shallowEqual(objA: Object, objB: Object): boolean {
+export default function shallowEqual(objA: Object, objB: Object): boolean {
   if (objA === objB) {
     return true
   }

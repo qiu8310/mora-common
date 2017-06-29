@@ -9,6 +9,9 @@ util
 widget
 ## INJECT_END ##
 
+index.d.ts
+index.js
+
 # Logs
 logs
 *.log

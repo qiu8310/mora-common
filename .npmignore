@@ -1,2 +1,11 @@
 src
+coverage
+**/__tests__
+**/__mocks__
 
+.vscode
+.gitmessage
+script.ts
+tslint.json
+tsconfig.json
+yarn.lock

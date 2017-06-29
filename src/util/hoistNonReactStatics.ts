@@ -41,3 +41,4 @@
 //   }
 //   return targetComponent
 // }
+export default () => 'TODO'

@@ -21,22 +21,22 @@ const prefixes = ['', 'webkit', 'moz', 'ms', 'o']
 
 
 export interface IEvent {
-  type: TState
+  type: IState
   originalEvent: any
 }
-export declare type TState = 'visible' | 'hidden' | 'prerender' | 'unloaded'
-export declare type TEventHandler = (IEvent) => void
+export declare type IState = 'visible' | 'hidden' | 'prerender' | 'unloaded'
+export declare type IEventHandler = (IEvent) => void
 /**
  * unbind current listener functions
  */
-export declare type TEventOffHandler = () => void
+export declare type IEventOffHandler = () => void
 
 // 初始化
 let isSupported: boolean = false
 let hiddenKey: string
 let visibilityChangeEvent: string
 let visibilityStateKey: string
-let state: TState
+let state: IState
 
 Object.keys(prefixes).some(prefix => {
   hiddenKey = prefixed(prefix, 'hidden')
@@ -57,9 +57,9 @@ if (isSupported) {
 
 /**
  * visible/hidden/prerender/unloaded
- * @returns TState
+ * @returns IState
  */
-function getVisibilityState(): TState { return isSupported ? doc[visibilityStateKey] : 'visible' }
+function getVisibilityState(): IState { return isSupported ? doc[visibilityStateKey] : 'visible' }
 
 function listener(e) {
   let currentState = getVisibilityState()
@@ -82,7 +82,7 @@ export default {
    * 当前 Page Visibility 的 state
    * @type string
    */
-  get state(): TState { return state },
+  get state(): IState { return state },
 
   /**
    * 当前 state 是否是 hidden
@@ -98,11 +98,11 @@ export default {
 
   /**
    * 监听 page 状态变化
-   * @param {TState | TState[]} states - 状态名称，如果有多个要用空格隔开，支持：visible/hidden/prerender/unloaded
+   * @param {IState | IState[]} states - 状态名称，如果有多个要用空格隔开，支持：visible/hidden/prerender/unloaded
    * @param {Function} handler - 回调函数
-   * @returns {TEventOffHandler} - off bind
+   * @returns {IEventOffHandler} - off bind
    */
-  on(states: TState | TState[], handler: TEventHandler): TEventOffHandler {
+  on(states: IState | IState[], handler: IEventHandler): IEventOffHandler {
     if (!isSupported) return noop
     event.on([].concat(states).join(' '), handler)
     return () => event.off(states, handler)
@@ -110,11 +110,11 @@ export default {
 
   /**
    * 监听 page 状态变化，监听完即删除
-   * @param {TState | TState[]} states - 状态名称，如果有多个要用空格隔开，支持：visible/hidden/prerender/unloaded
+   * @param {IState | IState[]} states - 状态名称，如果有多个要用空格隔开，支持：visible/hidden/prerender/unloaded
    * @param {Function} handler - 回调函数
-   * @returns {TEventOffHandler} - off bind
+   * @returns {IEventOffHandler} - off bind
    */
-  once(states: TState | TState[], handler: TEventHandler): TEventOffHandler {
+  once(states: IState | IState[], handler: IEventHandler): IEventOffHandler {
     if (!isSupported) return noop
     event.once([].concat(states).join(' '), handler)
     return () => event.off(states, handler)

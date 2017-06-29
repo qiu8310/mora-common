@@ -24,6 +24,24 @@ cli({
       injectReplace(path.join(__dirname, '.vscode', 'settings.json'), ignores, name => `"${name}": true,`)
     }
   },
+  exports: {
+    desc: '注入 export 在 index.ts 中',
+    cmd(res) {
+      let exports = getRootDirectoryNames()
+        .reduce((lines, directoryName) => {
+          if (directoryName !== 'candidate') {
+            lines.push(
+              ...fs.readdirSync(path.join(SRC_DIR, directoryName))
+                .filter(filename => /\.tsx?$/.test(filename))
+                .map(filename => `export * from './${directoryName}/${filename.replace(/\.tsx?$/, '')}'`)
+            )
+          }
+          return lines
+        }, []).join(os.EOL)
+
+      console.log(inject(path.join(SRC_DIR, 'index.ts'), {exports}) === 1 ? '操作成功' : '操作失败')
+    }
+  },
   cpStyle: {
     desc: '将 src 目录下的所有 style 文件夹移动对应的根目录',
     cmd(res) {
@@ -60,7 +78,7 @@ function getAllDirectorys(directory): string[] {
 }
 
 function getRootDirectoryNames(): string[] {
-  return fs.readdirSync(SRC_DIR).filter(name => fs.statSync(path.join(SRC_DIR, name)).isDirectory)
+  return fs.readdirSync(SRC_DIR).filter(name => fs.statSync(path.join(SRC_DIR, name)).isDirectory())
 }
 
 function injectReplace(file, ignores, mapFn) {
