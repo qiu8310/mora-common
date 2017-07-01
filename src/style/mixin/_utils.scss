@@ -1,0 +1,64 @@
+@mixin noSelect {
+  user-select: none;
+}
+
+@mixin ellipsis {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin clearfix {
+  &::before,
+  &::after {
+    content: " "; // 1
+    display: table; // 2
+  }
+  &::after {
+    clear: both;
+  }
+}
+
+@mixin rounded {
+  border-radius: 50%;
+}
+
+@mixin overlay($offset: 0) {
+  position: absolute;
+  bottom: $offset;
+  left: $offset;
+  right: $offset;
+  top: $offset;
+}
+
+@mixin ir($background, $width, $height) {
+  background-color: $background;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: $width $height;
+  display: block;
+  height: $height;
+  outline: none;
+  overflow: hidden;
+  text-indent: -290486px;
+  width: $width;
+}
+
+// $offsetY 是中心偏离 y 轴的距离
+@mixin ribbon($width, $height, $offsetY, $toLeft: false) {
+  position: absolute;
+  top: 0;
+  text-align: center;
+  width: $width;
+  height: $height;
+
+  $offsetX: $offsetY + $height / 2;
+  @if $toLeft {
+    left: 0;
+    transform: translate($offsetX - $width / 2, $offsetY) rotate(-45deg);
+  } @else {
+    right: 0;
+    transform: translate($width / 2 - $offsetX, $offsetY) rotate(45deg);
+  }
+  transform-origin: center center;
+}

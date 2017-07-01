@@ -1,0 +1,21 @@
+/**
+ *  https://css-tricks.com/snippets/css/momentum-scrolling-on-ios-overflow-elements/
+ *
+ *  为 iOS 平台打造更好的 scroll 体验
+ */
+@mixin scroll($direction: 'all') {
+  @if $direction == 'x' {
+    overflow-x: scroll; /* has to be scroll, not auto */
+  } @else if $direction == 'y' {
+    overflow-y: scroll;
+  } @else {
+    overflow: scroll;
+  }
+
+  -webkit-overflow-scrolling: touch;
+}
+
+%scroll { @include scroll(); }
+%scrollX { @include scroll('x'); }
+%scrollY { @include scroll('y'); }
+

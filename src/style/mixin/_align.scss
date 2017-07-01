@@ -1,0 +1,34 @@
+@mixin hvCenterChildren {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@mixin hCenterChildren {
+  display: flex;
+  justify-content: center;
+}
+@mixin vCenterChildren {
+  display: flex;
+  align-items: center;
+}
+
+@mixin hvCenter {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+@mixin hCenter {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+@mixin vCenter {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+@mixin textCenter {
+  text-align: center;
+}

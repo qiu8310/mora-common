@@ -1,0 +1,33 @@
+/**
+ *  wrap 容器，子容器在 wrap 容器内，内容不会超出 wrap 容器
+ *    $selector: 用于指定子容器选择器，默认是 "*"
+ *    $width: 用于指定 wrap 容器和子容器的宽度，即可以固定子容器的宽度
+ *    $height: 用于指定 wrap 容器和子容器的高度，即可以固定子容器的高度
+ *
+ *  注意：同时限制宽度和高度会可能导致子容器被拉申
+ *       但如果用在 video 上的话 chrome 会保证 video 画面不拉申，只拉申控件，所以影响不大
+ */
+@mixin wrap($selector: '*', $width: false, $height: false, $center: true) {
+  display: inline-block; // 根据子容器自动调整大小
+  max-width: 100%; // 不超过页面宽度
+  overflow: hidden;
+
+  // 水平居中
+  @if $center {
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  @if $width { width: $width; }
+  @if $height { height: $height; }
+
+  // 子容器不能超出 wrap 的大小
+  "> #{$selector}" {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+    @if $width { width: $width; }
+    @if $height { height: $height; }
+  }
+}

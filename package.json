@@ -1,10 +1,10 @@
 {
   "name": "mora-common",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "",
   "scripts": {
     "build": "./script.ts cpStyle && ./script.ts exports && tsc",
-    "release": "npm run build && npm publish && cnpm sync mora-common",
+    "release": "npm run build && snpm publish && cnpm sync mora-common",
     "test": "jest"
   },
   "author": "Mora <qiuzhongleiabc@126.com> (https://qiu8310.github.io/)",
@@ -39,7 +39,7 @@
     "mora-scripts": "^1.6.4"
   },
   "__peerDependencies": {
-    "": "不是强制需要的，只有引用了具体的组件才需要加载对应的依赖",
+    "": "不是强制需要的，只有引用了具体的组件才需要加载对应的依赖，所以不把它放到 peerDependencies 里",
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-side-effect": "^1.1.3",

@@ -1,0 +1,40 @@
+@import "../mixin/index";
+
+.ellipsis { @include ellipsis; }
+.pullLeft { float: left; }
+.pullRight { float: right; }
+.clearfix { @include clearfix; }
+.noSelect { @include noSelect; }
+.textCenter { @include textCenter; }
+
+.lineClamp {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+@for $i from 1 through 4 {
+  .lineClamp#{$i} { -webkit-line-clamp: $i; }
+}
+
+.rounded { border-radius: 50%; }
+.fullWidth { width: 100%; }       // container width
+.fullHeight { height: 100%; }     // container height
+.respHeight { min-height: 100%; } // responsive height
+.respWidth { min-width: 100%; }   // responsive width
+
+.hCenter { @include hCenter; }
+.vCenter { @include vCenter; }
+.hvCenter { @include hvCenter; }
+.hCenterChildren { @include hCenterChildren; }
+.vCenterChildren { @include vCenterChildren; }
+.hvCenterChildren { @include hvCenterChildren; }
+.spaceBetweenChildren { display: flex; justify-content: space-between; }
+.spaceAroundChildren { display: flex; justify-content: space-around; }
+
+.flexContainer { display: flex; }
+.flexVertical { flex-direction: column; }
+.flexWrap { flex-wrap: wrap; }
+.flex { flex: 1; }
+@for $i from 1 through 4 {
+  .flex#{$i} { flex: $i; }
+}
