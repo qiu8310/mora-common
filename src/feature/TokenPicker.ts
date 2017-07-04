@@ -13,8 +13,6 @@ import * as Config from 'mora-scripts/libs/storage/Config'
 import * as Storage from 'mora-scripts/libs/storage/Storage'
 import * as FileStorage from 'mora-scripts/libs/storage/FileStorage'
 
-import * as path from 'path'
-import * as fs from 'fs'
 import {Partial} from '../helper/type/Object'
 
 export interface ITokenPickerOptions {
@@ -113,7 +111,6 @@ export default class TokenPicker {
    * 如果没有 token，会抛出异常
    */
   do(callback: (token: string, expire: (availableTimestamp?: number) => void) => void) {
-    let isFinished = false
     let next = () => {
       let {token} = this
 

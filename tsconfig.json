@@ -7,7 +7,13 @@
     "removeComments": true,
     "experimentalDecorators": true,
     "importHelpers": true,
+    "noUnusedLocals": true,
     "noLib": false,
+    "lib": [
+      "dom",
+      "es5",
+      "es2015.promise"
+    ],
     "outDir": "./",
     "jsx": "react"
   },

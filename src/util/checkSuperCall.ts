@@ -1,4 +1,4 @@
-import escapeRegExp from 'mora-scripts/libs/lang/escapeRegExp'
+// import escapeRegExp from 'mora-scripts/libs/lang/escapeRegExp'
 import iterateInheritedPrototype from './iterateInheritedPrototype'
 import getPrototypeOf from './getPrototypeOf'
 
@@ -41,7 +41,7 @@ export default function(context: any, toCtor: any, keys: string[]) {
       }, {})
     }))
     .reverse() // 恢复顺序
-
+  console.log(chains)
   // chains.forEach(({prop, methods}) => {
 
   // })

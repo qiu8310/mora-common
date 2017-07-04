@@ -1,4 +1,5 @@
 /* tslint:disable:no-empty */
+/*
 import * as React from 'react'
 import checkSuperCall from '../checkSuperCall'
 
@@ -23,4 +24,4 @@ class B extends A {
 test('react extends', () => {
   let b = new B()
 })
-
+*/

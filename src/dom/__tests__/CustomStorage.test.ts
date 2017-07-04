@@ -100,7 +100,6 @@ describe('store', () => {
   let s2: CustomStorage
   let g: any
   beforeEach(() => {
-    let cache = {}
     g = global
     g.window = {localStorage}
 

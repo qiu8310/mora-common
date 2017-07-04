@@ -106,6 +106,7 @@ describe('File', () => {
   test('reload', () => {
     let t1 = new TokenPicker(['t1'], {recordFile: reloadFile})
     let t2 = new TokenPicker(['t2'], {recordFile: reloadFile})
+    expect(t1.token).toBe('t1')
     expect(t2.token).toBe('t2')
     t2.expire()
     expect(t2.token).toBeUndefined()

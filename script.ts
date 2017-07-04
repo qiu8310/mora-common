@@ -6,7 +6,6 @@ import * as path from 'path'
 
 import * as inject from 'mora-scripts/libs/fs/inject'
 import * as cli from 'mora-scripts/libs/tty/cli'
-import * as shell from 'mora-scripts/libs/tty/shell'
 
 const ROOT_DIR = __dirname
 const SRC_DIR = path.join(__dirname, 'src')
@@ -29,7 +28,7 @@ cli({
     cmd(res) {
       let exports = getRootDirectoryNames()
         .reduce((lines, directoryName) => {
-          if (directoryName !== 'candidate') {
+          if (directoryName !== 'candidate' && directoryName !== 'polyfill') {
             lines.push(
               ...fs.readdirSync(path.join(SRC_DIR, directoryName))
                 .filter(filename => /\.tsx?$/.test(filename))
