@@ -4,6 +4,7 @@ component
 dom
 feature
 helper
+polyfill
 style
 util
 widget

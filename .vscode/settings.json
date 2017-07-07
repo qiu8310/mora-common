@@ -11,6 +11,7 @@
     "dom": true,
     "feature": true,
     "helper": true,
+    "polyfill": true,
     "style": true,
     "util": true,
     "widget": true,
