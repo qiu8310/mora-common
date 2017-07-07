@@ -2,7 +2,7 @@ import {throttle as throttleCall, debounce as debounceCall} from '../util/delay'
 import onload from './onload'
 
 // debounce & throttle: http://drupalmotion.com/article/debounce-and-throttle-visual-explanation
-export default function onresize(fn: () => void, {runOnLoaded = true, throttle = 0, debounce = 0} = {}) {
+export default function onresize(fn: () => void, {runOnLoaded = true, throttle = 0, debounce = 0} = {}): () => void {
   let cb
 
   if (throttle && throttle > 0) {
@@ -15,5 +15,7 @@ export default function onresize(fn: () => void, {runOnLoaded = true, throttle =
 
   if (runOnLoaded) onload(cb)
 
-  window.addEventListener('resize', cb, false)
+  window.addEventListener('resize', cb)
+
+  return () => window.removeEventListener('resize', cb)
 }
