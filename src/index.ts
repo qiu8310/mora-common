@@ -32,5 +32,6 @@ export * from './widget/Modal'
 export * from './widget/Page'
 export * from './widget/SideEffect'
 export * from './widget/Slider'
+export * from './widget/Tab'
 export * from './widget/TransitionGroupItem'
 /*# INJECT_END #*/

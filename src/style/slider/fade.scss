@@ -1,0 +1,126 @@
+/*
+  fade:     离开和进入的 slide 是 fade
+  fadeOut:  离开的 slide 是 fade，进入的正常
+  fadeIn:   进入的 slide 是 fade，离开的正常
+ */
+
+// to 是离开， from 是进入
+.wSlider {
+  &.vertical {
+    > .fadeOutEnter {
+      animation-name: moveFromBottom;
+    }
+    > .fadeOutLeave {
+      animation-name: moveToTopFade;
+    }
+
+    > .fadeInEnter {
+      animation-name: moveFromBottomFade;
+    }
+    > .fadeInLeave {
+      animation-name: moveToTop;
+    }
+
+    > .fadeEnter {
+      animation-name: moveFromBottomFade;
+    }
+    > .fadeLeave {
+      animation-name: moveToTopFade;
+    }
+  }
+  &.verticalReverse {
+    > .fadeOutEnter {
+      animation-name: moveFromTop;
+    }
+    > .fadeOutLeave {
+      animation-name: moveToBottomFade;
+    }
+
+    > .fadeInEnter {
+      animation-name: moveFromTopFade;
+    }
+    > .fadeInLeave {
+      animation-name: moveToBottom;
+    }
+
+    > .fadeEnter {
+      animation-name: moveFromTopFade;
+    }
+    > .fadeLeave {
+      animation-name: moveToBottomFade;
+    }
+  }
+  &.horizontal {
+    > .fadeOutEnter {
+      animation-name: moveFromRight;
+    }
+    > .fadeOutLeave {
+      animation-name: moveToLeftFade;
+    }
+
+    > .fadeInEnter {
+      animation-name: moveFromRightFade;
+    }
+    > .fadeInLeave {
+      animation-name: moveToLeft;
+    }
+
+    > .fadeEnter {
+      animation-name: moveFromRightFade;
+    }
+    > .fadeLeave {
+      animation-name: moveToLeftFade;
+    }
+  }
+  &.horizontalReverse {
+    > .fadeOutEnter {
+      animation-name: moveFromLeft;
+    }
+    > .fadeOutLeave {
+      animation-name: moveToRightFade;
+    }
+    > .fadeInEnter {
+      animation-name: moveFromLeftFade;
+    }
+    > .fadeInLeave {
+      animation-name: moveToRight;
+    }
+    > .fadeEnter {
+      animation-name: moveFromLeftFade;
+    }
+    > .fadeLeave {
+      animation-name: moveToRightFade;
+    }
+  }
+}
+
+@keyframes moveToLeftFade {
+  from { }
+  to { opacity: .3; transform: translateX(-100%); }
+}
+@keyframes moveToRightFade {
+  from { }
+  to { opacity: .3; transform: translateX(100%); }
+}
+@keyframes moveToTopFade {
+  from { }
+  to { opacity: .3; transform: translateY(-100%); }
+}
+@keyframes moveToBottomFade {
+  from { }
+  to { opacity: .3; transform: translateY(100%); }
+}
+
+@keyframes moveFromLeftFade {
+  from { opacity: .3; transform: translateX(-100%); }
+}
+@keyframes moveFromRightFade {
+  from { opacity: .3; transform: translateX(100%); }
+}
+@keyframes moveFromTopFade {
+  from { opacity: .3; transform: translateY(-100%); }
+}
+
+@keyframes moveFromBottomFade {
+  from { opacity: .3; transform: translateY(100%); }
+}

@@ -1,4 +1,5 @@
 import * as React from 'react'
+import classSet from '../util/classSet'
 
 import './style/Fixed.scss'
 
@@ -7,6 +8,8 @@ export interface IFixedProps {
   holder?: boolean
   zIndex?: number
   height: number | string
+  className?: string
+  style?: React.CSSProperties
 }
 
 export default class Fixed extends React.PureComponent<IFixedProps, any> {
@@ -17,16 +20,16 @@ export default class Fixed extends React.PureComponent<IFixedProps, any> {
   }
 
   render() {
-    let {direction, height, holder, zIndex, children} = this.props
-    let style: any = {height, zIndex}
+    let {direction, height, holder, zIndex, children, className, style} = this.props
+    let contentStyle: any = {height, zIndex}
 
-    if (direction === 'top') style.top = 0
-    else style.bottom = 0
+    if (direction === 'top') contentStyle.top = 0
+    else contentStyle.bottom = 0
 
     return (
-      <div className='wFixed'>
+      <div className={classSet('wFixed', className)} style={style}>
         {holder ? <div className='fixedHolder' style={{height}} /> : null}
-        <div className='fixedContent' style={style}>
+        <div className='fixedContent' style={contentStyle}>
           {children}
         </div>
       </div>

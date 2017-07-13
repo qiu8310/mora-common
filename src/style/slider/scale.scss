@@ -1,0 +1,82 @@
+/*
+  还没做完：参考 https://tympanus.net/codrops/2013/05/07/a-collection-of-page-transitions/
+  scale:        离开的缩小，进入的放大
+  scaleOut:     离开的缩小，进入的正常
+  scaleIn:      进入的放大，离开的正常
+ */
+
+// to 是离开， from 是进入
+.wSlider {
+  > .scaleEnter {
+    animation-delay: .4s;
+    animation-name: scaleUp;
+  }
+  > .scaleLeave {
+    animation-duration: .4s;
+    animation-name: scaleDown;
+  }
+
+  > .scaleInEnter {
+    animation-name: scaleUp;
+  }
+
+  > .scaleOutLeave {
+    animation-name: scaleDown;
+  }
+
+  &.vertical {
+    > .scaleOutEnter {
+      animation-name: moveFromBottom;
+    }
+    > .scaleInLeave {
+      animation-name: moveToTop;
+    }
+  }
+  &.verticalReverse {
+    > .scaleOutEnter {
+      animation-name: moveFromTop;
+    }
+    > .scaleInLeave {
+      animation-name: moveToBottom;
+    }
+  }
+  &.horizontal {
+    > .scaleOutEnter {
+      animation-name: moveFromRight;
+    }
+    > .scaleInLeave {
+      animation-name: moveToLeft;
+    }
+  }
+  &.horizontalReverse {
+    > .scaleOutEnter {
+      animation-name: moveFromLeft;
+    }
+    > .scaleInLeave {
+      animation-name: scaleDown;
+    }
+  }
+}
+
+@keyframes scaleDown {
+  from { }
+  to { opacity: 0; transform: scale(.8); }
+}
+@keyframes scaleDownUp {
+  from { }
+  to { opacity: 0; transform: scale(1.2); }
+}
+@keyframes scaleDownCenter {
+  from { }
+  to { opacity: 0; transform: scale(.7); }
+}
+
+@keyframes scaleUp {
+  from { opacity: 0; transform: scale(.8); }
+}
+@keyframes scaleUpDown {
+  from { opacity: 0; transform: scale(1.2); }
+}
+@keyframes scaleUpCenter {
+  from { opacity: 0; transform: scale(.7); }
+}

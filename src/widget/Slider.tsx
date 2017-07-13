@@ -8,11 +8,12 @@ import TransitionGroupItem from './TransitionGroupItem'
 import './style/Slider.scss'
 
 export interface ISliderProps {
+  className?: string
+  style?: React.CSSProperties
   loop?: boolean
   start?: number
   direction?: 'horizontal' | 'vertical'
   animation?: string
-  speed?: number | string
   offset?: number
   afterChange?: (to: number) => void
   beforeChange?: (from: number) => void
@@ -24,7 +25,6 @@ export default class Slider extends React.PureComponent<ISliderProps, any> {
     start: 0,
     direction: 'vertical',
     animation: 'move',
-    speed: 800,
     offset: 20,
     beforeChange: () => {},
     afterChange: () => {}
@@ -64,10 +64,8 @@ export default class Slider extends React.PureComponent<ISliderProps, any> {
 
   private get slideStyle(): React.CSSProperties {
     let {clientHeight: height, clientWidth: width} = document.documentElement
-    let {speed} = this.props
-    if (/^\d+$/.test(speed + '')) speed = speed + 'ms'
 
-    return {height, width, display: 'block', WebkitAnimationDuration: speed, animationDuration: speed}
+    return {height, width, display: 'block'}
   }
 
   private get child(): React.ReactNode {
@@ -92,16 +90,18 @@ export default class Slider extends React.PureComponent<ISliderProps, any> {
   }
 
   render() {
-    let {direction} = this.props
-    let {reverse} = this.state
-    let cls = reverse ? direction + 'Reverse' : direction
+    let {direction, className, style} = this.props
+    let {reverse, total} = this.state
+    let cls = reverse ? 'wSliderReverse ' + direction + 'Reverse' : 'wSliderNormal ' + direction
 
     return (
       <AlloyFinger onSwipe={this.onSwipe}>
-        <div ref={s => this.slider = s}>
-          <TransitionGroup component='div' className={classSet('wSlider', cls)} onTouchStart={this.onTouchStart}>
-            {this.child}
-          </TransitionGroup>
+        <div ref={s => this.slider = s} style={style} className={className}>
+          {total === 0 ? null : (
+            <TransitionGroup component='div' className={classSet('wSlider', cls)} onTouchStart={this.onTouchStart}>
+              {this.child}
+            </TransitionGroup>
+          )}
         </div>
       </AlloyFinger>
     )
