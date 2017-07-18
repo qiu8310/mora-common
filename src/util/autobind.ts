@@ -16,11 +16,11 @@ const WONT_BINDS: string[] = [
 
 /**
  * @template O                        - 对象实例
- * @param {O} target                  - 对象实例
+ * @param {any} target                  - 对象实例
  * @param {string} method             - 对象实例上的一个方法的名称
  * @param {PropertyDescriptor} desc   - 方法的 descriptor
  */
-function autobind<O extends Object>(target: O, method: string, desc: PropertyDescriptor): PropertyDescriptor
+function autobind(target: any, method: string, desc: PropertyDescriptor): PropertyDescriptor
 
 /**
  * @template F - 继承自 T 的类型，可以是 class
@@ -38,7 +38,7 @@ function autobind<F extends T, T extends Function>(fromCtor: F, toCtorOrWontBind
  * @param {string[]} [wontBinds = WONT_BIND]  - 不自动 bind 的所有方法的名称（默认是 React 生命周期相关的函数）
  */
 function autobind<F extends T, T extends Function>(fromCtor: F, toCtor: T = null, wontBinds: string[] = WONT_BINDS): F {
-  if (!fromCtor.prototype && typeof toCtor === 'string' && wontBinds) return autobindClassMethod(fromCtor, toCtor, wontBinds)
+  if (!fromCtor.prototype && typeof toCtor === 'string' && !Array.isArray(wontBinds)) return autobindClassMethod(fromCtor, toCtor, wontBinds)
 
   if (Array.isArray(toCtor)) {
     wontBinds = toCtor
@@ -58,7 +58,7 @@ function autobind<F extends T, T extends Function>(fromCtor: F, toCtor: T = null
   return fromCtor
 }
 
-function autobindClassMethod<O extends Object>(target: O, method: string, desc: PropertyDescriptor): any {
+function autobindClassMethod(target: any, method: string, desc: PropertyDescriptor): any {
   return bindMethod(getPrototypeOf(target), method, desc)
 }
 
