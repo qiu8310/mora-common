@@ -37,7 +37,9 @@ function autobind<F extends T, T extends Function>(fromCtor: F, toCtorOrWontBind
  * @param {T} toCtor                  - 结束 class
  * @param {string[]} [wontBinds = WONT_BIND]  - 不自动 bind 的所有方法的名称（默认是 React 生命周期相关的函数）
  */
-function autobind<F extends T, T extends Function>(fromCtor: F, toCtor: T = null, wontBinds: string[] = WONT_BINDS): F {
+function autobind<F extends T, T extends Function>(fromCtor: F, toCtor?: T, wontBinds?: string[]): F
+
+function autobind(fromCtor, toCtor = null, wontBinds: any = WONT_BINDS) {
   if (!fromCtor.prototype && typeof toCtor === 'string' && !Array.isArray(wontBinds)) return autobindClassMethod(fromCtor, toCtor, wontBinds)
 
   if (Array.isArray(toCtor)) {

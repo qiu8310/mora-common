@@ -1,9 +1,15 @@
+// 依赖于 react-transition-group@1.x.x
+// 作为 TransitionGroup 的 child 使用，参考 Modal widget
+
 import * as React from 'react'
 import onTransitionEnd from '../dom/onTransitionEnd'
+import {TransitionGroup} from 'react-transition-group'
 
 export interface ITransitionGroupItemProps {
   name: string
 
+  component?: string
+  componentProps?: any
   className?: string
   style?: React.CSSProperties
 
@@ -26,8 +32,10 @@ export interface ITransitionGroupItemProps {
   afterLeave?: (el: HTMLSpanElement) => any
 }
 
-export default class TransitionGroupItem extends React.PureComponent<ITransitionGroupItemProps, any> {
+export class TransitionGroupItem extends React.PureComponent<ITransitionGroupItemProps, any> {
   static defaultProps = {
+    component: 'div',
+    componentProps: {},
     appear: false,
     appearSuffix: 'Appear',
     appearActiveSuffix: 'AppearActive',
@@ -53,12 +61,12 @@ export default class TransitionGroupItem extends React.PureComponent<ITransition
   }
 
   will(type, callback) {
+    this['_will_' + type] = true
+    if (!this.props[type]) return callback()
     this.call('before', type)
-    if (!this.props[type]) callback()
 
     let {el, props} = this
     let {name} = props
-
     el.classList.add(name + props[type + 'Suffix'])
     this.reflow()
     el.classList.add(name + props[type + 'ActiveSuffix'])
@@ -68,6 +76,8 @@ export default class TransitionGroupItem extends React.PureComponent<ITransition
     let {el, props} = this
     let {name} = props
 
+    if (!props[type]) return
+    if (!el) return // 很奇怪，有时候组件已经消失了，还会多余地调用一次 did
     el.classList.remove(name + props[type + 'Suffix'])
     el.classList.remove(name + props[type + 'ActiveSuffix'])
     this.call('after', type)
@@ -96,7 +106,23 @@ export default class TransitionGroupItem extends React.PureComponent<ITransition
   }
 
   render() {
-    let {className, style, children} = this.props
-    return <span ref={e => this.el = e} className={className} style={style} children={children} />
+    let {component, componentProps, className, style, children} = this.props
+    let ref = e => this.el = e
+    let props = {ref, ...componentProps, className, style}
+    return React.createElement(component, props, children)
+    // return <span ref={e => this.el = e} className={className} style={style} children={children} />
+  }
+}
+
+export interface ITransition extends ITransitionGroupItemProps {
+  itemKey: string | number
+}
+
+export default class Transition extends React.PureComponent<ITransition, any> {
+  render() {
+    let {itemKey: key, ...rest} = this.props
+    return <TransitionGroup>
+      <TransitionGroupItem key={key} {...rest} />
+    </TransitionGroup>
   }
 }

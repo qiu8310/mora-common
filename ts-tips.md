@@ -47,6 +47,17 @@ type TodoKeys = keyof Todo;  // "id" | "text" | "due"
 ```
 
 ---------------------------------------------------------
+## Object.entries
+
+```ts
+interface ObjectConstructor {
+    // ...
+    entries<T extends { [key: string]: any }, K extends keyof T>(o: T): [keyof T, T[K]][];
+    // ...
+}
+```
+
+---------------------------------------------------------
 ## Pick & Record
 
 ```ts

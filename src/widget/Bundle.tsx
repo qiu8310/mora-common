@@ -1,3 +1,4 @@
+// 参考 https://reacttraining.com/react-router/web/guides/code-splitting
 import * as React from 'react'
 
 export interface IBundleProps {

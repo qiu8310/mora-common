@@ -6,6 +6,8 @@ import * as path from 'path'
 
 import * as inject from 'mora-scripts/libs/fs/inject'
 import * as cli from 'mora-scripts/libs/tty/cli'
+import * as shell from 'mora-scripts/libs/tty/shell'
+import * as chokidar from 'chokidar'
 
 const ROOT_DIR = __dirname
 const SRC_DIR = path.join(__dirname, 'src')
@@ -37,8 +39,7 @@ cli({
           }
           return lines
         }, []).join(os.EOL)
-
-      console.log(inject(path.join(SRC_DIR, 'index.ts'), {exports}) === 1 ? '操作成功' : '操作失败')
+      if (inject(path.join(SRC_DIR, 'index.ts'), {exports}) !== 1) console.error('注入 export 失败')
     }
   },
   cpStyle: {
@@ -55,10 +56,23 @@ cli({
       getRootDirectoryNames().forEach(name => fs.removeSync(path.join(__dirname, name)))
     }
   },
+  watch: {
+    desc: '只要文件变化就执行 npm run build',
+    cmd(res) {
+      let sid
+      chokidar.watch(SRC_DIR, {ignored: /__(tests|mocks)__/}).on('all', (event, p) => {
+        clearTimeout(sid)
+        sid = setTimeout(() => {
+          shell.promise('npm run build')
+            .then(() => console.log(new Date().toLocaleString() + ' build successfully'))
+            .catch(e => console.error('build error'))
+        }, 800)
+      })
+    }
+  },
   __test: {
     desc: '临时用的测试脚本',
     cmd(res) {
-
     }
   }
 })

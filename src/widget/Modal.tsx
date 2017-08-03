@@ -1,12 +1,13 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
-import {CSSTransitionGroup} from 'react-transition-group'
+import Transition from './Transition'
 
 import './style/Modal.scss'
 
 export interface IModalProps {
+  itemKey?: string | number
   className?: string
-  animate?: 'zoomIn'
+  animate?: string
   width?: string | number
   minWidth?: string | number
   maxWidth?: string | number
@@ -63,7 +64,7 @@ export default class Modal extends React.PureComponent<IModalProps, any> {
 
 function renderComponent(container, props, context?: any) {
   let {
-    className = '', closeModal, children, animate,
+    className = '', closeModal, children, animate, itemKey,
     width, height, minWidth, maxWidth, minHeight, maxHeight
   } = props
 
@@ -72,19 +73,13 @@ function renderComponent(container, props, context?: any) {
   let el = (
     <div className={'wModal ' + className} role='dialog'>
       <div className='modalMask' onClick={closeModal} />
-      <CSSTransitionGroup
-        transitionName={animate}
-        transitionAppear
-        transitionAppearTimeout={500}
-        transitionEnter={false}
-        transitionLeave={false}
-      >
-        <div style={{pointerEvents: 'none'}} className='modalWrap hvCenterChildren'>
+      <Transition itemKey={itemKey} name={animate} leave={false} appear={true} className='modalTransition' style={{pointerEvents: 'none'}}>
+        <div className='modalWrap hvCenterChildren'>
           <div style={style} className='modalContent'>
             {children}
           </div>
         </div>
-      </CSSTransitionGroup>
+      </Transition>
     </div>
   )
 

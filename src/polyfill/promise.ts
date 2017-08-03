@@ -22,7 +22,7 @@ Promise.prototype.finally = function(callback) {
   )
 }
 
-Promise.try = function<T>(fn: () => T) {
+Promise.try = function(fn: () => any) {
   return new Promise(function(resolve, reject) {
     resolve(fn())
   })

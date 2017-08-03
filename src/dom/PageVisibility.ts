@@ -73,6 +73,11 @@ function noop() {}
 
 export default {
   /**
+   * event 对象
+   */
+  event,
+
+  /**
    * 是否支持 Page Visibility API
    * @type boolean
    */

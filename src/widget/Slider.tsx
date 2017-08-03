@@ -3,7 +3,7 @@ import autobind from '../util/autobind'
 import classSet from '../util/classSet'
 import AlloyFinger from 'alloyfinger/react/react-alloy_finger.jsx'
 import {TransitionGroup} from 'react-transition-group'
-import TransitionGroupItem from './TransitionGroupItem'
+import {TransitionGroupItem} from './Transition'
 
 import './style/Slider.scss'
 
