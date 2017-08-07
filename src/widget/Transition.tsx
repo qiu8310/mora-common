@@ -68,9 +68,11 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
     let {el, props} = this
     let {name} = props
     el.classList.add(name + props[type + 'Suffix'])
-    this.reflow()
-    el.classList.add(name + props[type + 'ActiveSuffix'])
-    onTransitionEnd(el, callback)
+    setTimeout(() => {
+      this.reflow()
+      el.classList.add(name + props[type + 'ActiveSuffix'])
+      onTransitionEnd(el, callback)
+    }, 16)
   }
   did(type) {
     let {el, props} = this
