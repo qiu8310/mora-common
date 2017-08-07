@@ -30,7 +30,7 @@ export default class Modal extends React.PureComponent<IModalProps, any> {
     let container = getDefaultContainer()
     let closeModal = () => removeComponent(container)
     props.closeModal = closeModal
-    props.children = React.cloneElement(component, {closeModal})
+    props.children = React.cloneElement(component)
     renderComponent(container, props)
     return {destroy: closeModal}
   }
