@@ -3,9 +3,9 @@
   "version": "0.0.21",
   "description": "",
   "scripts": {
-    "build": "tsc && ./script.ts cpStyle && ./script.ts exports",
+    "build": "./script.ts exports && tsc && ./script.ts cpStyle",
     "build:watch": "./script.ts watch",
-    "release": "npm run build && snpm publish && cnpm sync mora-common",
+    "release": "npm version patch && npm run build && snpm publish && cnpm sync mora-common",
     "test": "jest"
   },
   "author": "Mora <qiuzhongleiabc@126.com> (https://qiu8310.github.io/)",
