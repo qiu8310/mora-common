@@ -2,7 +2,7 @@ import * as React from 'react'
 import {default as classSet, IClassSetArg} from '../util/classSet'
 import {BodyClassName, DocumentTitle} from './SideEffect'
 
-export interface IPageProps {
+export interface IPageProps extends React.HTMLAttributes<HTMLDivElement> {
   name: string
   title?: string
   className?: IClassSetArg
