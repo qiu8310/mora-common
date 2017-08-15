@@ -47,7 +47,9 @@ html, body {
   font-family: $rootFontFamily;
   font-size: $rootFontSize * 1px;
   overflow-x: hidden; // 造成打印页中 x 轴被截断
-  -webkit-overflow-scrolling: touch;
+  // 此属性会影响 position: fixed; bottom: 0; 的元素
+  // 效果是：当拖到底后，再拖动的话，底部的 fixed 元素会逐渐被遮挡了
+  // -webkit-overflow-scrolling: touch;
 }
 
 button, input, select, textarea, body {
