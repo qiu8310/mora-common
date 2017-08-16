@@ -110,7 +110,7 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
   render() {
     let {component, componentProps, className, style, children} = this.props
     let ref = e => this.el = e
-    let props = {ref, ...componentProps, className, style}
+    let props = {ref, className, style, ...componentProps}
     return React.createElement(component, props, children)
     // return <span ref={e => this.el = e} className={className} style={style} children={children} />
   }
