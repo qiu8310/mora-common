@@ -1,19 +1,19 @@
-export function debounce(fn: () => void, ms: number): () => void {
+export function debounce(fn: (...args) => void, ms: number): (...args) => void {
   let sid
-  return () => {
+  return (...args) => {
     if (sid) {
       clearTimeout(sid)
       sid = null
     }
-    sid = setTimeout(fn, ms)
+    sid = setTimeout(() => fn(...args), ms)
   }
 }
 
-export function throttle(fn: () => void, ms: number): () => void {
+export function throttle(fn: (...args) => void, ms: number): (...args) => void {
   let lastCall: number = 0
-  return () => {
+  return (...args) => {
     if (Date.now() - lastCall >= ms) {
-      fn()
+      fn(...args)
       lastCall = Date.now()
     }
   }

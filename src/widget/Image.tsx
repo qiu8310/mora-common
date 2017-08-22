@@ -18,7 +18,7 @@ function setViewport() {
 export type IImageContainer = () => Element
 export type IImageRatio = (devicePixelRatio: number) => string
 
-export interface IImage extends React.HTMLAttributes<HTMLImageElement | HTMLDivElement> {
+export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElement> {
   src: string
 
   /** 启用 lazyload */
