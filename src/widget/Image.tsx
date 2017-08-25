@@ -230,7 +230,7 @@ export default class extends React.PureComponent<IImage, any> {
       error, errorClass, successClass, loadingClass,
       container, noCacheContainer,
       ratio, bg, component,
-      style = {}, className, ...props
+      style = {}, className, width, height, ...props
     } = this.props
 
     component = !bg ? 'img' : component
@@ -239,11 +239,15 @@ export default class extends React.PureComponent<IImage, any> {
     className = classSet('wImage', className)
     let ref = (el: any) => this.el = el
 
+    if (width) style.width = width
+    if (height) style.height = height
+
     if (bg) {
       style.backgroundImage = `url(${src})`
       assign(props, {ref, className, style})
     } else {
-      assign(props, {ref, src, className, style})
+      if (!style.display) style.display = 'block'
+      assign(props, {ref, src, className, width, height, style})
     }
 
     return React.createElement(component as any, props)
