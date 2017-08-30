@@ -20,6 +20,13 @@ export interface ITabProps {
   className?: string
   style?: React.CSSProperties
 }
+
+/**
+ * <Tab>
+ *  <Tab.Panel title='foo'>...</Tab.Panel>
+ *  <Tab.Panel title='bar'>...</Tab.Panel>
+ * </Tab>
+ */
 export class Tab extends React.PureComponent<ITabProps, any> {
   static Panel = Panel
   static defaultProps = {
