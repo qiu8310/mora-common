@@ -4,6 +4,7 @@ import classSet from '../util/classSet'
 import appendQuery from '../util/appendQuery'
 import onview from '../dom/onview'
 import inviewport from '../dom/inviewport'
+import loadImage from '../dom/loadImage'
 import {WhiteDotImage, BlackDotImage} from '../util/DotImages'
 
 // import './styles/Image.scss'
@@ -42,26 +43,6 @@ export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElemen
 
   /** 只有在 background 为 true 是，设置 component 才有效，默认是 div */
   component?: React.ComponentClass<any> | string
-}
-
-function loadImage(src: string, success: (e) => void, error: (e) => void) {
-  let img = new Image()
-  let successHandler = (e) => {
-    success(e)
-    off()
-  }
-  let errorHandler = (e) => {
-    error(e)
-    off()
-  }
-  let off = () => {
-    img.removeEventListener('load', successHandler)
-    img.removeEventListener('error', errorHandler)
-  }
-
-  img.addEventListener('load', successHandler)
-  img.addEventListener('error', errorHandler)
-  img.src = src
 }
 
 export default class extends React.PureComponent<IImage, any> {
@@ -144,7 +125,7 @@ export default class extends React.PureComponent<IImage, any> {
       if (loadingClass) el.classList.remove(loadingClass)
       if (errorClass) el.classList.add(errorClass)
     }
-    loadImage(src, successHandle, errorHandle)
+    loadImage(src, {success: successHandle, error: errorHandle})
   }
 
   componentDidMount() {
