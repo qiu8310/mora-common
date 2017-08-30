@@ -144,7 +144,7 @@ export default class extends React.PureComponent<IImage, any> {
     } else {
       this.offBind = onview(() => {
         if (!this.loaded && this.isInView()) this.load()
-      }, {runOnLoaded: true, throttle: 200, container})
+      }, {throttle: 200, container})
     }
   }
 
