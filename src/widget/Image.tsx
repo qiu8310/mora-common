@@ -3,22 +3,18 @@ import * as assign from 'mora-scripts/libs/lang/assign'
 import classSet from '../util/classSet'
 import appendQuery from '../util/appendQuery'
 import onview from '../dom/onview'
+import winViewport from '../dom/viewport'
 import {WhiteDotImage, BlackDotImage} from '../util/DotImages'
 
 // import './styles/Image.scss'
 
-let VIEW_WIDTH
-let VIEW_HEIGHT
-
-function setViewport() {
-  VIEW_WIDTH = window.innerWidth || document.documentElement.clientWidth
-  VIEW_HEIGHT = window.innerHeight || document.documentElement.clientHeight
-}
-
 export type IImageContainer = () => Element
 export type IImageRatio = (devicePixelRatio: number) => string
 
+// NOTE: 增加了属性需要在 render 中指定
+// 否则新的属性会注入进 div 或 img 中，造成 react 报错
 export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElement> {
+  disableIntersectionObserver?: boolean
   src: string
 
   /** 启用 lazyload */
@@ -75,9 +71,6 @@ function inView(rect, viewport) {
     rect.top <= viewport.bottom
 }
 
-setViewport()
-window.addEventListener('resize', setViewport)
-
 export default class extends React.PureComponent<IImage, any> {
   static defaultProps = {
     lazyload: true,
@@ -97,12 +90,12 @@ export default class extends React.PureComponent<IImage, any> {
 
 
   get viewport() {
-    // VIEW_HEIGHT 和 VIEW_WIDTH 会变化，所以需要用 get
+    // winViewport 会变化，所以需要用 get
     return {
       top: 0 - this.props.offset,
       left: 0 - this.props.offset,
-      bottom: VIEW_HEIGHT + this.props.offset,
-      right: VIEW_WIDTH + this.props.offset
+      bottom: winViewport.height + this.props.offset,
+      right: winViewport.width + this.props.offset
     }
   }
 
@@ -194,7 +187,7 @@ export default class extends React.PureComponent<IImage, any> {
 
   componentDidMount() {
     let container = this.getContainer()
-    if (typeof IntersectionObserver !== 'undefined') {
+    if (!this.props.disableIntersectionObserver && typeof IntersectionObserver !== 'undefined') {
       // https://developers.google.com/web/updates/2016/04/intersectionobserver
       let io = new IntersectionObserver(
         entries => entries[0].intersectionRatio > 0 && this.load(),
@@ -226,6 +219,7 @@ export default class extends React.PureComponent<IImage, any> {
   render() {
     // 所有自定义属性需要列出来，不能注入到 props 中
     let {
+      disableIntersectionObserver,
       src, lazyload, fade, offset, placeholdSrc,
       error, errorClass, successClass, loadingClass,
       container, noCacheContainer,

@@ -7,6 +7,7 @@ import * as path from 'path'
 import * as inject from 'mora-scripts/libs/fs/inject'
 import * as cli from 'mora-scripts/libs/tty/cli'
 import * as shell from 'mora-scripts/libs/tty/shell'
+import * as error from 'mora-scripts/libs/sys/error'
 import * as chokidar from 'chokidar'
 
 const ROOT_DIR = __dirname
@@ -68,6 +69,20 @@ cli({
             .catch(e => console.error('build error'))
         }, 800)
       })
+    }
+  },
+  installTo: {
+    desc: '将当前包安装到指定的目录下（将将指定的目录清空），方便测试此包',
+    cmd(res) {
+      if (res._.length !== 1) return error('只需要提供一个目录即可')
+      let destDir = res._[0]
+      fs.ensureDirSync(destDir)
+      fs.emptyDirSync(destDir)
+      fs.readdirSync(ROOT_DIR)
+        .filter(f => f !== 'src' && f[0] !== '.')
+        .forEach(f => {
+          fs.copySync(path.join(ROOT_DIR, f), path.join(destDir, f))
+        })
     }
   },
   __test: {

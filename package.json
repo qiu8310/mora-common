@@ -6,6 +6,7 @@
     "build": "./script.ts exports && tsc && ./script.ts cpStyle",
     "build:watch": "./script.ts watch",
     "release": "npm version patch && npm run build && snpm publish && cnpm sync mora-common",
+    "installToSkill": "npm run build && ./script.ts installTo ../skill/node_modules/mora-common",
     "test": "jest"
   },
   "author": "Mora <qiuzhongleiabc@126.com> (https://qiu8310.github.io/)",
