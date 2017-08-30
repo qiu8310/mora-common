@@ -3,7 +3,7 @@ import * as assign from 'mora-scripts/libs/lang/assign'
 import classSet from '../util/classSet'
 import appendQuery from '../util/appendQuery'
 import onview from '../dom/onview'
-import winViewport from '../dom/viewport'
+import inviewport from '../dom/inviewport'
 import {WhiteDotImage, BlackDotImage} from '../util/DotImages'
 
 // import './styles/Image.scss'
@@ -64,13 +64,6 @@ function loadImage(src: string, success: (e) => void, error: (e) => void) {
   img.src = src
 }
 
-function inView(rect, viewport) {
-  return rect.right >= viewport.left &&
-    rect.bottom >= viewport.top &&
-    rect.left <= viewport.right &&
-    rect.top <= viewport.bottom
-}
-
 export default class extends React.PureComponent<IImage, any> {
   static defaultProps = {
     lazyload: true,
@@ -88,17 +81,6 @@ export default class extends React.PureComponent<IImage, any> {
   private offBind: any
   private cachedContainer: Element
 
-
-  get viewport() {
-    // winViewport 会变化，所以需要用 get
-    return {
-      top: 0 - this.props.offset,
-      left: 0 - this.props.offset,
-      bottom: winViewport.height + this.props.offset,
-      right: winViewport.width + this.props.offset
-    }
-  }
-
   getContainer() {
     let {container, noCacheContainer} = this.props
     if (this.cachedContainer && !noCacheContainer) return this.cachedContainer
@@ -109,30 +91,10 @@ export default class extends React.PureComponent<IImage, any> {
   }
 
   isInView(): boolean {
-    let rect = this.el.getBoundingClientRect()
-
-    let {viewport} = this
-    let {offset} = this.props
-    let container = this.getContainer()
-    if (container) {
-      let containerRect = container.getBoundingClientRect()
-      if (inView(containerRect, viewport)) {
-        let top = containerRect.top - offset
-        let right = containerRect.right + offset
-        let bottom = containerRect.bottom + offset
-        let left = containerRect.left - offset
-        return inView(rect, {
-          top: top > viewport.top ? top : viewport.top,
-          right: right < viewport.right ? right : viewport.right,
-          bottom: bottom < viewport.bottom ? bottom : viewport.bottom,
-          left: left > viewport.left ? left : viewport.left
-        })
-      } else {
-        return false
-      }
-    } else {
-      return inView(rect, viewport)
-    }
+    return inviewport(this.el, {
+      container: this.getContainer(),
+      offset: this.props.offset
+    })
   }
 
   getLazyloadSrc(): string {
