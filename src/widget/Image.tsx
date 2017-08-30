@@ -1,7 +1,7 @@
 import * as React from 'react'
 import * as assign from 'mora-scripts/libs/lang/assign'
 import classSet from '../util/classSet'
-import appendQuery from '../util/appendQuery'
+import {appendQuery} from '../util/url'
 import onview from '../dom/onview'
 import inviewport from '../dom/inviewport'
 import loadImage from '../dom/loadImage'

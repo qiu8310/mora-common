@@ -39,6 +39,8 @@ export default function onTransitionEnd(el: Element, callback: () => {}, expectA
   el.addEventListener(event, onEnd)
 }
 
+export {transitionProp, animationProp, transitionEndEvent, animationEndEvent, onTransitionEnd}
+
 export function getTransitionInfo(el: Element, expectAnimType?: ANIM_TYPE) {
   const styles = window.getComputedStyle(el)
   const transitionDelays: string[] = styles[transitionProp + 'Delay'].split(', ')
