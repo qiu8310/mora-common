@@ -1,5 +1,6 @@
 import {throttle as throttleCall, debounce as debounceCall} from '../util/delay'
 import onload from './onload'
+import once from '../util/once'
 
 export declare type IOnViewOptionsEvent = 'load' | 'resize' | 'scroll' | 'orientationchange'
 export interface IOnViewOptions {
@@ -23,25 +24,19 @@ export default function onview(fn: () => void, options: IOnViewOptions = {}): ()
   }
 
   let eventArray = [].concat(events)
+  if (eventArray.indexOf('load') >= 0) onload(cb)
+  eventArray = eventArray.filter(type => type !== 'load')
+
   eventArray.forEach(type => {
-    let c: any = window
-    if (type === 'load') {
-      return onload(cb)
-    } else if (type === 'scroll') {
-      c = container || window
-    }
-    c.addEventListener(type, cb)
+    // 指定了 container 的话，需要监听两个 scroll （保险起见）
+    if (type === 'scroll' && container) container.addEventListener(type, cb)
+    window.addEventListener(type, cb)
   })
 
-  return () => {
+  return once(() => {
     eventArray.forEach(type => {
-      let c: any = window
-      if (type === 'load') {
-        return
-      } else if (type === 'scroll') {
-        c = container || window
-      }
-      c.removeEventListener(type, cb)
+      if (type === 'scroll' && container) container.removeEventListener(type, cb)
+      window.removeEventListener(type, cb)
     })
-  }
+  })
 }

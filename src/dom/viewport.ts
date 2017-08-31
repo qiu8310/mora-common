@@ -1,4 +1,5 @@
 import onview from './onview'
+import once from '../util/once'
 
 let viewport = {
   width: 0,
@@ -16,10 +17,11 @@ let viewport = {
       )
       io.observe(element)
 
-      return () => {
+      return once(() => {
         io.disconnect()
-      }
+      })
     } else {
+      // onview 已经包装了 once
       return onview(() => {
         if (viewport.visiable(element, {container, offset})) callback()
       }, {throttle, debounce, container})
