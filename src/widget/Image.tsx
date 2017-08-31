@@ -2,8 +2,7 @@ import * as React from 'react'
 import * as assign from 'mora-scripts/libs/lang/assign'
 import classSet from '../util/classSet'
 import {appendQuery} from '../util/url'
-import onview from '../dom/onview'
-import inviewport from '../dom/inviewport'
+import viewport from '../dom/viewport'
 import loadImage from '../dom/loadImage'
 import {WhiteDotImage, BlackDotImage} from '../util/DotImages'
 
@@ -71,13 +70,6 @@ export default class extends React.PureComponent<IImage, any> {
     return this.cachedContainer
   }
 
-  isInView(): boolean {
-    return inviewport(this.el, {
-      container: this.getContainer(),
-      offset: this.props.offset
-    })
-  }
-
   getLazyloadSrc(): string {
     let {placeholdSrc} = this.props
     return placeholdSrc === 'black' ? BlackDotImage : placeholdSrc === 'white' ? WhiteDotImage : placeholdSrc
@@ -130,22 +122,13 @@ export default class extends React.PureComponent<IImage, any> {
 
   componentDidMount() {
     let container = this.getContainer()
-    if (!this.props.disableIntersectionObserver && typeof IntersectionObserver !== 'undefined') {
-      // https://developers.google.com/web/updates/2016/04/intersectionobserver
-      let io = new IntersectionObserver(
-        entries => entries[0].intersectionRatio > 0 && this.load(),
-        {root: container, rootMargin: this.props.offset + 'px'}
-      )
+    let {disableIntersectionObserver} = this.props
 
-      this.offBind = () => {
-        io.disconnect()
-      }
-      io.observe(this.el)
-    } else {
-      this.offBind = onview(() => {
-        if (!this.loaded && this.isInView()) this.load()
-      }, {throttle: 200, container})
-    }
+    this.offBind = viewport.listen(this.el, () => this.load(), {
+      disableIntersectionObserver,
+      container,
+      throttle: 200
+    })
   }
 
   destroy() {
