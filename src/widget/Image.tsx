@@ -19,7 +19,7 @@ export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElemen
 
   /** 启用 lazyload */
   lazyload?: boolean
-  fade?: boolean
+  fade?: boolean | number
   offset?: number
 
   /** 如果启用 lazyload，可以指定一个源图片未加载前的一个小图片 */
@@ -86,6 +86,7 @@ export default class extends React.PureComponent<IImage, any> {
     if (this.loaded) return
     this.loaded = true
     this.destroy()
+    console.log('loaded', this.props.src)
 
     let {el} = this
     let {bg, error, successClass, errorClass, loadingClass, fade} = this.props
@@ -107,7 +108,7 @@ export default class extends React.PureComponent<IImage, any> {
           /* tslint:disable */
           el.scrollTop
           /* tslint:enable */
-          el.style.transition = 'opacity .6s ease-in'
+          el.style.transition = `opacity ${typeof fade === 'number' ? fade : 600}ms ease-in`
           el.style.opacity = '1'
         }, 16)
       }
@@ -122,12 +123,10 @@ export default class extends React.PureComponent<IImage, any> {
 
   componentDidMount() {
     let container = this.getContainer()
-    let {disableIntersectionObserver} = this.props
-
+    let {disableIntersectionObserver, offset} = this.props
+    console.log('mount', this.props.src)
     this.offBind = viewport.listen(this.el, () => this.load(), {
-      disableIntersectionObserver,
-      container,
-      throttle: 200
+      disableIntersectionObserver, container, offset, throttle: 200
     })
   }
 

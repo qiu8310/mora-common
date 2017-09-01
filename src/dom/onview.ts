@@ -11,7 +11,7 @@ export interface IOnViewOptions {
 }
 
 // debounce & throttle: http://drupalmotion.com/article/debounce-and-throttle-visual-explanation
-export default function onview(fn: () => void, options: IOnViewOptions = {}): () => void {
+export default function onview(fn: (e: Event | {type: string}) => void, options: IOnViewOptions = {}): () => void {
   let {throttle = 0, debounce = 0, container = null, events = ['load', 'resize', 'scroll', 'orientationchange']} = options
   let cb
 

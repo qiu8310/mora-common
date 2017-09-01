@@ -6,24 +6,27 @@ let viewport = {
   height: 0,
 
   /** 监听 element 能否在当前窗口下可见 */
-  listen(element: Element, callback: () => void, options: IViewportListenOptions = {}): () => void {
+  listen(element: Element, callback: (e: IntersectionObserverEntry[] | Event | {type: string}) => void, options: IViewportListenOptions = {}): () => void {
     let {disableIntersectionObserver, container, offset = 0, debounce = 0, throttle = 200} = options
 
     if (!disableIntersectionObserver && typeof IntersectionObserver !== 'undefined') {
       // https://developers.google.com/web/updates/2016/04/intersectionobserver
       let io = new IntersectionObserver(
-        entries => entries[0].intersectionRatio > 0 && callback(),
+        entries => entries[0].intersectionRatio > 0 && callback(entries),
         {root: container, rootMargin: offset + 'px'}
       )
       io.observe(element)
+
+      // onview 一定会在 domReady 后执行，所以 IntersectionObserver 也需要做下初始化判断
+      if (viewport.visiable(element, {container, offset})) callback({type: 'init'})
 
       return once(() => {
         io.disconnect()
       })
     } else {
       // onview 已经包装了 once
-      return onview(() => {
-        if (viewport.visiable(element, {container, offset})) callback()
+      return onview((e) => {
+        if (viewport.visiable(element, {container, offset})) callback(e)
       }, {throttle, debounce, container})
     }
   },

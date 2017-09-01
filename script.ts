@@ -78,8 +78,12 @@ cli({
       let destDir = res._[0]
       fs.ensureDirSync(destDir)
       fs.emptyDirSync(destDir)
+      // getRootDirectoryNames().forEach(f => {
+      //   fs.copySync(path.join(ROOT_DIR, f), path.join(destDir, f))
+      // })
+
       fs.readdirSync(ROOT_DIR)
-        .filter(f => f !== 'src' && f[0] !== '.')
+        .filter(f => f !== 'src' && f[0] !== '.' && f[0])
         .forEach(f => {
           fs.copySync(path.join(ROOT_DIR, f), path.join(destDir, f))
         })

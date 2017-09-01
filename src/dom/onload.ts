@@ -1,16 +1,16 @@
-export default function(fn: () => void): void {
+export default function(fn: (e) => void): void {
   let done
-  let cb = () => {
+  let cb = (e) => {
     if (!done) {
       done = true
       window.removeEventListener('DOMContentLoaded', cb)
       window.removeEventListener('load', cb)
-      fn()
+      fn(e)
     }
   }
 
   window.addEventListener('DOMContentLoaded', cb)
   window.addEventListener('load', cb)
 
-  if (document.readyState === 'complete') cb()
+  if (document.readyState === 'complete') cb({type: 'complete'})
 }
