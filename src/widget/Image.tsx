@@ -14,7 +14,7 @@ export type IImageRatio = (devicePixelRatio: number) => string
 // NOTE: 增加了属性需要在 render 中指定
 // 否则新的属性会注入进 div 或 img 中，造成 react 报错
 export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElement> {
-  disableIntersectionObserver?: boolean
+  enableIntersectionObserver?: boolean
   src: string
 
   /** 启用 lazyload */
@@ -57,6 +57,7 @@ export default class extends React.PureComponent<IImage, any> {
   }
 
   loaded: boolean = false
+  destroied: boolean = false
   el: HTMLDivElement | HTMLImageElement
   private offBind: any
   private cachedContainer: Element
@@ -83,17 +84,17 @@ export default class extends React.PureComponent<IImage, any> {
   }
 
   load() {
-    if (this.loaded) return
+    let {destroied, loaded, el} = this
+    if (loaded || destroied) return
+
     this.loaded = true
     this.destroy()
-    console.log('loaded', this.props.src)
-
-    let {el} = this
     let {bg, error, successClass, errorClass, loadingClass, fade} = this.props
 
     if (loadingClass) el.classList.add(loadingClass)
     let src = this.getRealSrc()
     let successHandle = () => {
+      if (!el) return // 执行此异步函数时，可能已经 destroy 过了
       if (bg) {
         el.style.backgroundImage = `url(${src})`
       } else {
@@ -114,6 +115,7 @@ export default class extends React.PureComponent<IImage, any> {
       }
     }
     let errorHandle = (e) => {
+      if (!el) return // 执行此异步函数时，可能已经 destroy 过了
       if (error) error(e)
       if (loadingClass) el.classList.remove(loadingClass)
       if (errorClass) el.classList.add(errorClass)
@@ -123,14 +125,14 @@ export default class extends React.PureComponent<IImage, any> {
 
   componentDidMount() {
     let container = this.getContainer()
-    let {disableIntersectionObserver, offset} = this.props
-    console.log('mount', this.props.src)
+    let {enableIntersectionObserver, offset} = this.props
     this.offBind = viewport.listen(this.el, () => this.load(), {
-      disableIntersectionObserver, container, offset, throttle: 200
+      enableIntersectionObserver, container, offset, throttle: 200
     })
   }
 
   destroy() {
+    this.destroied = true
     if (this.offBind) {
       this.offBind()
       this.offBind = null
@@ -144,7 +146,7 @@ export default class extends React.PureComponent<IImage, any> {
   render() {
     // 所有自定义属性需要列出来，不能注入到 props 中
     let {
-      disableIntersectionObserver,
+      enableIntersectionObserver,
       src, lazyload, fade, offset, placeholdSrc,
       error, errorClass, successClass, loadingClass,
       container, noCacheContainer,

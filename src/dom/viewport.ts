@@ -7,9 +7,10 @@ let viewport = {
 
   /** 监听 element 能否在当前窗口下可见 */
   listen(element: Element, callback: (e: IntersectionObserverEntry[] | Event | {type: string}) => void, options: IViewportListenOptions = {}): () => void {
-    let {disableIntersectionObserver, container, offset = 0, debounce = 0, throttle = 200} = options
+    let {enableIntersectionObserver, container, offset = 0, debounce = 0, throttle = 200} = options
 
-    if (!disableIntersectionObserver && typeof IntersectionObserver !== 'undefined') {
+    // 默认不开始（对于那种频繁显示隐藏的元素时，没有 scroll 稳定）
+    if (enableIntersectionObserver && typeof IntersectionObserver !== 'undefined') {
       // https://developers.google.com/web/updates/2016/04/intersectionobserver
       let io = new IntersectionObserver(
         entries => entries[0].intersectionRatio > 0 && callback(entries),
@@ -35,7 +36,7 @@ let viewport = {
    * 判断元素 element 是否是在指定的 viewport 内，
    * 如果没指定 viewport，默认使用当前屏幕的宽高所在的 viewport
    */
-  visiable(element: Element, options: IViewportInOptions = {}): boolean {
+  visiable(element: Element, options: IViewportVisiableOptions = {}): boolean {
     let rect = element.getBoundingClientRect()
 
     let {container, offset, viewport: winViewport} = options
@@ -77,10 +78,10 @@ export interface IViewportListenOptions {
   /** 包括监听 scroll 事件的 container, 和 el 元素的窗器，这两者一般是同一个 */
   container?: Element
   offset?: IOffset
-  disableIntersectionObserver?: boolean
+  enableIntersectionObserver?: boolean
 }
 
-export interface IViewportInOptions {
+export interface IViewportVisiableOptions {
   viewport?: IViewport
   container?: Element
   offset?: IOffset

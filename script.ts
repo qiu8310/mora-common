@@ -81,9 +81,8 @@ cli({
       // getRootDirectoryNames().forEach(f => {
       //   fs.copySync(path.join(ROOT_DIR, f), path.join(destDir, f))
       // })
-
       fs.readdirSync(ROOT_DIR)
-        .filter(f => f !== 'src' && f[0] !== '.' && f[0])
+        .filter(f => f !== 'src' && f !== 'node_modules' && f[0] !== '.' )
         .forEach(f => {
           fs.copySync(path.join(ROOT_DIR, f), path.join(destDir, f))
         })
