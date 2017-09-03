@@ -1,4 +1,5 @@
 src
+docs
 coverage
 **/__tests__
 **/__mocks__

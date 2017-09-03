@@ -13,6 +13,7 @@ widget
 
 index.d.ts
 index.js
+!docs/**
 
 # Logs
 logs
