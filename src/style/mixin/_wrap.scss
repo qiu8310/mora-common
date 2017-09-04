@@ -9,7 +9,7 @@
  */
 @mixin wrap($selector: '*', $width: false, $height: false, $center: true) {
   display: inline-block; // 根据子容器自动调整大小
-  max-width: 100%; // 不超过页面宽度
+  max-width: 100%; // 不超过父容器宽度
   overflow: hidden;
 
   // 水平居中

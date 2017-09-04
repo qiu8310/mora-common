@@ -74,7 +74,7 @@ function renderComponent(container, props, context?: any) {
     <div className={'wModal ' + className} role='dialog'>
       <div className='modalMask' onClick={closeModal} />
       <Transition itemKey={itemKey} name={animate} leave={false} appear={true} className='modalTransition' style={{pointerEvents: 'none'}}>
-        <div className='modalWrap hvCenterChildren'>
+        <div className='modalWrap gHVCenterChildren'>
           <div style={style} className='modalContent'>
             {children}
           </div>

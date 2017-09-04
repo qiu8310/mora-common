@@ -13,7 +13,7 @@ export interface IHTMLPRops extends React.HTMLAttributes<HTMLSpanElement> {
 export default class HTML extends React.PureComponent<IHTMLPRops, any> {
   render() {
     let {className = '', style = {}, children, value, lineClamp, fromEditor, ...rest} = this.props
-    className = classSet('wHTML', className, {lineClamp, ck: fromEditor})
+    className = classSet('wHTML', className, {gLineClamp: lineClamp, ck: fromEditor})
     let html = children != null ? children : value
     if (lineClamp) {
       style.lineClamp = lineClamp
