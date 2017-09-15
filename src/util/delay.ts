@@ -51,3 +51,9 @@ export function throttle(fn: (...args) => void, wait: number): (...args) => void
     }
   }
 }
+
+export function async(fn: (...args) => void, wait = 0) {
+  return (...args) => {
+    setTimeout(() => fn(...args), wait)
+  }
+}

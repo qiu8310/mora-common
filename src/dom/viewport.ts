@@ -59,13 +59,23 @@ let viewport = {
     } else {
       return contains(winViewport, rect)
     }
+  },
+
+  getViewport
+}
+
+function getViewport() {
+  return {
+    width: window.innerWidth || document.documentElement.clientWidth,
+    height: window.innerHeight || document.documentElement.clientHeight
   }
 }
 
 // 实时更新 viewport 的宽高
 function setViewport() {
-  viewport.width = window.innerWidth || document.documentElement.clientWidth
-  viewport.height = window.innerHeight || document.documentElement.clientHeight
+  let v = getViewport()
+  viewport.width = v.width
+  viewport.height = v.height
 }
 setViewport()
 window.addEventListener('resize', setViewport)

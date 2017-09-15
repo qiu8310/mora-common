@@ -32,6 +32,7 @@ export interface ITransitionGroupItemProps {
   afterLeave?: (el: HTMLSpanElement) => any
 }
 
+export {TransitionGroup}
 export class TransitionGroupItem extends React.PureComponent<ITransitionGroupItemProps, any> {
   static defaultProps = {
     component: 'div',
@@ -118,12 +119,24 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
 
 export interface ITransition extends ITransitionGroupItemProps {
   itemKey: string | number
+  /** 切换到只显示单个 item 的模式, itemKey 则应该是 items 的当前显示的 item 的索引；提供了此字段便不需要 children */
+  items?: JSX.Element[]
+  groupProps?: TransitionGroup.TransitionGroupProps
 }
 
 export default class Transition extends React.PureComponent<ITransition, any> {
+  static defaultProps = {
+    groupProps: {
+      component: 'div'
+    }
+  }
+
   render() {
-    let {itemKey: key, ...rest} = this.props
-    return <TransitionGroup>
+    let {itemKey: key, items, groupProps, ...rest} = this.props
+
+    if (items && items.length && !rest.children) (rest as any).children = items[key]
+
+    return <TransitionGroup {...groupProps}>
       <TransitionGroupItem key={key} {...rest} />
     </TransitionGroup>
   }

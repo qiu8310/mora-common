@@ -1,6 +1,6 @@
 import * as React from 'react'
-import * as ReactDOM from 'react-dom'
 import Transition from './Transition'
+import {removeComponent, renderComponent as rc, getDefaultContainer} from './Render'
 
 import './style/Modal.scss'
 
@@ -15,6 +15,7 @@ export interface IModalProps {
   minHeight?: string | number
   maxHeight?: string | number
   closeModal?: () => void
+  children?: React.ReactNode
 }
 
 export default class Modal extends React.PureComponent<IModalProps, any> {
@@ -26,12 +27,12 @@ export default class Modal extends React.PureComponent<IModalProps, any> {
     maxHeight: '90%'
   }
 
-  static dialog = (props, component) => {
+  static dialog(props: IModalProps, component): {destroy: () => void} {
     let container = getDefaultContainer()
     let closeModal = () => removeComponent(container)
     props.closeModal = closeModal
     props.children = React.cloneElement(component)
-    renderComponent(container, props)
+    renderComponent(props, container)
     return {destroy: closeModal}
   }
 
@@ -39,12 +40,11 @@ export default class Modal extends React.PureComponent<IModalProps, any> {
 
   renderComponent() {
     if (!this.container) this.container = getDefaultContainer()
-    renderComponent(this.container, this.props, this)
+    renderComponent(this.props, this.container, this)
   }
   removeComponent() {
     removeComponent(this.container)
   }
-
   componentDidMount() {
     this.renderComponent()
   }
@@ -62,7 +62,7 @@ export default class Modal extends React.PureComponent<IModalProps, any> {
   }
 }
 
-function renderComponent(container, props, context?: any) {
+function renderComponent(props, container?: Element, context?: React.Component<any, any>) {
   let {
     className = '', closeModal, children, animate, itemKey,
     width, height, minWidth, maxWidth, minHeight, maxHeight
@@ -83,19 +83,5 @@ function renderComponent(container, props, context?: any) {
     </div>
   )
 
-  // https://reactjsnews.com/modals-in-react
-  // https://github.com/react-component/util/blob/master/src/getContainerRenderMixin.jsx
-  if (context) ReactDOM.unstable_renderSubtreeIntoContainer(context, el, container)
-  else ReactDOM.render(el, container)
-}
-function removeComponent(container) {
-  if (container) {
-    ReactDOM.unmountComponentAtNode(container)
-    container.parentNode.removeChild(container)
-  }
-}
-function getDefaultContainer() {
-  let container = document.createElement('div')
-  document.body.appendChild(container)
-  return container
+  return rc(el, container, context)
 }

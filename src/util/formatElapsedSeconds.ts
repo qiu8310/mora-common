@@ -10,7 +10,7 @@ export interface IFormatElapsedSecondsOptions {
   maxValue?: number
 }
 
-export default function(seconds: number, options: IFormatElapsedSecondsOptions = {}) {
+export default function(seconds: number, options: IFormatElapsedSecondsOptions = {}): {second: number, minute: number, hour: number, day: number} {
   let {maxLevel = 'hour', maxValue} = options
 
   let maxIndex = -1
@@ -32,5 +32,5 @@ export default function(seconds: number, options: IFormatElapsedSecondsOptions =
       }
       res[level.key] = maxValue > 0 ? Math.min(maxValue, value) : value
       return res
-    }, {})
+    }, {}) as any
 }
