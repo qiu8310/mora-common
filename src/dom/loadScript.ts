@@ -3,7 +3,7 @@ export interface ILoadScriptOptions {
   error?: (e: Event) => void
 }
 
-export default function loadScript(url: string, {success, error}: ILoadScriptOptions = {}) {
+export function loadScript(url: string, {success, error}: ILoadScriptOptions = {}) {
   let script = document.createElement('script')
   script.src = url
   script.type = 'text/javascript'

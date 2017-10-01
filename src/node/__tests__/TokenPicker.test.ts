@@ -1,4 +1,4 @@
-import {default as TokenPicker, ITokenPickerOptions} from '../TokenPicker'
+import {TokenPicker, ITokenPickerOptions} from '../TokenPicker'
 import * as path from 'path'
 import * as fs from 'fs-extra'
 

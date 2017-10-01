@@ -1,7 +1,7 @@
 import * as React from 'react'
-import {renderComponent} from './Render'
-import Transition from './Transition'
-import autobind from '../util/autobind'
+import {renderComponent, removeComponent, getDefaultContainer} from './Render'
+import {Transition} from './Transition'
+import {autobind} from '../util/autobind'
 
 import './style/Confirm.scss'
 
@@ -19,15 +19,15 @@ export interface IConfirmProps {
 
 export function confirm(props: IConfirmProps, instance?: JSX.ElementClass) {
   let oldOnClose = props.onClose
-  let remove
+  let container = getDefaultContainer()
   props.onClose = () => {
     // 同步 remove 会导致 react 报不能调用 setState 的错误（应该是 React 的一个 Bug）
     setTimeout(() => {
-      remove()
+      removeComponent(container)
       if (oldOnClose) oldOnClose()
     }, 0)
   }
-  remove = renderComponent(<Confirm {...props} />, null, instance)
+  renderComponent(<Confirm {...props} />, container, instance)
 }
 
 export class Confirm extends React.PureComponent<IConfirmProps, any> {

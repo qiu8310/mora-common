@@ -44,7 +44,7 @@ interface ITokenObject {
  *  tp.expire() / break
  * }
  */
-export default class TokenPicker {
+export class TokenPicker {
   public tokens: string[] = []
   private options: ITokenPickerOptions = {
     recoverSeconds: 30 * 24 * 3600,   // 默认一个月

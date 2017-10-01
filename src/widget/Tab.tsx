@@ -1,5 +1,6 @@
 import * as React from 'react'
-import classSet from '../util/classSet'
+import {classSet} from '../util/classSet'
+import {Storable, IStoreFunc, IStorableProps} from '../component/implements/Storable'
 
 export interface IPanelProps {
   title: any
@@ -27,15 +28,29 @@ export interface ITabProps {
  *  <Tab.Panel title='bar'>...</Tab.Panel>
  * </Tab>
  */
-export class Tab extends React.PureComponent<ITabProps, any> {
+@Storable.apply()
+export class Tab extends React.PureComponent<ITabProps & IStorableProps, any> implements Storable {
   static Panel = Panel
   static defaultProps = {
-    start: 0,
     activeClass: 'active'
   }
 
-  state = {
-    currentIndex: this.props.start
+  storable: boolean
+  store: IStoreFunc
+
+  constructor(props, context) {
+    super(props, context)
+    let {start} = props
+    let currentIndex = 0
+    // 优先使用指定的
+    if (start != null && typeof start === 'number' && !isNaN(start)) {
+      currentIndex = start
+    } else {
+      let stored = this.store('index')
+      if (stored != null) currentIndex = stored
+    }
+
+    this.state = {currentIndex}
   }
 
   onClickNav(i) {
@@ -43,6 +58,7 @@ export class Tab extends React.PureComponent<ITabProps, any> {
     let {onChange} = this.props
     if (i !== currentIndex) {
       this.setState({currentIndex: i}, () => {
+        this.store('index', i)
         if (onChange) onChange(i, currentIndex)
       })
     }
@@ -69,5 +85,3 @@ export class Tab extends React.PureComponent<ITabProps, any> {
     )
   }
 }
-
-export default Tab

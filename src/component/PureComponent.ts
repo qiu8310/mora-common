@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import Component from './Component'
-import applyMixins from '../util/applyMixins'
+import {Component} from './Component'
+import {applyMixins} from '../util/applyMixins'
 
 class PureComponent<P> extends React.PureComponent<P, any> implements Component<P> {
   // 当前 loading 状态
@@ -16,4 +16,4 @@ class PureComponent<P> extends React.PureComponent<P, any> implements Component<
 
 applyMixins(PureComponent, [Component])
 
-export default PureComponent
+export {PureComponent}

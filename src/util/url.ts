@@ -10,7 +10,7 @@ export function buildSearch(query: IUrlQuery = {}): string {
 }
 
 export function parseSearch(search: string): IUrlQuery {
-  if (search.length === 1) return {}
+  if (search.length < 1) return {}
   return search.substr(1).split('&').reduce((query, pair) => {
     let [key, value] = pair.split('=')
     if (key !== '_k') query[decodeURIComponent(key)] = decodeURIComponent(value)

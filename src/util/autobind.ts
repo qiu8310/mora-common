@@ -1,6 +1,6 @@
 
-import iterateInheritedPrototype from './iterateInheritedPrototype'
-import getPrototypeOf from './getPrototypeOf'
+import {iterateInheritedPrototype} from './iterateInheritedPrototype'
+import {getPrototypeOf} from './getPrototypeOf'
 
 const WONT_BINDS: string[] = [
   'constructor',
@@ -20,7 +20,7 @@ const WONT_BINDS: string[] = [
  * @param {string} method             - 对象实例上的一个方法的名称
  * @param {PropertyDescriptor} desc   - 方法的 descriptor
  */
-function autobind(target: any, method: string, desc: PropertyDescriptor): PropertyDescriptor
+export function autobind(target: any, method: string, desc: PropertyDescriptor): PropertyDescriptor
 
 /**
  * @template F - 继承自 T 的类型，可以是 class
@@ -28,7 +28,7 @@ function autobind(target: any, method: string, desc: PropertyDescriptor): Proper
  * @param {F} fromCtor - 起始 class
  * @param {(T | string[])} [toCtorOrWontBinds] - 结束 class 或者是不需要绑定的方法的名称（默认是 React 生命周期相关的函数）
  */
-function autobind<F extends T, T extends Function>(fromCtor: F, toCtorOrWontBinds?: T | string[]): F
+export function autobind<F extends T, T extends Function>(fromCtor: F, toCtorOrWontBinds?: T | string[]): F
 
 /**
  * @template F  - 继承自 T 的类型，可以是 class
@@ -37,9 +37,9 @@ function autobind<F extends T, T extends Function>(fromCtor: F, toCtorOrWontBind
  * @param {T} toCtor                  - 结束 class
  * @param {string[]} [wontBinds = WONT_BIND]  - 不自动 bind 的所有方法的名称（默认是 React 生命周期相关的函数）
  */
-function autobind<F extends T, T extends Function>(fromCtor: F, toCtor?: T, wontBinds?: string[]): F
+export function autobind<F extends T, T extends Function>(fromCtor: F, toCtor?: T, wontBinds?: string[]): F
 
-function autobind(fromCtor, toCtor = null, wontBinds: any = WONT_BINDS) {
+export function autobind(fromCtor, toCtor = null, wontBinds: any = WONT_BINDS) {
   if (!fromCtor.prototype && typeof toCtor === 'string' && !Array.isArray(wontBinds)) return autobindClassMethod(fromCtor, toCtor, wontBinds)
 
   if (Array.isArray(toCtor)) {
@@ -108,5 +108,3 @@ function bindMethod(proto: any, method: string, {value: fn, configurable, enumer
     }
   }
 }
-
-export default autobind

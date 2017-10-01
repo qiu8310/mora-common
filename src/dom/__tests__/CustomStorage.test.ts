@@ -1,8 +1,8 @@
 jest.mock('../../util/warn')
 
-import CustomStorage from '../CustomStorage'
-import localStorage from './helper/localStorage'
-import warn from '../../util/warn'
+import {CustomStorage} from '../CustomStorage'
+import {localStorage} from './helper/localStorage'
+import {warn} from '../../util/warn'
 
 describe('cache', () => {
   test('warn will be called', () => {

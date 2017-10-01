@@ -1,6 +1,6 @@
 let calledWithes = []
 
-function warn(...args) {
+export function warn(...args) {
   calledWithes.push(args)
   return args
 }
@@ -10,5 +10,3 @@ function warn(...args) {
   fn()
   if (expectedCalledWithes) expect(calledWithes).toEqual(expectedCalledWithes)
 }
-
-export default warn

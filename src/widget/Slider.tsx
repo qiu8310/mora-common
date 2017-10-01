@@ -1,7 +1,7 @@
 import * as React from 'react'
-import autobind from '../util/autobind'
-import classSet from '../util/classSet'
-import AlloyFinger from 'alloyfinger/react/react-alloy_finger.jsx'
+import {autobind} from '../util/autobind'
+import {classSet} from '../util/classSet'
+import {Finger} from './Finger'
 import {TransitionGroup} from 'react-transition-group'
 import {TransitionGroupItem} from './Transition'
 
@@ -19,7 +19,7 @@ export interface ISliderProps {
   beforeChange?: (from: number) => void
 }
 
-export default class Slider extends React.PureComponent<ISliderProps, any> {
+export class Slider extends React.PureComponent<ISliderProps, any> {
   static defaultProps = {
     loop: false,
     start: 0,
@@ -95,7 +95,7 @@ export default class Slider extends React.PureComponent<ISliderProps, any> {
     let cls = reverse ? 'wSliderReverse ' + direction + 'Reverse' : 'wSliderNormal ' + direction
 
     return (
-      <AlloyFinger onSwipe={this.onSwipe}>
+      <Finger onSwipe={this.onSwipe}>
         <div ref={s => this.slider = s} style={style} className={className}>
           {total === 0 ? null : (
             <TransitionGroup component='div' className={classSet('wSlider', cls)} onTouchStart={this.onTouchStart}>
@@ -103,7 +103,7 @@ export default class Slider extends React.PureComponent<ISliderProps, any> {
             </TransitionGroup>
           )}
         </div>
-      </AlloyFinger>
+      </Finger>
     )
   }
 

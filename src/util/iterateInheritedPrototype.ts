@@ -1,4 +1,4 @@
-import getPrototypeOf from './getPrototypeOf'
+import {getPrototypeOf} from './getPrototypeOf'
 
 /**
  * 遍历继承关系类的 prototype
@@ -15,7 +15,7 @@ import getPrototypeOf from './getPrototypeOf'
  * 在 C 中调用： iterateInheritedPrototype(fn, A, C, true)
  * 则，fn 会被调用三次，分别是 fn(A.prototype) fn(B.prototype) fn(C.prototype)
  */
-export default function(callback: (proto: Object) => boolean | void, fromCtor, toCtor, includeToCtor = true) {
+export function iterateInheritedPrototype(callback: (proto: Object) => boolean | void, fromCtor, toCtor, includeToCtor = true) {
   let proto = fromCtor.prototype || fromCtor
   let toProto = toCtor.prototype || toCtor
 

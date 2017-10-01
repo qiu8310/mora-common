@@ -1,4 +1,4 @@
-export default function(fn: (e) => void): void {
+export function onload(fn: (e) => void): void {
   let done
   let cb = (e) => {
     if (!done) {

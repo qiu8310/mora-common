@@ -1,4 +1,5 @@
 @import "../mixin/index";
+@import "../animate/index";
 
 .gEllipsis { @include ellipsis; }
 .gPullLeft { float: left; }
@@ -7,6 +8,8 @@
 .gNoSelect { @include noSelect; }
 .gTextCenter { @include textCenter; }
 .gOverlay { @include overlay; }
+.gClickThrough { pointer-events: none; }
+.gClickable    { pointer-events: all;  }
 
 .gLineClamp {
   display: -webkit-box;
@@ -23,6 +26,7 @@
 .gRespHeight { min-height: 100%; } // responsive height
 .gRespWidth { min-width: 100%; }   // responsive width
 
+.gCenter { @include center; }
 .gHCenter { @include hCenter; }
 .gVCenter { @include vCenter; }
 .gHVCenter { @include hvCenter; }

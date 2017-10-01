@@ -1,9 +1,9 @@
 import * as React from 'react'
 import * as assign from 'mora-scripts/libs/lang/assign'
-import classSet from '../util/classSet'
+import {classSet} from '../util/classSet'
 import {appendQuery} from '../util/url'
-import viewport from '../dom/viewport'
-import loadImage from '../dom/loadImage'
+import {viewport} from '../dom/viewport'
+import {loadImage} from '../dom/loadImage'
 import {WhiteDotImage, BlackDotImage} from '../util/DotImages'
 
 // import './styles/Image.scss'
@@ -16,6 +16,10 @@ export type IImageRatio = (devicePixelRatio: number) => string
 export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElement> {
   enableIntersectionObserver?: boolean
   src: string
+  /** 是否需要圆角，或指定圆角的大小 */
+  rounded?: string | number | boolean
+  /** 指定正方形的边长，类似于同时指定了 width 和 height */
+  square?: string | number
 
   /** 启用 lazyload */
   lazyload?: boolean
@@ -44,7 +48,7 @@ export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElemen
   component?: React.ComponentClass<any> | string
 }
 
-export default class extends React.PureComponent<IImage, any> {
+export class Image extends React.PureComponent<IImage, any> {
   static defaultProps = {
     lazyload: true,
     fade: true,
@@ -151,7 +155,7 @@ export default class extends React.PureComponent<IImage, any> {
       error, errorClass, successClass, loadingClass,
       container, noCacheContainer,
       ratio, bg, component,
-      style = {}, className, width, height, ...props
+      style = {}, className, square, width, height, rounded, ...props
     } = this.props
 
     component = !bg ? 'img' : component
@@ -160,8 +164,14 @@ export default class extends React.PureComponent<IImage, any> {
     className = classSet('wImage', className)
     let ref = (el: any) => this.el = el
 
-    if (width) style.width = width
-    if (height) style.height = height
+    // 有可能指定为 0
+    if (square != null) {
+      width = width == null ? square : width
+      height = height == null ? square : height
+    }
+    if (width != null) style.width = width
+    if (height != null) style.height = height
+    if (rounded) style.borderRadius = rounded === true ? '50%' : rounded
 
     if (bg) {
       style.backgroundImage = `url(${src})`

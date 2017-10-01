@@ -1,7 +1,7 @@
 import * as withSideEffect from 'react-side-effect'
 import * as React from 'react'
 
-export default class SideEffect<P, S> extends React.PureComponent<P, S> {
+export class SideEffect<P, S> extends React.PureComponent<P, S> {
   render() {
     let {children} = this.props
     return children ? React.Children.only(children) : null

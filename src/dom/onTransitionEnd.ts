@@ -17,7 +17,7 @@ if (w.onanimationend === undefined && w.onwebkitanimationend !== undefined) {
   animationEndEvent = 'webkitAnimationEnd'
 }
 
-export default function onTransitionEnd(el: Element, callback: () => {}, expectAnimType?: ANIM_TYPE) {
+export function onTransitionEnd(el: Element, callback: () => {}, expectAnimType?: ANIM_TYPE) {
   const {type, timeout, propCount} = getTransitionInfo(el, expectAnimType)
   if (!type) return callback()
   let event = type === TRANSITION ? transitionEndEvent : animationEndEvent
@@ -39,7 +39,7 @@ export default function onTransitionEnd(el: Element, callback: () => {}, expectA
   el.addEventListener(event, onEnd)
 }
 
-export {transitionProp, animationProp, transitionEndEvent, animationEndEvent, onTransitionEnd}
+export {transitionProp, animationProp, transitionEndEvent, animationEndEvent}
 
 export function getTransitionInfo(el: Element, expectAnimType?: ANIM_TYPE) {
   const styles = window.getComputedStyle(el)

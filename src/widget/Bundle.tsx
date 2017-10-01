@@ -2,11 +2,13 @@
 import * as React from 'react'
 
 export interface IBundleProps {
+  loading?: JSX.Element
+  modKey?: string
   load: (callback: (mod: any) => void) => void
   children: (mod: any) => false | React.ReactElement<any>
 }
 
-export default class Bundle extends React.PureComponent<IBundleProps, any> {
+export class Bundle extends React.PureComponent<IBundleProps, any> {
   state = {mod: null}
 
   componentWillMount() {
@@ -23,11 +25,13 @@ export default class Bundle extends React.PureComponent<IBundleProps, any> {
     if (this.state.mod !== null) this.setState({mod: null})
     props.load((mod) => {
       // handle both es imports and cjs
-      this.setState({mod: mod.default ? mod.default : mod})
+      let modKey = props.modKey || 'default'
+      this.setState({mod: mod[modKey] ? mod[modKey] : mod})
     })
   }
 
   render() {
-    return this.props.children(this.state.mod)
+    let {props: {children, loading}, state: {mod}} = this
+    return mod ? children(mod) : (loading || null)
   }
 }

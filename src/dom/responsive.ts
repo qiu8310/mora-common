@@ -1,5 +1,6 @@
 import '../polyfill/responsive.declare'
 import * as assign from 'mora-scripts/libs/lang/assign'
+import {throttle} from '../util/delay'
 
 export interface IResponsiveOptions {
   screenRemSize?: number
@@ -8,7 +9,7 @@ export interface IResponsiveOptions {
   designWidth?: number
 }
 
-export default function(options: IResponsiveOptions = {}) {
+export function responsive(options: IResponsiveOptions = {}) {
   let {screenRemSize = 10, minWidth = 320, designWidth = 375, maxWidth = 540} = options
   //
   //  注意： 直接下面的 meta 就不用 rem 单位了，但有表单时会导致屏幕放大
@@ -20,25 +21,21 @@ export default function(options: IResponsiveOptions = {}) {
   let SCREEN_REM_SIZE = screenRemSize
   let MIN_WIDTH = minWidth
   let MAX_WIDTH = maxWidth
+  let dpr = window.devicePixelRatio || 1
+  let hairlines = false
 
   if (SCREEN_REM_SIZE * 12 > MIN_WIDTH) console.warn(`root 字体在 ${MIN_WIDTH} 下会小于 12px`)
 
-  let tid
-  let docWidth
-  let rootFontSize
   let baseRootFontSize = designWidth / screenRemSize
   let docEl = document.documentElement
 
   function refresh() {
-    docWidth = docEl.getBoundingClientRect().width
-    rootFontSize = between(docWidth, MIN_WIDTH, MAX_WIDTH) / SCREEN_REM_SIZE
+    let rootFontSize = between(docEl.clientWidth, MIN_WIDTH, MAX_WIDTH) / SCREEN_REM_SIZE
     docEl.style.fontSize = rootFontSize + 'px'
   }
 
   function px2rem(px) {
-    // px / docWidth = rem / SCREEN_REM_SIZE
     return px / baseRootFontSize
-    // return px * SCREEN_REM_SIZE / docWidth
   }
 
   function rem2px(rem) {
@@ -61,15 +58,28 @@ export default function(options: IResponsiveOptions = {}) {
     return Math.max(minSize, Math.min(maxSize, size))
   }
 
-  function throttleRefresh() {
-    clearTimeout(tid)
-    tid = setTimeout(refresh, 300)
-  }
-  window.addEventListener('resize', throttleRefresh, false)
-  window.addEventListener('pageshow', function(e) { if (e.persisted) throttleRefresh() }, false)
-  refresh()
-  document.addEventListener('DOMContentLoaded', refresh, false)
+  // function throttleRefresh() {
+  //   clearTimeout(tid)
+  //   tid = setTimeout(refresh, 300)
+  // }
+  let throttleRefresh = throttle(refresh, 300)
+  window.addEventListener('resize', throttleRefresh)
+  window.addEventListener('pageshow', function(e) { if (e.persisted) throttleRefresh() })
 
-  assign(window, {px2rem, p2r, rem2px, responsive: refresh})
-  // return {px2rem, rem2px, refresh}
+  if (document.body) refresh()
+  else document.addEventListener('DOMContentLoaded', refresh)
+
+  // detect 0.5px supports
+  if (dpr >= 2) {
+    let fakeBody = document.createElement('body')
+    let testElement = document.createElement('div')
+    testElement.style.border = '.5px solid transparent'
+    fakeBody.appendChild(testElement)
+    docEl.appendChild(fakeBody)
+    if (testElement.offsetHeight === 1) docEl.classList.add('hairlines')
+    docEl.removeChild(fakeBody)
+  }
+
+  assign(window, {px2rem, p2r, rem2px, responsive: refresh, meta: {dpr, hairlines}})
+  // return {px2rem, p2r, rem2px, responsive: refresh}
 }

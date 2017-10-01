@@ -1,11 +1,3 @@
-/**
- * @module      libs/lang/formatDate
- * @createdAt   2016-07-14
- *
- * @copyright   Copyright (c) 2016 Zhonglei Qiu
- * @license     Licensed under the MIT license.
- */
-
 let MONTHS = [
   ['Jan', 'January'],
   ['Feb', 'February'],
@@ -65,10 +57,10 @@ let gre = /(?:yyyy|yy|mm|m|MM|M|dd|d|DD|Do|D|HH|H|hh|h|A|a|ii|i|ss|s|X|x)/g
  * formatDate(new Date(), 'h:ii A')
  * // 8:30 AM
  */
-function formatDate(format: string): string
-function formatDate(data: Date, format: string): string
+export function formatDate(format: string): string
+export function formatDate(data: Date, format: string): string
 
-function formatDate(date, format?: string): string {
+export function formatDate(date, format?: string): string {
   if (!format) {
     format = date
     date = new Date()
@@ -132,5 +124,3 @@ function order(day) {
 
   return prefix + suffix
 }
-
-export default formatDate

@@ -1,12 +1,12 @@
-import warn from './warn'
+import {warn} from './warn'
 
 const DEFAULT_MSG = 'This function will be removed in future versions.'
 
 /**
  * @param {string} [msg] 提醒，可以不设置，有默认值
  */
-function deprecated(msg?: string): any
-function deprecated(target?: any, key?: string, descriptor?: PropertyDescriptor, msg = DEFAULT_MSG): any {
+export function deprecated(msg?: string): any
+export function deprecated(target?: any, key?: string, descriptor?: PropertyDescriptor, msg = DEFAULT_MSG): any {
   if (!target || typeof target === 'string') {
     return function(...args) {
       return deprecated.apply(null, args.concat(target || DEFAULT_MSG))
@@ -25,5 +25,3 @@ function deprecated(target?: any, key?: string, descriptor?: PropertyDescriptor,
     }
   }
 }
-
-export default deprecated

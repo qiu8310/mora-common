@@ -11,7 +11,7 @@ export interface ILocationOptions {
 }
 
 let cache: any = {}
-export default function getLocation(options: ILocationOptions): ILocation {
+export function getLocation(options: ILocationOptions): ILocation {
   let {pathname, search, hash} = window.location
   let {l, p, s, h} = cache
   if (l && p === pathname && s === search && h === hash) return l
@@ -44,4 +44,3 @@ function _getLocation(options: ILocationOptions): ILocation {
     hash
   }
 }
-

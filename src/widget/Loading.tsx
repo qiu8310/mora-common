@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-export default function(props) {
+export function Loading(props) {
   return <svg className='wLoading' width='38' height='38' viewBox='0 0 38 38' stroke='#fff' {...props}>
     <g fill='none' fillRule='evenodd'>
       <g transform='translate(1 1)' strokeWidth='2'>

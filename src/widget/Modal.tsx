@@ -1,60 +1,69 @@
+/* tslint:disable:member-ordering */
+// 可以参考  https://github.com/tajo/react-portal 项目
 import * as React from 'react'
-import Transition from './Transition'
-import {removeComponent, renderComponent as rc, getDefaultContainer} from './Render'
+import {removeComponent, renderComponent, getDefaultContainer} from '../widget/Render'
+import {ModalDOM, IModalDOMPropsWithoutEvents} from './ModalDOM'
 
-import './style/Modal.scss'
-
-export interface IModalProps {
-  itemKey?: string | number
-  className?: string
-  animate?: string
-  width?: string | number
-  minWidth?: string | number
-  maxWidth?: string | number
-  height?: string | number
-  minHeight?: string | number
-  maxHeight?: string | number
+export interface IModalDialogProps extends IModalDOMPropsWithoutEvents {
+  /** 启用了 nowrap 之后 children 不能是字符串，需要是 JSX.Element */
+  nowrap?: boolean
+  container?: Element
+  closeOnPressESC?: boolean
+  closeOnClickMask?: boolean
+  closeOnClickOutside?: boolean // 无 mask 或 maskClickThrough 时候的时候此字段有用
+}
+export interface IModalProps extends IModalDialogProps {
+  /** 如果使用了 closeOnPressESC， closeOnClickMask 或 closeOnClickOutside，就需要设置此属性 */
   closeModal?: () => void
-  children?: React.ReactNode
 }
 
-export default class Modal extends React.PureComponent<IModalProps, any> {
-  static defaultProps = {
-    animate: 'zoomIn',
-    minWidth: 200,
-    maxWidth: '90%',
-    minHeight: 100,
-    maxHeight: '90%'
-  }
+const emptyFn = () => {}
 
-  static dialog(props: IModalProps, component): {destroy: () => void} {
-    let container = getDefaultContainer()
+/*
+  需要这样使用
+
+  this.state.isModalVisiable
+    ? <Modal closeOnClickMask closeModal={() => this.setState({isModalVisiable: false})}>...</Modal>
+    : null
+
+ */
+export class Modal extends React.PureComponent<IModalProps, any> {
+  static dialog(props: IModalDialogProps, component: JSX.Element, instance?: JSX.ElementClass): {destroy: () => void} {
+    let container = props.container || getDefaultContainer()
     let closeModal = () => removeComponent(container)
-    props.closeModal = closeModal
-    props.children = React.cloneElement(component)
-    renderComponent(props, container)
+    rc({...props, closeModal, children: React.cloneElement(component)}, container, instance)
     return {destroy: closeModal}
   }
 
-  container = null
+  static render(context: React.Component<any, any>, stateKey: string, Component: React.ComponentClass<any>, props: IModalDialogProps) {
+    let closeModal = () => context.setState({[stateKey]: false})
+    return context.state[stateKey]
+      ? <Modal {...props} closeModal={closeModal}>
+          <Component data={context.state[stateKey]} closeModal={closeModal} />
+        </Modal>
+      : null
+  }
 
-  renderComponent() {
-    if (!this.container) this.container = getDefaultContainer()
-    renderComponent(this.props, this.container, this)
+  static defaultProps = {
+    closeModal: emptyFn
   }
-  removeComponent() {
-    removeComponent(this.container)
+
+  container = this.props.container || getDefaultContainer()
+
+  renderModal() {
+    rc(this.props, this.container, this)
   }
+
   componentDidMount() {
-    this.renderComponent()
+    this.renderModal()
   }
 
   componentDidUpdate() {
-    this.renderComponent()
+    this.renderModal()
   }
 
   componentWillUnmount() {
-    this.removeComponent()
+    removeComponent(this.container)
   }
 
   render() {
@@ -62,26 +71,30 @@ export default class Modal extends React.PureComponent<IModalProps, any> {
   }
 }
 
-function renderComponent(props, container?: Element, context?: React.Component<any, any>) {
-  let {
-    className = '', closeModal, children, animate, itemKey,
-    width, height, minWidth, maxWidth, minHeight, maxHeight
+function rc(props: IModalProps, container, instance) {
+  const {
+    closeOnPressESC, closeOnClickMask, closeOnClickOutside, closeModal, nowrap,
+    /* 这个 container 已经无用了 */ container: _, ...rest
   } = props
 
-  let style = {width, minWidth, maxWidth, height, minHeight, maxHeight}
+  let child
+  if (nowrap) {
+    child = props.children
+    if (!child.type) child = <div>{child}</div> // ReactNode 还包括 string 和 boolean
+  }
 
-  let el = (
-    <div className={'wModal ' + className} role='dialog'>
-      <div className='modalMask' onClick={closeModal} />
-      <Transition itemKey={itemKey} name={animate} leave={false} appear={true} className='modalTransition' style={{pointerEvents: 'none'}}>
-        <div className='modalWrap gHVCenterChildren'>
-          <div style={style} className='modalContent'>
-            {children}
-          </div>
-        </div>
-      </Transition>
-    </div>
+  renderComponent(
+    nowrap
+      ? child
+      : (
+        <ModalDOM {...rest}
+          onPressESC={closeOnPressESC ? closeModal : emptyFn}
+          onClickMask={closeOnClickMask ? closeModal : emptyFn}
+          onClickOutside={closeOnClickOutside ? closeModal : emptyFn}
+        />
+      )
+    ,
+    container,
+    instance
   )
-
-  return rc(el, container, context)
 }

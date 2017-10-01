@@ -1,5 +1,5 @@
 import * as React from 'react'
-import {default as classSet, IClassSetArg} from '../util/classSet'
+import {classSet, IClassSetArg} from '../util/classSet'
 import {BodyClassName, DocumentTitle} from './SideEffect'
 
 export interface IPageProps extends React.HTMLProps<HTMLDivElement> {
@@ -8,7 +8,7 @@ export interface IPageProps extends React.HTMLProps<HTMLDivElement> {
   className?: IClassSetArg
 }
 
-export default class Page extends React.PureComponent<IPageProps, any> {
+export class Page extends React.PureComponent<IPageProps, any> {
   render() {
     let {name, title, className, children, ...props} = this.props as any
 

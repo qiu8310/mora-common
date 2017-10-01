@@ -3,7 +3,7 @@ export interface ILoadImageOptions {
   error?: (e: Event) => void
 }
 
-export default function loadImage(src: string, options: ILoadImageOptions) {
+export function loadImage(src: string, options: ILoadImageOptions) {
   let img = new Image()
   let successHandler = (e: Event) => {
     if (options.success) options.success(e)

@@ -1,0 +1,18 @@
+@keyframes zoomIn {
+  from { opacity: 0; transform: scale3d(.3, .3, .3); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+}
+@keyframes fadeInDown {
+  from { transform: translate3d(0, -150px, 0); opacity: .3; }
+}
+@keyframes fadeInUp {
+  from { transform: translate3d(0, 150px, 0); opacity: .3; }
+}
+@keyframes fadeInLeft {
+  from { transform: translate3d(-150px, 0, 0); opacity: .3; }
+}
+@keyframes fadeInRight {
+  from { transform: translate3d(150px, 0, 0); opacity: .3; }
+}

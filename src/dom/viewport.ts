@@ -1,5 +1,5 @@
-import onview from './onview'
-import once from '../util/once'
+import {onview} from './onview'
+import {once} from '../util/once'
 
 let viewport = {
   width: 0,
@@ -80,7 +80,7 @@ function setViewport() {
 setViewport()
 window.addEventListener('resize', setViewport)
 
-export default viewport
+export {viewport}
 
 export interface IViewportListenOptions {
   throttle?: number

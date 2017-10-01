@@ -1,4 +1,4 @@
-import iterateInheritedPrototype from '../iterateInheritedPrototype'
+import {iterateInheritedPrototype} from '../iterateInheritedPrototype'
 
 test('no extends', () => {
   class A {}

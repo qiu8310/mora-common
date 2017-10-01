@@ -1,7 +1,7 @@
-import stripComment from '../stripJsComment'
+import {stripJsComment} from '../stripJsComment'
 
 test('strip single line comment', () => {
-  expect(stripComment(`
+  expect(stripJsComment(`
 foo
 // comment
 bar
@@ -12,7 +12,7 @@ bar
 })
 
 test('strip multiple line comment', () => {
-  expect(stripComment(`
+  expect(stripJsComment(`
 abc
 /*
 foo bar
@@ -22,7 +22,7 @@ asfas ads
 abc
   `)
 
-  expect(stripComment(`
+  expect(stripJsComment(`
 abc
 /* foo bar */ dd
   `)).toBe(`

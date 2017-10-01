@@ -1,4 +1,4 @@
-export default function rAF(fn: () => boolean | void): () => void {
+export function rAF(fn: () => boolean | void): () => void {
   let w: any = window
   let canceled
 

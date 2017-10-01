@@ -1,5 +1,5 @@
 import * as React from 'react'
-import classSet from '../util/classSet'
+import {classSet} from '../util/classSet'
 
 import './style/Fixed.scss'
 
@@ -12,7 +12,7 @@ export interface IFixedProps {
   style?: React.CSSProperties
 }
 
-export default class Fixed extends React.PureComponent<IFixedProps, any> {
+export class Fixed extends React.PureComponent<IFixedProps, any> {
   static defaultProps = {
     direction: 'bottom',
     zIndex: 100,

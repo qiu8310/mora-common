@@ -1,8 +1,8 @@
-import loadScript from '../../dom/loadScript'
+import {loadScript} from '../../dom/loadScript'
 
 const fastclick = '//g.alicdn.com/mtb/??fastclick/1.0.6/fastclick.js'
 
-export default function(options = {fastclick}) {
+export function bootstrap(options = {fastclick}) {
   if (!/(android|iphone|ipad|ipod)/i.test(navigator.userAgent)) return
   setTimeout(() => {
     loadScript(

@@ -1,4 +1,4 @@
-import warn from '../util/warn'
+import {warn} from '../util/warn'
 
 export interface ICustomStorageOptions {
   id?: string
@@ -16,7 +16,7 @@ const DEFAULT_OPTIONS: ICustomStorageOptions = {
 
 let globalCache: {[key: string]: any} = {}
 
-export default class CustomStorage {
+export class CustomStorage {
   public id: string
   public memory: boolean
   private options: ICustomStorageOptions

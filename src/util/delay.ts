@@ -52,8 +52,18 @@ export function throttle(fn: (...args) => void, wait: number): (...args) => void
   }
 }
 
-export function async(fn: (...args) => void, wait = 0) {
+export function async(fn: (...args) => void, wait = 0): (...args) => void {
   return (...args) => {
     setTimeout(() => fn(...args), wait)
   }
+}
+
+/**
+ * 如果 wait > 0，才会异步执行 fn，否则同步执行 fn
+ *
+ * 上面的返回的都是函数，此方法是直接执行函数
+ */
+export function delay(fn: () => void, wait = 0): void {
+  if (wait && wait > 0) setTimeout(fn, wait)
+  else fn()
 }

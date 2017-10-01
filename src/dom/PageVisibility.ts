@@ -71,7 +71,7 @@ function listener(e) {
 
 function noop() {}
 
-export default {
+export const PageVisibility = {
   /**
    * event 对象
    */
@@ -103,7 +103,7 @@ export default {
 
   /**
    * 监听 page 状态变化
-   * @param {IState | IState[]} states - 状态名称，如果有多个要用空格隔开，支持：visible/hidden/prerender/unloaded
+   * @param {IState | IState[]} states - 状态名称，可以是数组，支持：visible/hidden/prerender/unloaded
    * @param {Function} handler - 回调函数
    * @returns {IEventOffHandler} - off bind
    */
@@ -115,7 +115,7 @@ export default {
 
   /**
    * 监听 page 状态变化，监听完即删除
-   * @param {IState | IState[]} states - 状态名称，如果有多个要用空格隔开，支持：visible/hidden/prerender/unloaded
+   * @param {IState | IState[]} states - 状态名称，可以是数组，支持：visible/hidden/prerender/unloaded
    * @param {Function} handler - 回调函数
    * @returns {IEventOffHandler} - off bind
    */

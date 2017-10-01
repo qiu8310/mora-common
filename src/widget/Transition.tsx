@@ -2,7 +2,7 @@
 // 作为 TransitionGroup 的 child 使用，参考 Modal widget
 
 import * as React from 'react'
-import onTransitionEnd from '../dom/onTransitionEnd'
+import {onTransitionEnd} from '../dom/onTransitionEnd'
 import {TransitionGroup} from 'react-transition-group'
 
 export interface ITransitionGroupItemProps {
@@ -16,20 +16,23 @@ export interface ITransitionGroupItemProps {
   appear?: boolean
   appearSuffix?: string
   appearActiveSuffix?: string
-  beforeAppear?: (el: HTMLSpanElement) => any
-  afterAppear?: (el: HTMLSpanElement) => any
+  beforeAppear?: (el: HTMLElement) => any
+  onAppear?: (el: HTMLElement) => any
+  afterAppear?: (el: HTMLElement) => any
 
   enter?: boolean
   enterSuffix?: string
   enterActiveSuffix?: string
-  beforeEnter?: (el: HTMLSpanElement) => any
-  afterEnter?: (el: HTMLSpanElement) => any
+  beforeEnter?: (el: HTMLElement) => any
+  onEnter?: (el: HTMLElement) => any
+  afterEnter?: (el: HTMLElement) => any
 
   leave?: boolean
   leaveSuffix?: string
   leaveActiveSuffix?: string
-  beforeLeave?: (el: HTMLSpanElement) => any
-  afterLeave?: (el: HTMLSpanElement) => any
+  beforeLeave?: (el: HTMLElement) => any
+  onLeave?: (el: HTMLElement) => any
+  afterLeave?: (el: HTMLElement) => any
 }
 
 export {TransitionGroup}
@@ -48,7 +51,7 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
     leaveActiveSuffix: 'LeaveActive'
   }
 
-  private el: HTMLSpanElement
+  private el: HTMLElement
 
   reflow() {
     /* tslint:disable */
@@ -64,13 +67,15 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
   will(type, callback) {
     this['_will_' + type] = true
     if (!this.props[type]) return callback()
-    this.call('before', type)
 
     let {el, props} = this
     let {name} = props
+
+    this.call('before', type)
     el.classList.add(name + props[type + 'Suffix'])
     setTimeout(() => {
       this.reflow()
+      this.call('on', type)
       el.classList.add(name + props[type + 'ActiveSuffix'])
       onTransitionEnd(el, callback)
     }, 16)
@@ -124,7 +129,7 @@ export interface ITransition extends ITransitionGroupItemProps {
   groupProps?: TransitionGroup.TransitionGroupProps
 }
 
-export default class Transition extends React.PureComponent<ITransition, any> {
+export class Transition extends React.PureComponent<ITransition, any> {
   static defaultProps = {
     groupProps: {
       component: 'div'
@@ -133,6 +138,8 @@ export default class Transition extends React.PureComponent<ITransition, any> {
 
   render() {
     let {itemKey: key, items, groupProps, ...rest} = this.props
+
+    if (!rest.name) return rest.children as any // 如果没有指定动画的名称，或者动画名称为 null，则没必要做动画了
 
     if (items && items.length && !rest.children) (rest as any).children = items[key]
 

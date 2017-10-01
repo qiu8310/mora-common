@@ -7,6 +7,6 @@
  * @param {string} code
  * @returns {string}
  */
-export default function(code: string): string {
+export function stripJsComment(code: string): string {
   return code.replace(/\/\*[\s\S]*?\*\/\r?\n?|\/\/.*\r?\n?/g, '')
 }

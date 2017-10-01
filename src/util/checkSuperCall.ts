@@ -1,6 +1,6 @@
 // import escapeRegExp from 'mora-scripts/libs/lang/escapeRegExp'
-import iterateInheritedPrototype from './iterateInheritedPrototype'
-import getPrototypeOf from './getPrototypeOf'
+import {iterateInheritedPrototype} from './iterateInheritedPrototype'
+import {getPrototypeOf} from './getPrototypeOf'
 
 /**
  *
@@ -23,7 +23,7 @@ import getPrototypeOf from './getPrototypeOf'
  *   }
  * }
  */
-export default function(context: any, toCtor: any, keys: string[]) {
+export function checkSuperCall(context: any, toCtor: any, keys: string[]) {
   let fromProto = getPrototypeOf(context)
   let toProto = toCtor.prototype
 

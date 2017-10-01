@@ -7,7 +7,7 @@ export interface IRender {
   children?: JSX.Element
 }
 
-export default class extends React.PureComponent<IRender, any> {
+export class Render extends React.PureComponent<IRender, any> {
   private container: Element = this.props.container || getDefaultContainer(this.props.className)
 
   componentDidMount() {
@@ -27,19 +27,16 @@ export default class extends React.PureComponent<IRender, any> {
   }
 }
 
-export function renderComponent(children: JSX.Element, container?: Element, instance?: JSX.ElementClass): () => void {
+export function renderComponent(children: JSX.Element, container?: Element, instance?: JSX.ElementClass, callback?: () => void): void | Element | React.Component<any, any> {
   container = container || getDefaultContainer()
 
   // https://reactjsnews.com/modals-in-react
   // https://github.com/react-component/util/blob/master/src/getContainerRenderMixin.jsx
   if (instance) {
     // 不同点在于它关联了 instance 组件，跟随 instance 的消失而消失
-    ReactDOM.unstable_renderSubtreeIntoContainer(instance, children, container)
+    return ReactDOM.unstable_renderSubtreeIntoContainer(instance, children, container, callback)
   } else {
-    ReactDOM.render(children, container)
-  }
-  return () => {
-    removeComponent(container)
+    return ReactDOM.render(children, container, callback)
   }
 }
 export function removeComponent(container: Element): void {

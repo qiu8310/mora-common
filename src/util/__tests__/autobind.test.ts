@@ -1,5 +1,5 @@
 /* tslint:disable:no-empty */
-import autobind from '../autobind'
+import {autobind} from '../autobind'
 
 describe('decorators', () => {
   test('class', () => {
