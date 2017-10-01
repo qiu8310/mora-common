@@ -3,7 +3,7 @@
 
 import * as React from 'react'
 import {onTransitionEnd} from '../dom/onTransitionEnd'
-import {TransitionGroup} from 'react-transition-group'
+import * as TransitionGroup from 'react-transition-group/TransitionGroup'
 
 export interface ITransitionGroupItemProps {
   name: string
@@ -53,9 +53,9 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
 
   private el: HTMLElement
 
-  reflow() {
+  reflow(el) {
     /* tslint:disable */
-    this.el.scrollTop
+    el.scrollTop
     /* tslint:enable */
   }
 
@@ -74,7 +74,7 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
     this.call('before', type)
     el.classList.add(name + props[type + 'Suffix'])
     setTimeout(() => {
-      this.reflow()
+      this.reflow(el)
       this.call('on', type)
       el.classList.add(name + props[type + 'ActiveSuffix'])
       onTransitionEnd(el, callback)

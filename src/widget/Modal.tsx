@@ -3,6 +3,7 @@
 import * as React from 'react'
 import {removeComponent, renderComponent, getDefaultContainer} from '../widget/Render'
 import {ModalDOM, IModalDOMPropsWithoutEvents} from './ModalDOM'
+import {once} from '../util/once'
 
 export interface IModalDialogProps extends IModalDOMPropsWithoutEvents {
   /** 启用了 nowrap 之后 children 不能是字符串，需要是 JSX.Element */
@@ -12,6 +13,11 @@ export interface IModalDialogProps extends IModalDOMPropsWithoutEvents {
   closeOnClickMask?: boolean
   closeOnClickOutside?: boolean // 无 mask 或 maskClickThrough 时候的时候此字段有用
 }
+
+export interface IModalDialogResult {
+  destroy: () => void
+}
+
 export interface IModalProps extends IModalDialogProps {
   /** 如果使用了 closeOnPressESC， closeOnClickMask 或 closeOnClickOutside，就需要设置此属性 */
   closeModal?: () => void
@@ -28,18 +34,18 @@ const emptyFn = () => {}
 
  */
 export class Modal extends React.PureComponent<IModalProps, any> {
-  static dialog(props: IModalDialogProps, component: JSX.Element, instance?: JSX.ElementClass): {destroy: () => void} {
+  static dialog(props: IModalDialogProps, component: JSX.Element, instance?: JSX.ElementClass): IModalDialogResult {
     let container = props.container || getDefaultContainer()
     let closeModal = () => removeComponent(container)
     rc({...props, closeModal, children: React.cloneElement(component)}, container, instance)
-    return {destroy: closeModal}
+    return {destroy: once(closeModal)}
   }
 
-  static render(context: React.Component<any, any>, stateKey: string, Component: React.ComponentClass<any>, props: IModalDialogProps) {
+  static render(context: React.Component<any, any>, stateKey: string, Component: React.ComponentClass<any>, props: React.Props<Modal> & IModalDialogProps = {}, compProps = {}) {
     let closeModal = () => context.setState({[stateKey]: false})
     return context.state[stateKey]
       ? <Modal {...props} closeModal={closeModal}>
-          <Component data={context.state[stateKey]} closeModal={closeModal} />
+          <Component data={context.state[stateKey]} {...compProps} closeModal={closeModal} />
         </Modal>
       : null
   }
