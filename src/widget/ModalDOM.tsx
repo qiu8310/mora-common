@@ -3,7 +3,7 @@ import {Transition} from '../widget/Transition'
 import {classSet} from '../util/classSet'
 import {OutsideClickable} from '../component/implements/OutsideClickable'
 import {KeyboardEvents} from '../component/implements/KeyboardEvents'
-import {animationProp} from '../dom/onTransitionEnd'
+import {assignStyle} from '../dom/style'
 
 import './style/ModalDOM.scss'
 
@@ -86,20 +86,17 @@ export class ModalDOM extends React.PureComponent<IModalDOMProps, any> implement
   }
 
   get animateContent() {
-    const {animation, animationDuration, itemKey} = this.props
+    const {animation: animationName, animationDuration, itemKey} = this.props
     const {content} = this
-    if (!animation) return content
+    if (!animationName) return content
     return (
       <Transition
-        className='modalTransition gOverlay'
+        className='gOverlay gInEffect'
         itemKey={itemKey}
-        name={animation}
+        name={animationName}
         leave={false}
         appear={true}
-        beforeAppear={el => assignStyle(el, {
-          [animationProp + 'Name']: animation,
-          [animationProp + 'Duration']: animationDuration
-        })}
+        beforeAppear={el => assignStyle(el, {animationName, animationDuration})}
       >
         {content}
       </Transition>
@@ -115,11 +112,5 @@ export class ModalDOM extends React.PureComponent<IModalDOMProps, any> implement
         {animateContent}
       </div>
     )
-  }
-}
-
-function assignStyle(el: HTMLElement, style: React.CSSProperties) {
-  if (el && style) {
-    Object.keys(style).forEach(k => el.style[k] = style[k])
   }
 }

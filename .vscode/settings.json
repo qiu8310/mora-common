@@ -2,6 +2,11 @@
 {
   "jest.autoEnable": false,
 
+  "mora-vscode.globalStyleFiles": [
+    "${root}/src/style/base/common.scss"
+  ],
+  "mora-vscode.styleFileFolder": "style",
+
   "files.exclude": {
     "coverage": true,
 

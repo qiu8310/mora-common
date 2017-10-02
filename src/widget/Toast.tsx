@@ -18,7 +18,7 @@ export interface IToastResult {
 }
 
 export function toast(message: string | React.ReactNode, options: IToastOptions = {}): IToastResult {
-  let {html, simpleHTML, instance, duration = 2500, animation = 'fadeIn', animationDuration} = options
+  let {html, simpleHTML, instance, duration = 2000, animation = 'fadeIn', animationDuration} = options
 
 
   let el = typeof message !== 'string'

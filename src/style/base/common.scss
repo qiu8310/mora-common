@@ -43,3 +43,9 @@
 @for $i from 1 through 4 {
   .gFlex#{$i} { flex: $i; }
 }
+
+// 进入类的动画可以加上此 timing-function
+.gInEffect {
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(0, 0, .25, 1);
+}

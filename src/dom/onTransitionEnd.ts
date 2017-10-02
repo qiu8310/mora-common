@@ -1,23 +1,11 @@
-export declare type ANIM_TYPE = 'transition' | 'animation'
-const TRANSITION: ANIM_TYPE = 'transition'
-const ANIMATION: ANIM_TYPE = 'animation'
+import {transitionProp, animationProp, transitionEndEvent, animationEndEvent} from './style'
 
-let transitionProp = 'transition'
-let transitionEndEvent = 'transitionend'
-let animationProp = 'animation'
-let animationEndEvent = 'animationend'
+export declare type IAnimateType = 'transition' | 'animation'
+const TRANSITION: IAnimateType = 'transition'
+const ANIMATION: IAnimateType = 'animation'
 
-let w: any = window
-if (w.ontransitionend === undefined && w.onwebkittransitionend !== undefined) {
-  transitionProp = 'WebkitTransition'
-  transitionEndEvent = 'webkitTransitionEnd'
-}
-if (w.onanimationend === undefined && w.onwebkitanimationend !== undefined) {
-  animationProp = 'WebkitAnimation'
-  animationEndEvent = 'webkitAnimationEnd'
-}
 
-export function onTransitionEnd(el: Element, callback: () => {}, expectAnimType?: ANIM_TYPE) {
+export function onTransitionEnd(el: Element, callback: () => {}, expectAnimType?: IAnimateType) {
   const {type, timeout, propCount} = getTransitionInfo(el, expectAnimType)
   if (!type) return callback()
   let event = type === TRANSITION ? transitionEndEvent : animationEndEvent
@@ -39,9 +27,7 @@ export function onTransitionEnd(el: Element, callback: () => {}, expectAnimType?
   el.addEventListener(event, onEnd)
 }
 
-export {transitionProp, animationProp, transitionEndEvent, animationEndEvent}
-
-export function getTransitionInfo(el: Element, expectAnimType?: ANIM_TYPE) {
+export function getTransitionInfo(el: Element, expectAnimType?: IAnimateType) {
   const styles = window.getComputedStyle(el)
   const transitionDelays: string[] = styles[transitionProp + 'Delay'].split(', ')
   const transitionDurations: string[] = styles[transitionProp + 'Duration'].split(', ')
@@ -51,7 +37,7 @@ export function getTransitionInfo(el: Element, expectAnimType?: ANIM_TYPE) {
   const animationDurations: string[] = styles[animationProp + 'Duration'].split(', ')
   const animationTimeout: number = getTimeout(animationDelays, animationDurations)
 
-  let type: ANIM_TYPE
+  let type: IAnimateType
   let timeout = 0
   let propCount = 0
 
