@@ -1,6 +1,6 @@
 {
   "name": "mora-common",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "scripts": {
     "build": "./script.ts clean && ./script.ts exports && tsc && ./script.ts cpStyle",
