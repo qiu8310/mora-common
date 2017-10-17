@@ -5,7 +5,7 @@
   "mora-vscode.globalStyleFiles": [
     "${root}/src/style/base/common.scss"
   ],
-  "mora-vscode.styleFileFolder": "style",
+  "dot-template.importStyleTemplate": "import './style/$rawModuleName.scss'",
 
   "files.exclude": {
     "coverage": true,

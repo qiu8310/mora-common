@@ -2,9 +2,9 @@
 # yarn lockfile v1
 
 
-"@types/chokidar@1.7.1":
-  version "1.7.1"
-  resolved "http://registry.npm.taobao.org/@types/chokidar/download/@types/chokidar-1.7.1.tgz#f958c073fab94c2a9c67cca11ccdb80fd5c1b488"
+"@types/chokidar@~1.7.1":
+  version "1.7.3"
+  resolved "http://registry.npm.taobao.org/@types/chokidar/download/@types/chokidar-1.7.3.tgz#ca87a53aa596c01eb93237ab4055edf71dcb9ca6"
   dependencies:
     "@types/node" "*"
 
@@ -12,9 +12,9 @@
   version "0.10.32"
   resolved "http://registry.npm.taobao.org/@types/core-decorators/download/@types/core-decorators-0.10.32.tgz#3cb635da99980176832ec420875f7efce1822b5e"
 
-"@types/fs-extra@3.0.3":
-  version "3.0.3"
-  resolved "http://registry.npm.taobao.org/@types/fs-extra/download/@types/fs-extra-3.0.3.tgz#1d66eb670ebf657e57c0fda014df340c19d8aa0c"
+"@types/fs-extra@~4.0.0":
+  version "4.0.2"
+  resolved "http://registry.npm.taobao.org/@types/fs-extra/download/@types/fs-extra-4.0.2.tgz#7b9b1bbf85962cbe029b5a83c9b530d7c75af3ba"
   dependencies:
     "@types/node" "*"
 
@@ -23,21 +23,22 @@
   resolved "http://registry.npm.taobao.org/@types/history/download/@types/history-4.6.0.tgz#093d67ed780d889c9543f6dca24ebee0b6b9fc45"
 
 "@types/jest@^21.1.1":
-  version "21.1.1"
-  resolved "http://registry.npm.taobao.org/@types/jest/download/@types/jest-21.1.1.tgz#70008ecce439774a45c7d0b543d879ec58a1b332"
+  version "21.1.2"
+  resolved "http://registry.npm.taobao.org/@types/jest/download/@types/jest-21.1.2.tgz#05ebfa64817b626694ced56745a7949281981048"
 
-"@types/node@*", "@types/node@7.0.31":
-  version "7.0.31"
-  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-7.0.31.tgz#80ea4d175599b2a00149c29a10a4eb2dff592e86"
+"@types/node@*", "@types/node@~7.0.31":
+  version "7.0.43"
+  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-7.0.43.tgz#a187e08495a075f200ca946079c914e1a5fe962c"
 
 "@types/node@^6.0.46":
-  version "6.0.88"
-  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-6.0.88.tgz#f618f11a944f6a18d92b5c472028728a3e3d4b66"
+  version "6.0.89"
+  resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-6.0.89.tgz#154be0e6a823760cd6083aa8c48f952e2e63e0b0"
 
-"@types/react-dom@~15.5.5":
-  version "15.5.5"
-  resolved "http://registry.npm.taobao.org/@types/react-dom/download/@types/react-dom-15.5.5.tgz#6b117c7697b61fe74132bfe5c72bceb3319433b8"
+"@types/react-dom@~16.0.0":
+  version "16.0.1"
+  resolved "http://registry.npm.taobao.org/@types/react-dom/download/@types/react-dom-16.0.1.tgz#de159d00dd70050000f462e8bcff0c08ef803dee"
   dependencies:
+    "@types/node" "*"
     "@types/react" "*"
 
 "@types/react-router-dom@~4.0.8":
@@ -55,15 +56,15 @@
     "@types/history" "*"
     "@types/react" "*"
 
-"@types/react-transition-group@1.1.0":
-  version "1.1.0"
-  resolved "http://registry.npm.taobao.org/@types/react-transition-group/download/@types/react-transition-group-1.1.0.tgz#19ec4bfa1cb1809ecbc4599d0c38d2e9ffb19bfe"
+"@types/react-transition-group@~1.1.0":
+  version "1.1.2"
+  resolved "http://registry.npm.taobao.org/@types/react-transition-group/download/@types/react-transition-group-1.1.2.tgz#a349e70788a6dc723a5f439217011ef926c27b4f"
   dependencies:
     "@types/react" "*"
 
-"@types/react@*", "@types/react@~16.0.7":
-  version "16.0.7"
-  resolved "http://registry.npm.taobao.org/@types/react/download/@types/react-16.0.7.tgz#f85b6c33c988a1631e2f32fedae71ec6d9718a0d"
+"@types/react@*", "@types/react@~16.0.0":
+  version "16.0.10"
+  resolved "http://registry.npm.taobao.org/@types/react/download/@types/react-16.0.10.tgz#a24b630f5f1f170866a148a147d4fc8636ea88e0"
 
 abab@^1.0.3:
   version "1.0.4"
@@ -117,7 +118,7 @@ align-text@^0.1.1, align-text@^0.1.3:
     longest "^1.0.1"
     repeat-string "^1.5.2"
 
-alloyfinger@0.1.10:
+alloyfinger@~0.1.10:
   version "0.1.10"
   resolved "http://registry.npm.taobao.org/alloyfinger/download/alloyfinger-0.1.10.tgz#830b4b73a05676ed80c65f0ff525bfb344e69e73"
 
@@ -346,7 +347,7 @@ babel-plugin-transform-strict-mode@^6.24.1:
     babel-runtime "^6.22.0"
     babel-types "^6.24.1"
 
-babel-preset-jest@^21.0.0, babel-preset-jest@^21.2.0:
+babel-preset-jest@^21.2.0:
   version "21.2.0"
   resolved "http://registry.npm.taobao.org/babel-preset-jest/download/babel-preset-jest-21.2.0.tgz#ff9d2bce08abd98e8a36d9a8a5189b9173b85638"
   dependencies:
@@ -523,7 +524,7 @@ chalk@^2.0.1:
     escape-string-regexp "^1.0.5"
     supports-color "^4.0.0"
 
-chokidar@1.7.0:
+chokidar@~1.7.0:
   version "1.7.0"
   resolved "http://registry.npm.taobao.org/chokidar/download/chokidar-1.7.0.tgz#798e689778151c8076b4b360e5edd28cda2bb468"
   dependencies:
@@ -693,8 +694,8 @@ detect-indent@^4.0.0:
     repeating "^2.0.0"
 
 diff@^3.2.0:
-  version "3.3.1"
-  resolved "http://registry.npm.taobao.org/diff/download/diff-3.3.1.tgz#aa8567a6eed03c531fc89d3f711cd0e5259dec75"
+  version "3.4.0"
+  resolved "http://registry.npm.taobao.org/diff/download/diff-3.4.0.tgz#b1d85507daf3964828de54b37d0d73ba67dda56c"
 
 dom-helpers@^3.2.0:
   version "3.2.1"
@@ -912,15 +913,7 @@ form-data@~2.3.1:
     combined-stream "^1.0.5"
     mime-types "^2.1.12"
 
-fs-extra@3.0.1:
-  version "3.0.1"
-  resolved "http://registry.npm.taobao.org/fs-extra/download/fs-extra-3.0.1.tgz#3794f378c58b342ea7dbbb23095109c4b3b62291"
-  dependencies:
-    graceful-fs "^4.1.2"
-    jsonfile "^3.0.0"
-    universalify "^0.1.0"
-
-fs-extra@^4.0.0:
+fs-extra@^4.0.0, fs-extra@~4.0.0:
   version "4.0.2"
   resolved "http://registry.npm.taobao.org/fs-extra/download/fs-extra-4.0.2.tgz#f91704c53d1b461f893452b0c307d9997647ab6b"
   dependencies:
@@ -1405,7 +1398,7 @@ jest-cli@^21.2.1:
     worker-farm "^1.3.1"
     yargs "^9.0.0"
 
-jest-config@^21.0.0, jest-config@^21.2.1:
+jest-config@^21.2.1:
   version "21.2.1"
   resolved "http://registry.npm.taobao.org/jest-config/download/jest-config-21.2.1.tgz#c7586c79ead0bcc1f38c401e55f964f13bf2a480"
   dependencies:
@@ -1563,7 +1556,7 @@ jest-snapshot@^21.2.1:
     natural-compare "^1.4.0"
     pretty-format "^21.2.1"
 
-jest-util@^21.0.0, jest-util@^21.2.1:
+jest-util@^21.2.1:
   version "21.2.1"
   resolved "http://registry.npm.taobao.org/jest-util/download/jest-util-21.2.1.tgz#a274b2f726b0897494d694a6c3d6a61ab819bb78"
   dependencies:
@@ -1681,12 +1674,6 @@ json-stringify-safe@~5.0.1:
 json5@^0.5.1:
   version "0.5.1"
   resolved "http://registry.npm.taobao.org/json5/download/json5-0.5.1.tgz#1eade7acc012034ad84e2396767ead9fa5495821"
-
-jsonfile@^3.0.0:
-  version "3.0.1"
-  resolved "http://registry.npm.taobao.org/jsonfile/download/jsonfile-3.0.1.tgz#a5ecc6f65f53f662c4415c7675a0331d0992ec66"
-  optionalDependencies:
-    graceful-fs "^4.1.6"
 
 jsonfile@^4.0.0:
   version "4.0.0"
@@ -1866,8 +1853,8 @@ mobx-react@~4.3.3:
     hoist-non-react-statics "^2.3.1"
 
 mobx@~3.3.0:
-  version "3.3.0"
-  resolved "http://registry.npm.taobao.org/mobx/download/mobx-3.3.0.tgz#1bc1dd7e78547065af04b49bdb7f2098cada47aa"
+  version "3.3.1"
+  resolved "http://registry.npm.taobao.org/mobx/download/mobx-3.3.1.tgz#c38fc1a287a0dda3f5d4b85efe1137fedd9dcdf0"
 
 mora-scripts@~1.6.4:
   version "1.6.8"
@@ -2193,8 +2180,8 @@ prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.6.0:
     object-assign "^4.1.1"
 
 "proxying-agent@>= 2.1":
-  version "2.1.1"
-  resolved "http://registry.npm.taobao.org/proxying-agent/download/proxying-agent-2.1.1.tgz#bdd846ae652ce490b769900d4bb2a5225463ad0a"
+  version "2.1.2"
+  resolved "http://registry.npm.taobao.org/proxying-agent/download/proxying-agent-2.1.2.tgz#bd66b5f0f967725e31c0f1b38a594c622f55fd26"
 
 prr@~0.0.0:
   version "0.0.0"
@@ -2562,11 +2549,17 @@ sntp@2.x.x:
   dependencies:
     hoek "4.x.x"
 
-source-map-support@^0.4.15, source-map-support@^0.4.4:
+source-map-support@^0.4.15:
   version "0.4.18"
   resolved "http://registry.npm.taobao.org/source-map-support/download/source-map-support-0.4.18.tgz#0286a6de8be42641338594e97ccea75f0a2c585f"
   dependencies:
     source-map "^0.5.6"
+
+source-map-support@^0.5.0:
+  version "0.5.0"
+  resolved "http://registry.npm.taobao.org/source-map-support/download/source-map-support-0.5.0.tgz#2018a7ad2bdf8faf2691e5fddab26bed5a2bacab"
+  dependencies:
+    source-map "^0.6.0"
 
 source-map@^0.4.4:
   version "0.4.4"
@@ -2577,6 +2570,10 @@ source-map@^0.4.4:
 source-map@^0.5.3, source-map@^0.5.6, source-map@~0.5.1, source-map@~0.5.6:
   version "0.5.7"
   resolved "http://registry.npm.taobao.org/source-map/download/source-map-0.5.7.tgz#8a039d2d1021d22d1ea14c80d8ea468ba2ef3fcc"
+
+source-map@^0.6.0:
+  version "0.6.1"
+  resolved "http://registry.npm.taobao.org/source-map/download/source-map-0.6.1.tgz#74722af32e9614e9c287a8d0bbde48b5e2f1a263"
 
 spdx-correct@~1.0.0:
   version "1.0.2"
@@ -2731,7 +2728,7 @@ throat@^4.0.0:
   version "4.1.0"
   resolved "http://registry.npm.taobao.org/throat/download/throat-4.1.0.tgz#89037cbc92c56ab18926e6ba4cbb200e15672a6a"
 
-tinify@1.5.0:
+tinify@~1.5.0:
   version "1.5.0"
   resolved "http://registry.npm.taobao.org/tinify/download/tinify-1.5.0.tgz#6ba2ea7e8827c845d263de3b46f4db7bad555920"
   dependencies:
@@ -2767,19 +2764,19 @@ trim-right@^1.0.1:
   resolved "http://registry.npm.taobao.org/trim-right/download/trim-right-1.0.1.tgz#cb2e1203067e0c8de1f614094b9fe45704ea6003"
 
 ts-jest@^21.0.1:
-  version "21.0.1"
-  resolved "http://registry.npm.taobao.org/ts-jest/download/ts-jest-21.0.1.tgz#825138413eb299d12d60d0ae4d5a49f76b1cfeac"
+  version "21.1.1"
+  resolved "http://registry.npm.taobao.org/ts-jest/download/ts-jest-21.1.1.tgz#a63380127e59e112a113106237f302d17c72cd48"
   dependencies:
     babel-core "^6.24.1"
     babel-plugin-istanbul "^4.1.4"
     babel-plugin-transform-es2015-modules-commonjs "^6.24.1"
-    babel-preset-jest "^21.0.0"
+    babel-preset-jest "^21.2.0"
     fs-extra "^4.0.0"
-    jest-config "^21.0.0"
-    jest-util "^21.0.0"
+    jest-config "^21.2.1"
+    jest-util "^21.2.1"
     pkg-dir "^2.0.0"
-    source-map-support "^0.4.4"
-    yargs "^8.0.1"
+    source-map-support "^0.5.0"
+    yargs "^9.0.1"
 
 tslib@^1.7.1:
   version "1.7.1"
@@ -2801,8 +2798,8 @@ tslint@^5.7.0:
     tsutils "^2.8.1"
 
 tsutils@^2.8.1:
-  version "2.10.0"
-  resolved "http://registry.npm.taobao.org/tsutils/download/tsutils-2.10.0.tgz#ae94511df2656eb06e4424056fba5c388887040c"
+  version "2.12.1"
+  resolved "http://registry.npm.taobao.org/tsutils/download/tsutils-2.12.1.tgz#f4d95ce3391c8971e46e54c4cf0edb0a21dd5b24"
   dependencies:
     tslib "^1.7.1"
 
@@ -3010,25 +3007,7 @@ yargs-parser@^7.0.0:
   dependencies:
     camelcase "^4.1.0"
 
-yargs@^8.0.1:
-  version "8.0.2"
-  resolved "http://registry.npm.taobao.org/yargs/download/yargs-8.0.2.tgz#6299a9055b1cefc969ff7e79c1d918dceb22c360"
-  dependencies:
-    camelcase "^4.1.0"
-    cliui "^3.2.0"
-    decamelize "^1.1.1"
-    get-caller-file "^1.0.1"
-    os-locale "^2.0.0"
-    read-pkg-up "^2.0.0"
-    require-directory "^2.1.1"
-    require-main-filename "^1.0.1"
-    set-blocking "^2.0.0"
-    string-width "^2.0.0"
-    which-module "^2.0.0"
-    y18n "^3.2.1"
-    yargs-parser "^7.0.0"
-
-yargs@^9.0.0:
+yargs@^9.0.0, yargs@^9.0.1:
   version "9.0.1"
   resolved "http://registry.npm.taobao.org/yargs/download/yargs-9.0.1.tgz#52acc23feecac34042078ee78c0c007f5085db4c"
   dependencies:

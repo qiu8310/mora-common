@@ -2,15 +2,17 @@
  * Create by $user at $datetime
  */
 
+//#region import
 import * as React from 'react'
 import {classSet} from '../util/classSet'
+//#endregion
 
-export interface I$ufModuleName {
+export interface I$ModuleName {
   className?: string
   style?: React.CSSProperties
 }
 
-export class $ufModuleName extends React.PureComponent<I$ufModuleName, any> {
+export class $ModuleName extends React.PureComponent<I$ModuleName, any> {
   static defaultProps = {
 
   }
@@ -19,7 +21,7 @@ export class $ufModuleName extends React.PureComponent<I$ufModuleName, any> {
     let {className, style} = this.props
 
     return (
-      <div className={classSet('w$ufModuleName', className)} style={style}>
+      <div className={classSet('w$ModuleName', className)} style={style}>
 
       </div>
     )

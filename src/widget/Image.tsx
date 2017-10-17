@@ -1,3 +1,4 @@
+//#region import
 import * as React from 'react'
 import * as assign from 'mora-scripts/libs/lang/assign'
 import {classSet} from '../util/classSet'
@@ -5,8 +6,11 @@ import {appendQuery} from '../util/url'
 import {viewport} from '../dom/viewport'
 import {loadImage} from '../dom/loadImage'
 import {WhiteDotImage, BlackDotImage} from '../util/DotImages'
+//#endregion
 
-// import './styles/Image.scss'
+// 参考：
+// LOADER: responsive-loader
+// LAZYLOAD: https://github.com/afarkas/lazysizes
 
 export type IImageContainer = () => Element
 export type IImageRatio = (devicePixelRatio: number) => string
