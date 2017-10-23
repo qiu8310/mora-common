@@ -13,7 +13,7 @@ import * as Config from 'mora-scripts/libs/storage/Config'
 import * as Storage from 'mora-scripts/libs/storage/Storage'
 import * as FileStorage from 'mora-scripts/libs/storage/FileStorage'
 
-import {Partial} from '../helper/type/Object'
+import {Partial} from '../type/Object'
 
 export interface ITokenPickerOptions {
   /**

@@ -3,6 +3,7 @@ import * as React from 'react'
 import * as assign from 'mora-scripts/libs/lang/assign'
 import {classSet} from '../util/classSet'
 import {appendQuery} from '../util/url'
+import {warn} from '../util/warn'
 import {viewport} from '../dom/viewport'
 import {loadImage} from '../dom/loadImage'
 import {WhiteDotImage, BlackDotImage} from '../util/DotImages'
@@ -76,6 +77,9 @@ export class Image extends React.PureComponent<IImage, any> {
     this.cachedContainer = container
       ? typeof container === 'function' ? container() : container
       : null
+    if (process.env.NODE_ENV !== 'production' && typeof container === 'function' && !this.cachedContainer) {
+      warn('你给 Image 组件设置了 container 函数，但函数返回了空，没有返回 dom')
+    }
     return this.cachedContainer
   }
 

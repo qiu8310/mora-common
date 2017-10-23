@@ -10,6 +10,8 @@ import * as shell from 'mora-scripts/libs/tty/shell'
 import * as error from 'mora-scripts/libs/sys/error'
 import * as chokidar from 'chokidar'
 
+import {indexify, dts2djson} from './src/helper'
+
 const ROOT_DIR = __dirname
 const SRC_DIR = path.join(__dirname, 'src')
 
@@ -29,18 +31,21 @@ cli({
   exports: {
     desc: '注入 export 在 index.ts 中',
     cmd(res) {
-      let exports = getRootDirectoryNames()
-        .reduce((lines, directoryName) => {
-          if (directoryName !== 'candidate' && directoryName !== 'polyfill') {
-            lines.push(
-              ...fs.readdirSync(path.join(SRC_DIR, directoryName))
-                .filter(filename => /\.tsx?$/.test(filename))
-                .map(filename => `export * from './${directoryName}/${filename.replace(/\.tsx?$/, '')}'`)
-            )
-          }
-          return lines
-        }, []).join(os.EOL)
+      let exports = indexify(SRC_DIR, {filter: (stats, name, relative, absolute) => {
+        return stats.isFile()
+          ? /\.tsx?$/.test(name)
+          : stats.isDirectory()
+            ? name !== 'candidate'
+            : false
+      }})
       if (inject(path.join(SRC_DIR, 'index.ts'), {exports}) !== 1) console.error('注入 export 失败')
+    }
+  },
+  exportsMap: {
+    desc: '生成导出的 map 文件，方便 webpack loader 插件 mora-common 中的 index-loader 使用',
+    cmd(res) {
+      const map = dts2djson(path.join(ROOT_DIR, 'index.d.ts'))
+      fs.writeFileSync(path.join(ROOT_DIR, 'index.d.json'), JSON.stringify(map, null, 2))
     }
   },
   cpStyle: {

@@ -16,8 +16,8 @@
     "dom": true,
     "helper": true,
     "node": true,
-    "polyfill": true,
     "style": true,
+    "type": true,
     "util": true,
     "widget": true,
     /*# INJECT_END #*/

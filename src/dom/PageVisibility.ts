@@ -19,7 +19,6 @@ let event = new Events()
 const doc = document
 const prefixes = ['', 'webkit', 'moz', 'ms', 'o']
 
-
 export interface IEvent {
   type: IState
   originalEvent: any

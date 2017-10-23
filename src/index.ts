@@ -1,9 +1,15 @@
 // 可以使用插件 https://github.com/ant-design/babel-plugin-import 来避免全部导入
-// 但是在 typescript 中无法用
+// 在 typescript 中可以用 https://github.com/Brooooooklyn/ts-import-plugin
+// 或者人工写个 webpack loader 来做替换
 
 /*# INJECT_START exports #*/
 export * from './component/Component'
 export * from './component/PureComponent'
+export * from './component/decorators/disableTouchMove'
+export * from './component/decorators/renderAfterDidMount'
+export * from './component/implements/KeyboardEvents'
+export * from './component/implements/OutsideClickable'
+export * from './component/implements/Storable'
 export * from './dom/CustomStorage'
 export * from './dom/KeyCode'
 export * from './dom/PageVisibility'
@@ -17,10 +23,13 @@ export * from './dom/onview'
 export * from './dom/responsive'
 export * from './dom/style'
 export * from './dom/viewport'
+export * from './helper/'
 export * from './node/TokenPicker'
+export * from './type/Object'
 export * from './util/DotImages'
 export * from './util/applyMixins'
 export * from './util/autobind'
+export * from './util/cache'
 export * from './util/checkSuperCall'
 export * from './util/classSet'
 export * from './util/delay'

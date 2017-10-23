@@ -23,7 +23,7 @@ export class TransitionRoute extends React.Component<ITransitionRouteProps, any>
   getRoute(routeProps: RouteComponentProps<any>) {
     let {items} = this.props
 
-    let {location: {pathname}} = routeProps
+    let {location: {pathname, search}} = routeProps
     let match
     let matchedItem: RouteProps
 
@@ -34,7 +34,7 @@ export class TransitionRoute extends React.Component<ITransitionRouteProps, any>
     })
 
     return match
-      ? {key: match.url, route: <Route {...matchedItem} /> }
+      ? {key: match.url + search, route: <Route {...matchedItem} /> }
       : {key: '', route: null}
   }
 

@@ -41,4 +41,4 @@
 //   }
 //   return targetComponent
 // }
-export default () => 'TODO'
+export function hoistNonReactStatics() {}

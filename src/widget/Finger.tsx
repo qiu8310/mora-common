@@ -1,7 +1,22 @@
 import * as React from 'react'
 
 // from AlloyFinger
-export class Finger extends React.Component<any, any> {
+
+export interface IFingerProps {
+  onTouchCancel?: (e) => void
+  onMultipointStart?: (e) => void
+  onMultipointEnd?: (e) => void
+  onTap?: (e) => void
+  onDoubleTap?: (e) => void
+  onLongTap?: (e) => void
+  onSingleTap?: (e) => void
+  onRotate?: (e) => void
+  onPinch?: (e) => void
+  onPressMove?: (e) => void
+  onSwipe?: (e) => void
+}
+
+export class Finger extends React.Component<IFingerProps, any> {
   public preV = { x: null, y: null }
   public pinchStartLen = null
   public scale = 1

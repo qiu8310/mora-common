@@ -2,16 +2,17 @@
 candidate
 component
 dom
-feature
 helper
-polyfill
+node
 style
+type
 util
 widget
 ## INJECT_END ##
 !src/*
 
 index.d.ts
+index.d.json
 index.js
 !docs/**
 

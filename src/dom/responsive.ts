@@ -1,4 +1,4 @@
-import '../polyfill/responsive.declare'
+import '../helper/polyfill/responsive.declare'
 import * as assign from 'mora-scripts/libs/lang/assign'
 import {throttle} from '../util/delay'
 

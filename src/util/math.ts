@@ -37,3 +37,7 @@ export function xtan(degree: number): number {
   if (cache.tan[degree] == null) cache.tan[degree] = Math.tan(degree2radian(degree))
   return cache.tan[degree]
 }
+
+export function between(value: number, min: number, max: number) {
+  return Math.min(Math.max(min, value), max)
+}
