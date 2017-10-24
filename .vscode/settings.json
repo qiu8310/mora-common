@@ -11,6 +11,7 @@
     "coverage": true,
 
     /*# INJECT_START folders #*/
+    "bin": true,
     "candidate": true,
     "component": true,
     "dom": true,

@@ -59,7 +59,8 @@ const parseQuery: (context) => IQuery = (function() {
         debug,
         realtimeParse,
         ...(typeof m === 'string' ? {name: m} : m),
-        regexp: new RegExp(`^(\\s*)(import|export)\\s+\\{([^}]+)\\}\\s+from\\s+(['"])${m.name}\\4`, 'mg')
+        // 前面不需要包含换行符，所以用 [ \t]* 而不用 \s*
+        regexp: new RegExp(`^([ \\t]*)(import|export)\\s+\\{([^}]+)\\}\\s+from\\s+(['"])${m.name}\\4`, 'mg')
       }
     })
 
@@ -77,18 +78,19 @@ module.exports = function(content) {
 
   let query = parseQuery(this)
 
-  let replaced
-  let logHead = once(() => query.debug && (replaced = true) && console.log(`${EOL}-----------------${this.resourcePath}-----------------`))
-  let logFoot = once(() => query.debug && replaced && console.log(new Array(35 + this.resourcePath.length).join('=')))
+  let logHead = once(() => console.log(`${EOL}-----------------${this.resourcePath}-----------------`))
 
   query.modules.forEach(m => {
     content = content.replace(m.regexp, (raw, preSpaces, inOut, rawimports, quote) => {
-      logHead()
+      if (m.debug) logHead()
 
       const imports = {}
       const importFiles = []
       const map = getDJson(query.resolveRoots, this.resourcePath, m)
 
+      const bracketPrefixSpace = rawimports.match(/^\s*/)[0]
+      const bracketSuffixSpace = rawimports.match(/^\s*/)[0]
+      const ipt = (fields: string[]) => `${bracketPrefixSpace}${fields.join(', ')}${bracketSuffixSpace}`
       stripInlineComment(rawimports.trim()).split(splitRegexp).forEach(field => {
         let rawfile = map[asRegexp.test(field) ? RegExp.$1 : field]
 
@@ -107,15 +109,13 @@ module.exports = function(content) {
         imports[file].push(alias ? `${alias} as ${field}` : field)
       })
 
-      const replaces = importFiles.map(file => `${preSpaces}${inOut} { ${imports[file].join(', ')} } from ${quote}${m.name}${file ? '/' + file : ''}${quote}`).join(EOL)
-
-      if (m.debug) info(`${JSON.stringify(raw)}  =>  ${JSON.stringify(replaces)}`)
+      const replaces = importFiles.map(file => `${preSpaces}${inOut} {${ipt(imports[file])}} from ${quote}${m.name}${file ? '/' + file : ''}${quote}`).join(EOL)
+      if (m.debug) info(`${raw}  =>  ${EOL}${replaces}`)
 
       return replaces
     })
   })
 
-  logFoot()
   return content
 }
 

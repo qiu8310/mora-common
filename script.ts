@@ -35,7 +35,7 @@ cli({
         return stats.isFile()
           ? /\.tsx?$/.test(name)
           : stats.isDirectory()
-            ? name !== 'candidate'
+            ? name !== 'candidate' && name !== 'bin'
             : false
       }})
       if (inject(path.join(SRC_DIR, 'index.ts'), {exports}) !== 1) console.error('注入 export 失败')

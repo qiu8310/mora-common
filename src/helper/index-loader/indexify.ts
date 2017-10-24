@@ -42,6 +42,8 @@ function indexifyFolder(folder, currentDeep: number, opts: IInnerOptions): strin
 
       let absolutePath = path.join(folder, name)
       let stat = fs.statSync(absolutePath)
+      if (stat.isFile() && !(/\.tsx?$/.test(name))) return
+
       if (opts.filter(stat, name, absolutePath)) {
         if (stat.isFile()) {
           result.push(indexifyFile(absolutePath, opts))
