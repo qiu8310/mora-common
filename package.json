@@ -10,6 +10,7 @@
     "test": "jest"
   },
   "bin": {
+    "replacer": "bin/replacer.js",
     "indexify": "bin/indexify.js",
     "dts2djson": "bin/dts2djson.js"
   },

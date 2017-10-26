@@ -1,5 +1,3 @@
-
-
 import * as findup from 'mora-scripts/libs/fs/findup'
 import * as exists from 'mora-scripts/libs/fs/exists'
 import * as _warn from 'mora-scripts/libs/sys/warn'
@@ -44,13 +42,13 @@ export function isFileExists(file: string): boolean {
 }
 
 export function warn(...args) {
-  _warn('index-loader: ', ...args)
+  _warn('[index-loader]', ...args)
 }
 
 export function info(...args) {
-  _info('index-loader: ', ...args)
+  _info(...args)
 }
 
 export function error(...args) {
-  _error('index-loader: ', ...args)
+  _error('[index-loader]', ...args)
 }
