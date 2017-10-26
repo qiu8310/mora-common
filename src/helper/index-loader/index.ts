@@ -191,11 +191,14 @@ function getIndexFile(m: IIndexLoaderQueryModule, mFileKey: string, filename: st
       try {
         let moduleRoot = path.join(root, m.name)
         let pkg = require(path.join(moduleRoot, 'package.json'))
-        let tmpfilepath = path.join(moduleRoot, pkg.typings)
-        if (!isFileExists(tmpfilepath)) warn(`模块 ${m.name} 指定的 typings 文件 ${pkg.typings} 不存在`)
-        else {
-          m.pathPrefix = path.dirname(pkg.typings).replace(/^\.\/?/, '')
-          filepath = tmpfilepath
+        let moduleTsdFile = pkg.module || pkg.typings
+        if (moduleTsdFile) {
+          let tmpfilepath = path.join(moduleRoot, moduleTsdFile)
+          if (!isFileExists(tmpfilepath)) warn(`模块 ${m.name} 指定的 typings 文件 ${moduleTsdFile} 不存在`)
+          else {
+            m.pathPrefix = path.dirname(moduleTsdFile).replace(/^\.\/?/, '')
+            filepath = tmpfilepath
+          }
         }
       } catch (e) {}
     }
