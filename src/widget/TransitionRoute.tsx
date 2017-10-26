@@ -48,7 +48,7 @@ export class TransitionRoute extends React.Component<ITransitionRouteProps, any>
           groupProps={{component: 'span'}}
           itemKey={key}
           componentProps={props}
-          name='route'
+          name='route' // 动画现在是通过注入样式来实现了，没有通过此 name
           leave={false}
           beforeEnter={el => assignStyle(el, {animationName, animationDuration})}
           enter

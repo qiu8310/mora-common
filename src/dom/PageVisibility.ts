@@ -13,7 +13,7 @@
  *  4. A site wants to switch off sounds when a device is in standby mode
  *     (user pushes power button to turn screen off)
  */
-import Events from 'mora-scripts/libs/lang/Events'
+import * as Events from 'mora-scripts/libs/lang/Events'
 let event = new Events()
 
 const doc = document
@@ -108,8 +108,9 @@ export const PageVisibility = {
    */
   on(states: IState | IState[], handler: IEventHandler): IEventOffHandler {
     if (!isSupported) return noop
-    event.on([].concat(states).join(' '), handler)
-    return () => event.off(states, handler)
+    let eventKey = [].concat(states).join(' ')
+    event.on(eventKey, handler)
+    return () => event.off(eventKey, handler)
   },
 
   /**
@@ -120,8 +121,9 @@ export const PageVisibility = {
    */
   once(states: IState | IState[], handler: IEventHandler): IEventOffHandler {
     if (!isSupported) return noop
-    event.once([].concat(states).join(' '), handler)
-    return () => event.off(states, handler)
+    let eventKey = [].concat(states).join(' ')
+    event.once(eventKey, handler)
+    return () => event.off(eventKey, handler)
   }
 }
 

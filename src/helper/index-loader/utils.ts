@@ -2,13 +2,15 @@
 
 import * as findup from 'mora-scripts/libs/fs/findup'
 import * as exists from 'mora-scripts/libs/fs/exists'
-import * as warn from 'mora-scripts/libs/sys/warn'
-import * as info from 'mora-scripts/libs/sys/info'
-import * as error from 'mora-scripts/libs/sys/error'
+import * as _warn from 'mora-scripts/libs/sys/warn'
+import * as _info from 'mora-scripts/libs/sys/info'
+import * as _error from 'mora-scripts/libs/sys/error'
 import * as path from 'path'
 
 export interface IEnvResult {
   rootDir: string
+  // package.json 文件中可以指定 typings 文件路径
+  // pkg: {typings?: string}
 }
 
 const envCache: IEnvResult[] = []
@@ -23,6 +25,7 @@ export function env(srcFile: string): IEnvResult {
 
   let pkgFile = findup.pkg(path.dirname(srcFile))
   let result = {
+    // pkg: require(pkgFile),
     rootDir: path.dirname(pkgFile)
   }
   envCache.push(result)
@@ -40,4 +43,14 @@ export function isFileExists(file: string): boolean {
   return exists(file)
 }
 
-export {warn, info, error}
+export function warn(...args) {
+  _warn('index-loader: ', ...args)
+}
+
+export function info(...args) {
+  _info('index-loader: ', ...args)
+}
+
+export function error(...args) {
+  _error('index-loader: ', ...args)
+}

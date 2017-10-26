@@ -6,6 +6,7 @@
     "noImplicitAny": false,
     "removeComments": true,
     "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": false,
     "importHelpers": true,
     "noUnusedLocals": true,
     "noLib": false,

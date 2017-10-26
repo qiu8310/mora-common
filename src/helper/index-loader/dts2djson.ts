@@ -3,139 +3,307 @@
  */
 import * as fs from 'fs'
 import * as path from 'path'
-import {stripInlineComment, isFileExists} from './utils'
+import {stripInlineComment, isFileExists, warn} from './utils'
 import {cache} from '../../util/cache'
 
 // 匹配带 export 的行
 const exportLineRegexp = /^export\s+.*?$/gm
 // 匹配 `export * from 'xxx' 或 export {a, b as c} from 'xxx'
-const lineRefRegexp = /^export\s+(?:\*|\{([^}]*?)\})\s+from\s+['"](.*?)['"]/
+const lineExportRefRegexp = /^export\s+(?:\*|\{([^}]*?)\})\s+from\s+['"](.*?)['"]/
 
 // 匹配 export default
-const lineVariable1Regexp = /^export\s+default\s+/
+const lineExportDefaultRegexp = /^export\s+default\s+/
 // 匹配的变量的声明，如 export interface xxx,  export class yyy
-const lineVariable2Regexp = /^export\s+(?:declare\s+)?(?:abstract\s+)?(?:class|type|function|interface|const|let)\s+(\w+)/
-// 匹配的变量的声明，如 export {a, b as c}，注意和 lineRefRegexp 区分，这里没有 from
-const lineVariable3Regexp = /^export\s+\{([^}]*?)\}/
+const lineExportVariableRegexp = /^export\s+(?:declare\s+)?(?:abstract\s+)?(?:class|type|function|interface|const|let)\s+(\w+)/
+// 匹配的变量的声明，如 export {a, b as c}，注意和 lineExportRefRegexp 区分，这里没有 from
+const lineExportAliasRegexp = /^export\s+\{([^}]*?)\}/
+
+const importLineRegExp = /^import\s+.*?$/gm
+const lineImportAllRegExp = /^import\s+\*\s+as\s+(\w+)\s+from\s+['"](.*?)['"]/
+const lineImportDefaultRegExp = /^import\s+(\w+)\s+from\s+['"](.*?)['"]/
+const lineImportAliasRegExp = /^import\s+\{([^}]*?)\}\s+from\s+['"](.*?)['"]/
+const lineImportOnlyRegExp = /^import\s+['"](.*?)['"]/
+
+// 当 ts 开启了 allowSyntheticDefaultImports 时，可以这样写： import React, { Component } from 'react' 或者 import {Component}, React from 'react'
+const lineImportAllAndAliasRegExp1 = /^import\s+(\w+)\s*\,\s*\{[^}]*?\}\s+from\s+['"](.*?)['"]/
+const lineImportAllAndAliasRegExp2 = /^import\s+\{[^}]*?\}\s*,\s*(\w+)\s+from\s+['"](.*?)['"]/
+
 
 const splitRegexp = /\s*,\s*/
 const asRegexp = /^(\w+)\s+as\s+(\w+)$/
 
-export interface ICompiledObjPropAliasVariable {key: string, ref?: string}
-export interface ICompiledObjPropAlias {from: string, variables: ICompiledObjPropAliasVariable[]}
-export interface ICompiledObj {aliases: ICompiledObjPropAlias[], variables: string[]}
-export interface ICompiledObjMap {[key: string]: ICompiledObj}
+export const MAP_SEPARATOR = '::'
+export const MAP_KEY_ALL = '*'
+
+export interface ICompileImportStruct { from?: string, isDefault?: boolean, isAll?: boolean, ref?: string }
+export interface ICompileImportStructMap {[key: string]: ICompileImportStruct}
+
+
+export interface ICompileStructExportVariable { key: string, ref?: string }
+export interface ICompileStructImport { expKey?: string, impKey?: string, impRef?: string, isDefault?: boolean, isAll?: boolean }
+
+export interface ICompileStructRef { from?: string, import?: ICompileStructImport, exports?: ICompileStructExportVariable[] }
+export interface ICompileStruct { declares: string[], refs: ICompileStructRef[] }
+export interface ICompileStructMap { [key: string]: ICompileStruct }
+
 
 export interface IExportToFileMap {
   [key: string]: string
 }
 
-const COMPILE_CACHE: ICompiledObjMap = {}
+const COMPILE_CACHE: ICompileStructMap = {}
 const ASSEMBLE_CACHE: {[file: string]: IExportToFileMap} = {}
 
-export function dts2djson(dtsFile: string, disableCache?: boolean): IExportToFileMap {
-  return assemble(path.resolve(dtsFile), disableCache)
+export interface IDts2djsonOptions {
+  disableCache?: boolean
+  /**
+   * 因为有些会对 import 过来的变量处理下，所以所以有时可能需要开启此选项
+   */
+  disableAnalyzeImport?: boolean
+}
+
+export function dts2djson(dtsFile: string, opts: IDts2djsonOptions = {}): IExportToFileMap {
+  return assemble(path.resolve(dtsFile), opts)
 }
 
 // 组装
-function assemble(entryFile: string, disableCache: boolean): IExportToFileMap {
+function assemble(entryFile: string, opts: IDts2djsonOptions): IExportToFileMap {
   const getImportFile = file => path.relative(path.dirname(entryFile), file).replace(/(?:\.d\.ts|\.tsx?)$/, '')
 
-  return cache<IExportToFileMap>(ASSEMBLE_CACHE, entryFile, disableCache, () => {
-    let entry = compile(entryFile, disableCache)
+  return cache<IExportToFileMap>(ASSEMBLE_CACHE, entryFile, opts.disableCache, () => {
+    let entry = compile(entryFile, opts)
 
-    let result = {}
-    entry.variables.forEach(v => result[v] = '')
-    _fetchAliases(entry.aliases, result, getImportFile)
+    let result: IExportToFileMap = {}
+    let addResult = (key: string, value: string) => {
+      if (result.hasOwnProperty(key)) {
+        warn(`${value} 中导出的 ${key} 覆盖了 ${result[key]} 中导出的同名字段`)
+      }
+      result[key] = value
+    }
+    entry.declares.forEach(v => result[v] = '')
+    _assembleRefs(entry.refs, addResult, getImportFile)
     return result
   })
 }
 
-function _fetchAliases(aliases: ICompiledObjPropAlias[], result: IExportToFileMap, getImportFile) {
-  aliases.forEach(a => {
-    if (a.variables.length) {
-      a.variables.forEach(v => result[v.key] = _fetch(v, a.from, getImportFile))
+function _assembleRefs(refs: ICompileStructRef[], addResult: (key: string, value: string) => void, getImportFile) {
+  refs.forEach(ref => {
+    let {import: ipt, exports: exps, from} = ref
+    if (!from) warn(ref)
+    if (ipt) {
+      if (ipt.isAll) {
+        /*
+          import * as b from './b'
+          export {b}
+        */
+        addResult(ipt.expKey, getImportFile(from) + MAP_SEPARATOR + MAP_KEY_ALL)
+      } else if (ipt.isDefault) {
+        /*
+          import b from './b'
+          export {b}
+        */
+        addResult(ipt.expKey, getImportFile(from) + MAP_SEPARATOR + 'default')
+      } else {
+        /*
+          import {b1, xx as b2, b3} from './b'
+          export {b1, b2 as bb, b3 as bbb}
+        */
+        let {expKey, impKey, impRef} = ipt
+        if (!impRef && expKey !== impKey) impRef = impKey
+        // else if (impRef === expKey) impRef = null
+
+        let value = _fetch({key: impKey, ref: impRef}, from, getImportFile)
+        /*
+          过滤掉下面这种情况：
+
+          import {c as b} from './b'
+          export {b as c}
+
+          => result[c] = 'b::c'
+        */
+        let [file, alias] = value.split(MAP_SEPARATOR)
+        if (alias === expKey) value = file
+
+        addResult(expKey, value)
+      }
+    } else if (exps) {
+      if (exps.length) {
+        exps.forEach(v => addResult(v.key, _fetch(v, from, getImportFile)))
+      } else {
+        // 取出所有引用的文件中的变量
+        let cp = COMPILE_CACHE[from]
+        cp.declares.forEach(v => addResult(v, getImportFile(from)))
+        _assembleRefs(cp.refs, addResult, getImportFile)
+      }
     } else {
-      // 取出所有引用的文件中的变量
-      let cp = COMPILE_CACHE[a.from]
-      cp.variables.forEach(v => result[v] = getImportFile(a.from))
-      _fetchAliases(cp.aliases, result, getImportFile)
+      // 不应该会出现
+      warn(ref)
+      throw new Error(`ICompileStructRef 格式错误，至少需要一个 import 或 exports`)
     }
   })
 }
 
-function _fetch(v: ICompiledObjPropAliasVariable, from: string, getImportFile: (file: string) => string): string {
+function _fetch(v: ICompileStructExportVariable, from: string, getImportFile: (file: string) => string): string {
   let compiled = COMPILE_CACHE[from]
 
   let hasRef = !!v.ref
   let needKey: string = hasRef ? v.ref : v.key
 
-  // 不考虑程序的语法问题
-  if (compiled.variables.indexOf(needKey) >= 0) return getImportFile(from) + (hasRef ? '::' + v.ref : '')
-  for (let alias of compiled.aliases) {
-    if (alias.variables.length) {
-      for (let aliasVariable of alias.variables) {
-        if (aliasVariable.key === needKey) return _fetch(aliasVariable, alias.from, getImportFile)
+  if (compiled.declares.indexOf(needKey) >= 0) return getImportFile(from) + (hasRef ? MAP_SEPARATOR + v.ref : '')
+  for (let ref of compiled.refs) {
+    /*
+      // a.ts
+      export {b} from './b'
+
+      // b.ts 中的变量 b 不会出现 isAll 或 isDefault 或 import {x} from './c' 中
+    */
+    if (ref.import) {
+      // 不需要考虑
+    } else if (ref.exports.length) {
+      for (let exp of ref.exports) {
+        if (exp.key === needKey) return _fetch(exp, ref.from, getImportFile)
       }
     } else {
-      return _fetch(v, alias.from, getImportFile)
+      return _fetch(v, ref.from, getImportFile)
     }
   }
+
+  warn(`从文件 ${from} 中找不到要导出的变量 ${JSON.stringify(v)}`)
 }
 
 // 编译
-function compile(file: string, disableCache: boolean): ICompiledObj {
-  return cache<ICompiledObj>(COMPILE_CACHE, file, disableCache, () => {
-    const aliases: ICompiledObjPropAlias[] = []
-    const variables: string[] = []
+function compile(file: string, opts: IDts2djsonOptions): ICompileStruct {
+  return cache<ICompileStruct>(COMPILE_CACHE, file, opts.disableCache, () => {
+    const iptMap: ICompileImportStructMap = {}
 
-    fs.readFileSync(file).toString().replace(exportLineRegexp, (line) => {
-      line = stripInlineComment(line)
-      if (lineRefRegexp.test(line)) {
-        let exps = RegExp.$1
-        let ref = RegExp.$2
-        if (ref[ref.length - 1] === '/') ref += 'index' // 如果是目录的话，取目录下的 index 文件
+    const declares: string[] = []
+    const refs: ICompileStructRef[] = []
 
-        let base = path.resolve(path.dirname(file), ref)
-        let dtsFile = base + '.d.ts'
-        let tsFile = base + '.ts'
-        let tsxFile = base + '.tsx'
-        let nextFile = isFileExists(dtsFile) ? dtsFile
-                     : isFileExists(tsFile) ? tsFile
-                     : isFileExists(tsxFile) ? tsxFile : null
-        if (!nextFile) throw new Error(`找不到 ${file} 中 ${line} 引用的文件`)
-
-        // 如果此变量为空，就表示导出所有文件中的变量
-        let aliasVariables: ICompiledObjPropAliasVariable[] = []
-        if (exps) {
-          exps.split(splitRegexp)
-            .map(v => aliasVariables.push(asRegexp.test(v) ? {key: RegExp.$2, ref: RegExp.$1} : {key: v}))
+    let content = fs.readFileSync(file).toString()
+    if (!opts.disableAnalyzeImport) {
+      // 分析 import
+      content.replace(importLineRegExp, rawline => {
+        let line = stripInlineComment(rawline)
+        let add = (key: string, obj: ICompileImportStruct) => {
+          let {from} = obj
+          obj.from = _findReferencedPath(file, from)
+          if (!obj.from) {
+            // 如果是相对目录时，不应该解析失败！
+            // 绝对目录可能是 node_modules 下的目录
+            if (from.charAt[0] === '.') {
+              warn(`已忽略：无法解析 "${from}" 来自文件 ${file}`)
+            }
+            return
+          }
+          iptMap[key] = obj
         }
 
-        aliases.push({from: nextFile, variables: aliasVariables})
-        compile(nextFile, disableCache)
-      } else if (lineVariable1Regexp.test(line)) {
-        variables.push('default')
-      } else if (lineVariable2Regexp.test(line)) {
-        variables.push(RegExp.$1)
-      } else if (lineVariable3Regexp.test(line)) {
-        variables.push(...parseExportField(RegExp.$1, 2))
+        let analiseAlias = (ipts: string, from: string) => {
+          ipts = ipts.trim()
+          if (!ipts) return
+          ipts.split(splitRegexp)
+            .forEach(v => {
+              if (asRegexp.test(v)) {
+                add(RegExp.$2, {ref: RegExp.$1, from})
+              } else {
+                add(v, {from})
+              }
+            })
+        }
+
+        if (lineImportDefaultRegExp.test(line)) {
+          add(RegExp.$1, {isDefault: true, from: RegExp.$2})
+        } else if (lineImportAllRegExp.test(line)) {
+          add(RegExp.$1, {isAll: true, from: RegExp.$2})
+        } else if (lineImportAllAndAliasRegExp1.test(line)) {
+          let all = RegExp.$1
+          let alias = RegExp.$2
+          let from = RegExp.$3
+          add(all, {isAll: true, from})
+          analiseAlias(alias, from)
+        } else if (lineImportAllAndAliasRegExp2.test(line)) {
+          let alias = RegExp.$1
+          let all = RegExp.$2
+          let from = RegExp.$3
+          analiseAlias(alias, from)
+          add(all, {isAll: true, from})
+        } else if (lineImportAliasRegExp.test(line)) {
+          analiseAlias(RegExp.$1, RegExp.$2)
+        } else {
+          // 可能是 import './a.scss' 的调用形式
+          if (lineImportOnlyRegExp.test(line)) return rawline
+          warn(`暂时不支持解析 ${file} 中 ${line} 的 import`)
+        }
+        return rawline
+      })
+    }
+
+    // 分析 export
+    content.replace(exportLineRegexp, rawline => {
+      let line = stripInlineComment(rawline)
+
+      // 可以是 export * from 'xxx' 或 export {a, b} from 'xxx'
+      if (lineExportRefRegexp.test(line)) {
+        let exps = RegExp.$1.trim()
+        let ref = RegExp.$2
+
+        let from = _findReferencedPath(file, ref)
+        if (!from) throw new Error(`找不到 ${file} 中 ${line} 引用的文件`)
+
+        let exports: ICompileStructExportVariable[] = []
+        if (exps) {
+          exps.split(splitRegexp)
+            .map(v => exports.push(asRegexp.test(v) ? {key: RegExp.$2, ref: RegExp.$1} : {key: v}))
+        }
+        // 如果 exports 变量为空，就表示导出所有文件中的变量
+        refs.push({from, exports})
+        compile(from, opts)
+      } else if (lineExportDefaultRegexp.test(line)) {
+        declares.push('default')
+      } else if (lineExportVariableRegexp.test(line)) {
+        const d = RegExp.$1
+        // ts 中允许重载，所以需要去除同一文件中重新定义的声明
+        if (declares.indexOf(d) < 0) declares.push(d)
+      } else if (lineExportAliasRegexp.test(line)) {
+        let exps = RegExp.$1.trim()
+        if (exps) {
+          exps.split(splitRegexp).forEach(v => {
+            let isAs = asRegexp.test(v)
+            const key = isAs ? RegExp.$2 : v
+            const keyRef = isAs ? RegExp.$1 : null
+
+            const iptKey = keyRef || key
+            const ipt = iptMap[iptKey]
+            if (ipt) {
+              const {from, ref, isAll, isDefault} = ipt
+              refs.push({from, import: {isAll, isDefault, expKey: key, impKey: iptKey, impRef: ref}})
+            } else {
+              declares.push(key)
+            }
+          })
+        }
       } else {
-        throw new Error(`无法解析文件 ${file} 中 ${line} 的 export 语法，请联系项目作者`)
+        throw new Error(`暂时不支持解析文件 ${file} 中 ${line} 的 export 语法`)
       }
-      return line
+      return rawline
     })
-    return {aliases, variables}
+    return {declares, refs}
   })
 }
 
-/**
- * 解析 {a as b, c} 成 ["a", "c"] 或 ["b", "C"]
- * 取 a 还是职 b，根据第二个参数 index 来决定
- */
-function parseExportField(field: string, index: 1 | 2): string[] {
-  field = field.trim()
-  return field
-    ? field.split(splitRegexp).map(w => asRegexp.test(w) ? RegExp['$' + index] : w)
-    : []
+function _findReferencedPath(currentFile: string, ref: string, tryDirectory = true) {
+  if (ref[ref.length - 1] === '/') {
+    tryDirectory = false
+    ref += 'index' // 如果是目录的话，取目录下的 index 文件
+  }
+
+  let base = path.resolve(path.dirname(currentFile), ref)
+  let dtsFile = base + '.d.ts'
+  let tsFile = base + '.ts'
+  let tsxFile = base + '.tsx'
+  return isFileExists(dtsFile) ? dtsFile
+              : isFileExists(tsFile) ? tsFile
+              : isFileExists(tsxFile) ? tsxFile
+              : tryDirectory ? _findReferencedPath(currentFile, ref + '/', false) : null
+
 }

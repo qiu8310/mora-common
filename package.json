@@ -10,7 +10,8 @@
     "test": "jest"
   },
   "bin": {
-    "indexify": "bin/indexify.js"
+    "indexify": "bin/indexify.js",
+    "dts2djson": "bin/dts2djson.js"
   },
   "author": "Mora <qiuzhongleiabc@126.com> (https://qiu8310.github.io/)",
   "license": "MIT",
