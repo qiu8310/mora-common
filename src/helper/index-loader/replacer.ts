@@ -3,8 +3,9 @@ import * as os from 'os'
 import * as path from 'path'
 
 import {once} from '../../util/once'
-import {stripInlineComment, info, env, warn, isFileExists} from './utils'
-import {MAP_SEPARATOR, MAP_KEY_ALL, IExportToFileMap, dts2djson} from './dts2djson'
+import {stripInlineComment, info, env, warn, isFileExists} from './inc/fn'
+import {KEY_SEPARATOR, KEY_ALL} from './inc/config'
+import {dts2djson, IDts2djsonResult} from './dts2djson'
 
 const EOL = os.EOL
 const splitRegexp = /\s*,\s*/
@@ -30,6 +31,8 @@ export interface IReplacerModule {
 
   /**
    * 模块的 .d.ts 文件，默认会去模块目录下查找 index.d.ts 文件，或者是 package.json 中指定的 module/typings 字段所指定的文件
+   *
+   * 如果单独指定了此字段，需要确保 dstFile 要在模块的根目录上，如果不在，则最好也指定 root 根目录
    */
   dtsFile?: string
 
@@ -73,8 +76,9 @@ const getModuleExportImportExpReg: ((name: string) => RegExp) = (() => {
   }
 })()
 
-const getDJson: ((sourceFile: string, module: IReplacerModule) => IExportToFileMap) = (() => {
-  let cache: {[key: string]: IExportToFileMap} = {}
+const getDJson: ((sourceFile: string, module: IReplacerModule) => IDts2djsonResult) = (() => {
+  let cache: {[key: string]: IDts2djsonResult} = {}
+
   return (sourceFile: string, module: IReplacerModule) => {
     if (!module.realtimeParse && cache[module.name]) return cache[module.name]
 
@@ -90,7 +94,6 @@ const getDJson: ((sourceFile: string, module: IReplacerModule) => IExportToFileM
 
     // 其次 package.json 中的 module/typings 字段
     let dtsFile
-    let pathPrefix
     if (moduleRoot.indexOf('node_modules') > 0) {
       try {
         let pkg = require(path.join(moduleRoot, 'package.json'))
@@ -100,7 +103,7 @@ const getDJson: ((sourceFile: string, module: IReplacerModule) => IExportToFileM
           if (!isFileExists(tmpfilepath)) {
             warn(`模块 ${module.name} 指定的 module/typings 文件 ${moduleTsdFile} 不存在`)
           } else {
-            pathPrefix = path.dirname(moduleTsdFile).replace(/^\.\/?/, '')
+            // pathPrefix = path.dirname(moduleTsdFile).replace(/^\.\/?/, '')
             dtsFile = tmpfilepath
           }
         }
@@ -115,7 +118,8 @@ const getDJson: ((sourceFile: string, module: IReplacerModule) => IExportToFileM
 
     // 当 package.json 中定义的 typings 使用了子文件夹时，子文件夹的目录需要记录下来，然后注入到 djson 中
     // 如 antd 中定义了 module: es/index.d.ts；所以需要给 djson 中的所有文件添加 es/ 的前缀
-    if (pathPrefix) {
+    let pathPrefix = path.relative(moduleRoot, path.dirname(dtsFile))
+    if (pathPrefix && pathPrefix !== '.') {
       Object.keys(djson).forEach(key => djson[key] = path.join(pathPrefix, djson[key]))
     }
 
@@ -156,7 +160,7 @@ export function replacer(sourceFile: string, contentOrModules: string | IReplace
   return {sourceFile, sourceContent, replacedContent, refModules}
 }
 
-function replace(this: IReplacerModule, refModules: string[], djson: IExportToFileMap, raw: string, preSpaces: string, inOut: string, rawimports: string, quote: string) {
+function replace(this: IReplacerModule, refModules: string[], djson: IDts2djsonResult, raw: string, preSpaces: string, inOut: string, rawimports: string, quote: string) {
   const bracketPrefixSpace = rawimports.match(/^\s*/)[0]
   const bracketSuffixSpace = rawimports.match(/^\s*/)[0]
   const joinBracketFields = (fields: string[]) => `${bracketPrefixSpace}${fields.join(', ')}${bracketSuffixSpace}`
@@ -178,7 +182,7 @@ function replace(this: IReplacerModule, refModules: string[], djson: IExportToFi
     if (!rawfile) throw new Error(`要导出的字段 "${field}" 不在 ${this.name} 的模块中`)
 
     // file 和 alias 都可能是 空字符串
-    let [file, alias] = rawfile.split(MAP_SEPARATOR)
+    let [file, alias] = rawfile.split(KEY_SEPARATOR)
 
     file = this.name + (file ? '/' + file : '')
 
@@ -199,7 +203,7 @@ function replace(this: IReplacerModule, refModules: string[], djson: IExportToFi
 
     let aliasFields = variables
       .filter(it => {
-        if (it.alias === MAP_KEY_ALL) {
+        if (it.alias === KEY_ALL) {
           lines.push(`${preSpaces}${inOut} * as ${it.fieldKey} ${fromFile}`) // import * as xxx from './xxx'
           return false
         } else if (it.alias === 'default') {

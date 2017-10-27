@@ -1879,8 +1879,8 @@ mobx@~3.3.0:
   resolved "http://registry.npm.taobao.org/mobx/download/mobx-3.3.1.tgz#c38fc1a287a0dda3f5d4b85efe1137fedd9dcdf0"
 
 mora-scripts@~1.6.4:
-  version "1.6.10"
-  resolved "http://registry.npm.taobao.org/mora-scripts/download/mora-scripts-1.6.10.tgz#8e7341058ed1509f266a8f7414a2d0de0aa8e151"
+  version "1.6.11"
+  resolved "http://registry.npm.taobao.org/mora-scripts/download/mora-scripts-1.6.11.tgz#c28710c13b7a19c1c8d735dca50f7daef28df4de"
   dependencies:
     cross-spawn "5.1.0"
     semver-regex "1.0.0"
