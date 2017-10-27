@@ -14,7 +14,8 @@ export interface IIndexLoaderQuery {
       debug: false,             // 输出调试信息
       realtimeParse: false,     // 设置全局默认值，主要看 modules 内的值
       modules: [
-        'antd',
+        'antd',                 // 可以只配置单个名称，或者下面的详细信息
+
         {
           name: 'antd',
           root: 'path/to/antd/root'
@@ -39,7 +40,6 @@ module.exports = function(content) {
     realtimeParse,
     ...(typeof m === 'string' ? {name: m} : m),
   }))
-
 
   return replacer(this.resourcePath, content, modules).replacedContent
 }

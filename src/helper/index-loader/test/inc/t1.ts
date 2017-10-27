@@ -1,7 +1,6 @@
 export const t1Num = 1
 export {default as t1FunFromT2Default} from './t2'
 
-
 import {a1, a1 as a2, b1, b1 as b2, c1 as c2} from './t2'
 import t2 from './t2'
 import * as t3 from './t3'

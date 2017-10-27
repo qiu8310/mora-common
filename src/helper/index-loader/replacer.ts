@@ -4,7 +4,7 @@ import * as path from 'path'
 
 import {once} from '../../util/once'
 import {stripInlineComment, info, env, warn, isFileExists} from './inc/fn'
-import {KEY_SEPARATOR, KEY_ALL} from './inc/config'
+import {KEY_SEPARATOR, KEY_ALL, KEY_DEFAULT} from './inc/config'
 import {dts2djson, IDts2djsonResult} from './dts2djson'
 
 const EOL = os.EOL
@@ -206,7 +206,7 @@ function replace(this: IReplacerModule, refModules: string[], djson: IDts2djsonR
         if (it.alias === KEY_ALL) {
           lines.push(`${preSpaces}${inOut} * as ${it.fieldKey} ${fromFile}`) // import * as xxx from './xxx'
           return false
-        } else if (it.alias === 'default') {
+        } else if (it.alias === KEY_DEFAULT) {
           lines.push(`${preSpaces}${inOut} ${it.fieldKey} ${fromFile}`) // import xxx from './xxx'
           return false
         }

@@ -120,7 +120,7 @@ export class File {
           Object.keys(refFile.exports).forEach(key => this._addExportKey(key, refFile.exports[key]))
         }
       } else if (config.lineExportDefaultRegexp.test(line)) {
-        this.declares.push('default')
+        this.declares.push(config.KEY_DEFAULT)
       } else if (config.lineExportVariableRegexp.test(line)) {
         const d = RegExp.$1
         // ts 中允许重载，所以需要去除同一文件中重新定义的声明
@@ -136,11 +136,10 @@ export class File {
             if (ipt) {
               const {from} = ipt
               const iptFile = File.compile(from, options) // 继续编译下一个文件
-
               if (ipt.isAll) {
                 this._addExportKey(key, {from, ref: config.KEY_ALL})
               } else if (ipt.isDefault) {
-                this._addExportKey(key, {from, ref: 'default'})
+                this._addExportKey(key, {from, ref: config.KEY_DEFAULT})
               } else {
                 const refKey = ipt.ref || iptKey
                 if (iptFile.declares.indexOf(refKey)) {
@@ -178,7 +177,7 @@ export class File {
     }
 
     if (checkIfIsReallyDefault) {
-      if (File.compile(from).declares.indexOf('defalut') < 0) {
+      if (File.compile(from, options).declares.indexOf(config.KEY_DEFAULT) < 0) {
         obj.isDefault = false
         obj.isAll = true
       }

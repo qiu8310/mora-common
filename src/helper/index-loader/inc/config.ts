@@ -68,3 +68,4 @@ export const KEY_SEPARATOR = '::'
 
 /** 放在 KEY_SEPARATOR 后面，表示导出此文件的所有变量 */
 export const KEY_ALL = '*'
+export const KEY_DEFAULT = 'default'

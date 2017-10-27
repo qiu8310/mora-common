@@ -3,6 +3,7 @@ import * as fs from 'fs'
 import * as os from 'os'
 import {upperFirst} from '../../util/string'
 import {isFileExists, warn, info} from './inc/fn'
+import {KEY_DEFAULT} from './inc/config'
 import {compile} from './inc/File'
 
 export interface IIndexifyOptions {
@@ -132,13 +133,13 @@ function indexifyFile(file: string, opts: IInnerOptions): void {
     declares.sort()
 
     let name
-    if (opts.renameDefault && declares.indexOf('default') >= 0) {
-      declares = declares.filter(d => d !== 'default')
+    if (opts.renameDefault && declares.indexOf(KEY_DEFAULT) >= 0) {
+      declares = declares.filter(d => d !== KEY_DEFAULT)
       name = opts.rename(f.src)
       if (name && !opts.addExportName(name, from)) name = false
     }
     declares = declares.filter(d => opts.addExportName(d, from))
-    if (name) declares.unshift(`default as ${name}`)
+    if (name) declares.unshift(`${KEY_DEFAULT} as ${name}`)
 
     if (declares.length) {
       if (!name && declares.length === originalLength) {
