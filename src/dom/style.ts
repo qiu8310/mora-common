@@ -21,7 +21,7 @@ export function assignStyle(el: HTMLElement, style: React.CSSProperties) {
       let assignKey = k
       if (transitionProp !== 'transition' && k.indexOf('transition') === 0) assignKey = transitionProp + k.slice(10)
       else if (animationProp !== 'animation' && k.indexOf('animation') === 0) assignKey = animationProp + k.slice(9)
-      el.style[assignKey] = style[k]
+      el.style[assignKey as any] = style[k]
     })
   }
 }

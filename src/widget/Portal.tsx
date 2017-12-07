@@ -48,11 +48,11 @@ export class Portal extends React.PureComponent<IPortalProps, any> implements Ke
   static defaultProps = {
     onOpen: () => {},
     onClose: () => {},
-    beforeClose: (e, c) => c(),
+    beforeClose: (e: Element, c: () => void) => c(),
     onUpdate: () => {}
   }
 
-  container: Element
+  container: Element | null
   state = {
     active: false
   }
@@ -68,19 +68,21 @@ export class Portal extends React.PureComponent<IPortalProps, any> implements Ke
   @autobind close(isUnmounted = false) {
     if (!this.state.active) return
 
-    this.props.beforeClose(this.container, () => {
+    let {props} = this as any
+
+    props.beforeClose(this.container, () => {
       if (this.container) removeComponent(this.container)
       this.container = null
       if (isUnmounted !== true) this.setState({active: false})
-      this.props.onClose()
+      props.onClose()
     })
   }
 
   getInsideContainer() {
-    if (!this.state.active || !this.props.closeOnClickOutside) return null
+    if (!this.state.active || !this.props.closeOnClickOutside) return
     return this.container
   }
-  onClickOutside(e) {
+  onClickOutside() {
     if (this.state.active) this.close()
   }
 
@@ -88,7 +90,7 @@ export class Portal extends React.PureComponent<IPortalProps, any> implements Ke
     let {children, onOpen, onUpdate, modal, closeOnClickMask} = props
     let {container} = this
     if (!container) this.container = container = getDefaultContainer()
-    if (isOpening) onOpen(container)
+    if (isOpening && onOpen) onOpen(container)
 
     if (typeof children.type === 'function') {
       children = React.cloneElement(children, {

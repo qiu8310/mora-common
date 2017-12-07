@@ -52,14 +52,14 @@ export class ModalDOM extends React.PureComponent<IModalDOMProps, any> implement
   }
 
   keyboard = {
-    esc: (e) => {
+    esc: (e: KeyboardEvent) => {
       const {onPressESC} = this.props
       if (onPressESC) onPressESC(e)
     }
   }
 
   getInsideContainer: any
-  onClickOutside(e) {
+  onClickOutside(e: MouseEvent) {
     const {onClickOutside} = this.props
     if (onClickOutside) onClickOutside(e)
   }
@@ -70,7 +70,7 @@ export class ModalDOM extends React.PureComponent<IModalDOMProps, any> implement
     return <div
       onClick={onClickMask}
       className={classSet('modalMask gOverlay', maskClickThrough ? 'gClickThrough' : 'gClickable')}
-      style={maskTransparent ? {background: 'transparent'} : null}
+      style={maskTransparent ? {background: 'transparent'} : {}}
     />
   }
 

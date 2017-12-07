@@ -17,6 +17,7 @@ export function prettyBytes(num: number, base = 1024): string {
       exponent = index - 1
       return true
     }
+    return false
   })
   if (!found) exponent = BYTE_UNITS.length - 1
 

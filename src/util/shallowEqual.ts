@@ -1,12 +1,7 @@
 /**
  * 判断两个对象是会浅相等（对象中的引用相等即可，值相等不一定引用相等）
- *
- * @export
- * @param {Object} objA - 对象 A
- * @param {Object} objB - 对象 B
- * @returns {boolean} - 是否浅相等
  */
-export function shallowEqual(objA: Object, objB: Object): boolean {
+export function shallowEqual(objA: any, objB: any): boolean {
   if (objA === objB) {
     return true
   }

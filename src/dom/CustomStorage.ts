@@ -1,4 +1,5 @@
 import {warn} from '../util/warn'
+import {toArray} from '../util/array'
 
 export interface ICustomStorageOptions {
   id?: string
@@ -22,7 +23,7 @@ export class CustomStorage {
   private options: ICustomStorageOptions
 
   // localStorage
-  private store: Storage
+  private store: Storage | null
   private cache: {[key: string]: any} = globalCache
 
   constructor(options: ICustomStorageOptions = {}) {
@@ -43,8 +44,8 @@ export class CustomStorage {
 
     if (!store) memory = true
 
-    this.id = id
-    this.memory = memory
+    this.id = id as string
+    this.memory = memory as boolean
     this.store = store
   }
 
@@ -57,8 +58,7 @@ export class CustomStorage {
   sync(ids: string | string[], fn: (this: CustomStorage, id: string) => void): void {
     let originalId = this.options.id
 
-    ids = [].concat(ids)
-    ids.forEach(id => {
+    toArray(ids).forEach(id => {
       this.options.id = id
       fn.call(this, id)
     })
@@ -78,7 +78,7 @@ export class CustomStorage {
     value = JSON.stringify([value, expiredAt])
 
     if (this.memory) {
-      if (value.length <= this.options.maxMemoryValueLength) this.cache[storeKey] = value
+      if (value.length <= (this.options.maxMemoryValueLength as number)) this.cache[storeKey] = value
       else delete this.cache[storeKey]
     }
     if (this.store) {
@@ -141,11 +141,11 @@ export class CustomStorage {
       this.filter(this.cache, storeKey => delete this.cache[storeKey])
     }
     if (this.store) {
-      this.filter(this.store, storeKey => this.store.removeItem(storeKey))
+      this.filter(this.store, storeKey => (this.store as Storage).removeItem(storeKey))
     }
   }
 
-  private filter(obj, fn) {
+  private filter(obj: {[key: string]: any}, fn: (key: string) => void) {
     let keyPrefix = this.getKeyPrefix()
     Object.keys(obj).forEach(storeKey => {
       if (storeKey.indexOf(keyPrefix) === 0) fn(storeKey)

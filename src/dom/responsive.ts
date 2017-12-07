@@ -1,6 +1,7 @@
 import '../helper/polyfill/responsive.declare'
 import * as assign from 'mora-scripts/libs/lang/assign'
 import {throttle} from '../util/delay'
+import {between} from '../util/math'
 
 export interface IResponsiveOptions {
   screenRemSize?: number
@@ -34,15 +35,15 @@ export function responsive(options: IResponsiveOptions = {}) {
     docEl.style.fontSize = rootFontSize + 'px'
   }
 
-  function px2rem(px) {
+  function px2rem(px: number) {
     return px / baseRootFontSize
   }
 
-  function rem2px(rem) {
+  function rem2px(rem: number) {
     return rem * baseRootFontSize
   }
 
-  function p2r(px) {
+  function p2r(px: number | string): string {
     if (typeof px === 'string') {
       return px.replace(/([\.\d]+)px/g, (_, num) => {
         if (num.indexOf('.') >= 0) return p2r(parseFloat(num))
@@ -52,10 +53,6 @@ export function responsive(options: IResponsiveOptions = {}) {
       if (px === 0) return '0'
       return px2rem(px).toFixed(5) + 'rem'
     }
-  }
-
-  function between(size, minSize, maxSize) {
-    return Math.max(minSize, Math.min(maxSize, size))
   }
 
   // function throttleRefresh() {

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Route, RouteProps, RouteComponentProps} from 'react-router-dom'
-import {matchPath} from 'react-router'
+import {matchPath, match} from 'react-router'
 import {Transition} from '../widget/Transition'
 import {assignStyle} from '../dom/style'
 
@@ -24,17 +24,17 @@ export class TransitionRoute extends React.Component<ITransitionRouteProps, any>
     let {items} = this.props
 
     let {location: {pathname, search}} = routeProps
-    let match
-    let matchedItem: RouteProps
+    let m: match<any> | undefined | null
+    let matchedItem: RouteProps | undefined
 
     items.some(item => {
-      match = matchPath(pathname, item)
+      m = matchPath(pathname, item)
       matchedItem = item
-      return !!match
+      return !!m
     })
 
-    return match
-      ? {key: match.url + search, route: <Route {...matchedItem} /> }
+    return m
+      ? {key: m.url + search, route: <Route {...matchedItem} /> }
       : {key: '', route: null}
   }
 

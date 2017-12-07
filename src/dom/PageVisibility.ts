@@ -14,9 +14,10 @@
  *     (user pushes power button to turn screen off)
  */
 import * as Events from 'mora-scripts/libs/lang/Events'
+import { toArray } from '../util/array'
 let event = new Events()
 
-const doc = document
+const doc: any = document
 const prefixes = ['', 'webkit', 'moz', 'ms', 'o']
 
 export interface IEvent {
@@ -24,7 +25,7 @@ export interface IEvent {
   originalEvent: any
 }
 export declare type IState = 'visible' | 'hidden' | 'prerender' | 'unloaded'
-export declare type IEventHandler = (IEvent) => void
+export declare type IEventHandler = (e: IEvent) => void
 /**
  * unbind current listener functions
  */
@@ -33,8 +34,8 @@ export declare type IEventOffHandler = () => void
 // 初始化
 let isSupported: boolean = false
 let hiddenKey: string
-let visibilityChangeEvent: string
-let visibilityStateKey: string
+let visibilityChangeEvent: string | undefined
+let visibilityStateKey: string | undefined
 let state: IState
 
 Object.keys(prefixes).some(prefix => {
@@ -45,6 +46,7 @@ Object.keys(prefixes).some(prefix => {
     visibilityStateKey = prefixed(prefix, 'visibilityState')
     return true
   }
+  return false
 })
 
 if (isSupported) {
@@ -58,9 +60,9 @@ if (isSupported) {
  * visible/hidden/prerender/unloaded
  * @returns IState
  */
-function getVisibilityState(): IState { return isSupported ? doc[visibilityStateKey] : 'visible' }
+function getVisibilityState(): IState { return isSupported ? doc[visibilityStateKey as string] : 'visible' }
 
-function listener(e) {
+function listener(e: IEvent) {
   let currentState = getVisibilityState()
   if (currentState !== state) {
     state = currentState
@@ -108,7 +110,7 @@ export const PageVisibility = {
    */
   on(states: IState | IState[], handler: IEventHandler): IEventOffHandler {
     if (!isSupported) return noop
-    let eventKey = [].concat(states).join(' ')
+    let eventKey = toArray(states).join(' ')
     event.on(eventKey, handler)
     return () => event.off(eventKey, handler)
   },
@@ -121,12 +123,12 @@ export const PageVisibility = {
    */
   once(states: IState | IState[], handler: IEventHandler): IEventOffHandler {
     if (!isSupported) return noop
-    let eventKey = [].concat(states).join(' ')
+    let eventKey = toArray(states).join(' ')
     event.once(eventKey, handler)
     return () => event.off(eventKey, handler)
   }
 }
 
-function prefixed(prefix, prop) {
+function prefixed(prefix: string, prop: string) {
   return prefix ? prefix + prop.charAt(0) + prop.slice(1) : prop
 }

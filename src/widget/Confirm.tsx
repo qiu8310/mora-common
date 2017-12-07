@@ -39,7 +39,7 @@ export class Confirm extends React.PureComponent<IConfirmProps, any> {
     onClose: emptyFn,
   }
 
-  closeFnKey: string
+  closeFnKey: string | null
   state = {
     itemIndex: 0
   }
@@ -84,8 +84,9 @@ export class Confirm extends React.PureComponent<IConfirmProps, any> {
 
   @autobind private afterClose() {
     if (this.closeFnKey) {
-      this.props.onClose()
-      this.props[this.closeFnKey]()
+      let {props} = this as any
+      props.onClose()
+      props[this.closeFnKey]()
       this.closeFnKey = null
     }
   }

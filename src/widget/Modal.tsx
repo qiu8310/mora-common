@@ -77,20 +77,20 @@ export class Modal extends React.PureComponent<IModalProps, any> {
   }
 }
 
-function rc(props: IModalProps, container, instance) {
+function rc(props: IModalProps, container: Element, instance: any) {
   const {
     closeOnPressESC, closeOnClickMask, closeOnClickOutside, closeModal, nowrap,
     /* 这个 container 已经无用了 */ container: _, ...rest
   } = props
 
-  let child
+  let child: any
   if (nowrap) {
     child = props.children
-    if (!child.type) child = <div>{child}</div> // ReactNode 还包括 string 和 boolean
+    if (!child || !child.type) child = <div>{child}</div> // ReactNode 还包括 string 和 boolean
   }
 
   renderComponent(
-    nowrap
+    nowrap && child
       ? child
       : (
         <ModalDOM {...rest}

@@ -17,9 +17,10 @@
  *   type PartialPerson = Partial<IPerson> // 等价于 IPartialPerson
  *
  */
-export type Partial<T> = {
-    [P in keyof T]?: T[P]
-}
+// typescript 已经默认支持了
+// export type Partial<T> = {
+//     [P in keyof T]?: T[P]
+// }
 
 /** Keep types the same, but make each property to be read-only */
 export type Readonly<T> = {
@@ -34,4 +35,9 @@ export type Deferred<T> = {
 /** Wrap proxies around properties of T */
 export type Proxify<T> = {
     [P in keyof T]: { get(): T[P]; set(v: T[P]): void }
+}
+
+export interface Point {
+    x: number
+    y: number
 }

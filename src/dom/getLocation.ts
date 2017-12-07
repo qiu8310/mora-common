@@ -27,8 +27,8 @@ function _getLocation(options: ILocationOptions): ILocation {
 
   if (options.hash) {
     href = location.hash.substr((options.separater || '#').length)
-    pathname = href.split(/[?#]/).shift()
-    search = href.substr(pathname.length).split(/#/).shift()
+    pathname = href.split(/[?#]/).shift() || ''
+    search = href.substr(pathname.length).split(/#/).shift() || ''
     hash = href.indexOf('#') >= 0 ? href.substr(href.indexOf('#')) : ''
   }
 

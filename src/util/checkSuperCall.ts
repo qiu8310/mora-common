@@ -1,6 +1,6 @@
 // import escapeRegExp from 'mora-scripts/libs/lang/escapeRegExp'
-import {iterateInheritedPrototype} from './iterateInheritedPrototype'
-import {getPrototypeOf} from './getPrototypeOf'
+// import {iterateInheritedPrototype} from './iterateInheritedPrototype'
+// import {getPrototypeOf} from './getPrototypeOf'
 
 /**
  *
@@ -24,24 +24,24 @@ import {getPrototypeOf} from './getPrototypeOf'
  * }
  */
 export function checkSuperCall(context: any, toCtor: any, keys: string[]) {
-  let fromProto = getPrototypeOf(context)
-  let toProto = toCtor.prototype
+  // let fromProto = getPrototypeOf(context)
+  // let toProto = toCtor.prototype
 
-  // let recentPropMethods = {}
+  // // let recentPropMethods = {}
 
-  let chains = getProtos(fromProto, toProto)
-    .reverse() // 从父到子遍历
-    .map(prop => ({
-      // 当前原型
-      prop,
-      // 当前原型上的属于 keys 中的所有方法
-      methods: keys.reduce((methods, key) => {
-        if (prop.hasOwnProperty(key)) methods[key] = prop[key]
-        return methods
-      }, {})
-    }))
-    .reverse() // 恢复顺序
-  console.log(chains)
+  // let chains = getProtos(fromProto, toProto)
+  //   .reverse() // 从父到子遍历
+  //   .map(prop => ({
+  //     // 当前原型
+  //     prop,
+  //     // 当前原型上的属于 keys 中的所有方法
+  //     methods: keys.reduce((methods, key) => {
+  //       if (prop.hasOwnProperty(key)) methods[key] = prop[key]
+  //       return methods
+  //     }, {})
+  //   }))
+  //   .reverse() // 恢复顺序
+  // console.log(chains)
   // chains.forEach(({prop, methods}) => {
 
   // })
@@ -72,8 +72,8 @@ export function checkSuperCall(context: any, toCtor: any, keys: string[]) {
   */
 }
 
-function getProtos(fromProto, toProto) {
-  let protos = []
-  iterateInheritedPrototype(_ => { protos.push(_) }, fromProto, toProto)
-  return protos
-}
+// function getProtos(fromProto, toProto) {
+//   let protos = []
+//   iterateInheritedPrototype(_ => { protos.push(_) }, fromProto, toProto)
+//   return protos
+// }

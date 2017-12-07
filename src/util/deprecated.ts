@@ -5,10 +5,9 @@ const DEFAULT_MSG = 'This function will be removed in future versions.'
 /**
  * @param {string} [msg] 提醒，可以不设置，有默认值
  */
-export function deprecated(msg?: string): any
-export function deprecated(target?: any, key?: string, descriptor?: PropertyDescriptor, msg = DEFAULT_MSG): any {
+export function deprecated(target: any, key: string, descriptor: PropertyDescriptor, msg = DEFAULT_MSG): any {
   if (!target || typeof target === 'string') {
-    return function(...args) {
+    return function(...args: any[]) {
       return deprecated.apply(null, args.concat(target || DEFAULT_MSG))
     }
   }

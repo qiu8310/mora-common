@@ -15,13 +15,13 @@ export class Bundle extends React.PureComponent<IBundleProps, any> {
     this.load(this.props)
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps(nextProps: IBundleProps) {
     if (nextProps.load !== this.props.load) {
       this.load(nextProps)
     }
   }
 
-  load(props) {
+  load(props: IBundleProps) {
     if (this.state.mod !== null) this.setState({mod: null})
     props.load((mod) => {
       // handle both es imports and cjs

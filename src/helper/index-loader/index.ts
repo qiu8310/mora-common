@@ -3,9 +3,9 @@ import * as loaderUtils from 'loader-utils'
 import {replacer, IReplacerModule} from './replacer'
 
 export interface IIndexLoaderQuery {
-  realtimeParse: boolean
-  debug: boolean
-  modules: Array<string | IReplacerModule>
+  realtimeParse?: boolean
+  debug?: boolean
+  modules?: Array<string | IReplacerModule>
 }
 
 /*
@@ -27,7 +27,7 @@ export interface IIndexLoaderQuery {
       ]
     }
 */
-module.exports = function(content) {
+module.exports = function(this: any, content: string) {
   if (this.cacheable) this.cacheable()
 
   let query: IIndexLoaderQuery = loaderUtils.getOptions(this) || {}

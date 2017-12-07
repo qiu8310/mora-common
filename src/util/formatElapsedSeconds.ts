@@ -19,6 +19,7 @@ export function formatElapsedSeconds(seconds: number, options: IFormatElapsedSec
       maxIndex = i
       return true
     }
+    return false
   })
 
   return LEVELS
@@ -30,7 +31,7 @@ export function formatElapsedSeconds(seconds: number, options: IFormatElapsedSec
         value = Math.floor(seconds / level.rate)
         seconds -= value * level.rate
       }
-      res[level.key] = maxValue > 0 ? Math.min(maxValue, value) : value
+      res[level.key] = maxValue && maxValue > 0 ? Math.min(maxValue, value) : value
       return res
-    }, {}) as any
+    }, {} as any)
 }

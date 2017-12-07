@@ -18,7 +18,7 @@ export type IImageRatio = (devicePixelRatio: number) => string
 
 // NOTE: 增加了属性需要在 render 中指定
 // 否则新的属性会注入进 div 或 img 中，造成 react 报错
-export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElement> {
+export interface IImageProps extends React.HTMLProps<HTMLImageElement | HTMLDivElement> {
   enableIntersectionObserver?: boolean
   src: string
   /** 是否需要圆角，或指定圆角的大小 */
@@ -33,7 +33,7 @@ export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElemen
 
   /** 如果启用 lazyload，可以指定一个源图片未加载前的一个小图片 */
   placeholdSrc?: 'black' | 'white' | string
-  error?: (e) => void
+  error?: (e: ErrorEvent) => void
   errorClass?: string
   successClass?: string
   loadingClass?: string
@@ -53,7 +53,7 @@ export interface IImage extends React.HTMLProps<HTMLImageElement | HTMLDivElemen
   component?: React.ComponentClass<any> | string
 }
 
-export class Image extends React.PureComponent<IImage, any> {
+export class Image extends React.PureComponent<IImageProps, any> {
   static defaultProps = {
     lazyload: true,
     fade: true,
@@ -69,14 +69,14 @@ export class Image extends React.PureComponent<IImage, any> {
   destroied: boolean = false
   el: HTMLDivElement | HTMLImageElement
   private offBind: any
-  private cachedContainer: Element
+  private cachedContainer: Element | undefined
 
   getContainer() {
     let {container, noCacheContainer} = this.props
     if (this.cachedContainer && !noCacheContainer) return this.cachedContainer
     this.cachedContainer = container
       ? typeof container === 'function' ? container() : container
-      : null
+      : undefined
     if (process.env.NODE_ENV !== 'production' && typeof container === 'function' && !this.cachedContainer) {
       warn('你给 Image 组件设置了 container 函数，但函数返回了空，没有返回 dom')
     }
@@ -85,7 +85,7 @@ export class Image extends React.PureComponent<IImage, any> {
 
   getLazyloadSrc(): string {
     let {placeholdSrc} = this.props
-    return placeholdSrc === 'black' ? BlackDotImage : placeholdSrc === 'white' ? WhiteDotImage : placeholdSrc
+    return placeholdSrc === 'black' ? BlackDotImage : placeholdSrc === 'white' ? WhiteDotImage : placeholdSrc as string
   }
 
   getRealSrc(): string {
@@ -126,7 +126,7 @@ export class Image extends React.PureComponent<IImage, any> {
         }, 16)
       }
     }
-    let errorHandle = (e) => {
+    let errorHandle = (e: ErrorEvent) => {
       if (!el) return // 执行此异步函数时，可能已经 destroy 过了
       if (error) error(e)
       if (loadingClass) el.classList.remove(loadingClass)

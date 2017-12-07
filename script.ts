@@ -65,11 +65,12 @@ cli({
   watch: {
     desc: '只要文件变化就执行 npm run build',
     cmd(res) {
-      let sid
-      chokidar.watch(SRC_DIR, {ignored: /__(tests|mocks)__/}).on('all', (event, p) => {
+      let sid: NodeJS.Timer
+      chokidar.watch(SRC_DIR, {ignored: /__(tests|mocks)__/}).on('all', () => {
         clearTimeout(sid)
         sid = setTimeout(() => {
           shell.promise('npm run build')
+            .then(() => shell.promise('npm run toskill'))
             .then(() => console.log(new Date().toLocaleString() + ' build successfully'))
             .catch(e => console.error('build error'))
         }, 800)
@@ -103,21 +104,21 @@ cli({
   this.error('没有指定要执行的命令')
 })
 
-function getAllDirectorys(directory): string[] {
+function getAllDirectorys(directory: string): string[] {
   return fs.readdirSync(directory).reduce((result, name) => {
     let newFile = path.join(directory, name)
     if (fs.statSync(newFile).isDirectory()) {
       result.push(newFile, ...getAllDirectorys(newFile))
     }
     return result
-  }, [])
+  }, [] as string[])
 }
 
 function getRootDirectoryNames(): string[] {
   return fs.readdirSync(SRC_DIR).filter(name => fs.statSync(path.join(SRC_DIR, name)).isDirectory())
 }
 
-function injectReplace(file, ignores, mapFn) {
+function injectReplace(file: string, ignores: string[], mapFn: (from: string) => string) {
   const data = {folders: ignores.map(mapFn).join(os.EOL)}
   console.log(`成功注入 ${inject(file, data)} 次到文件 ${file} 中`)
 }

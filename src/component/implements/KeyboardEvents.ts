@@ -6,7 +6,7 @@ const FKeyMap = reverse(FunctionKeyCode)
 const PKeyMap = reverse(PrintKeyCode)
 
 const base = {
-  componentDidMount() {
+  componentDidMount(this: KeyboardEvents) {
     let handle: any = (e: KeyboardEvent) => {
       const keySep = /\s*,\s*/
       const segSep = /\s*\+\s*/
@@ -14,11 +14,11 @@ const base = {
         key.split(keySep).map(k => {
           let ks = k.toLowerCase().split(segSep)
           let printChar = ks.pop()
-          ks.sort().push(printChar) // 将 shift, ctrl, meta, alt 安字母顺序排序
+          ks.sort().push(printChar as string) // 将 shift, ctrl, meta, alt 安字母顺序排序
           map[ks.join('+')] = this.keyboard[key]
         })
         return map
-      }, {}), e)
+      }, {} as any), e)
     }
 
     document.addEventListener('keydown', handle)
@@ -27,18 +27,20 @@ const base = {
     this.__keyboardEventOff = () => {
       document.removeEventListener('keydown', handle)
       document.removeEventListener('keypress', handle)
-      this.__keyboardEventOff = null
     }
   },
 
-  componentWillUnmount() {
-    if (this.__keyboardEventOff) this.__keyboardEventOff()
+  componentWillUnmount(this: KeyboardEvents) {
+    this.__keyboardEventOff()
   }
 }
 
+export interface KeyboardEvents {
+  __keyboardEventOff?: any
+}
 export abstract class KeyboardEvents extends React.PureComponent<any, any> {
   static apply() {
-    return Ctor => applyMixins(Ctor, [KeyboardEvents, base], {merges: ['componentDidMount', 'componentWillUnmount']})
+    return (Ctor: any) => applyMixins(Ctor, [KeyboardEvents, base], {merges: ['componentDidMount', 'componentWillUnmount']})
   }
 
   abstract keyboard: {[key: string]: (e: KeyboardEvent, key: string) => boolean | void}
@@ -48,7 +50,7 @@ export abstract class KeyboardEvents extends React.PureComponent<any, any> {
  *  每次按键，一般都会有keydown,keypress全过来，用这个函数来过滤，看用户按下的到底是什么按键
  *  keydown/keyup 是两个低层的事件，而 keypress 则属于用户层吧，一般只有在用户按下的键可以打印出来才会触发这个keypress
  */
-function filter(map, e: KeyboardEvent) {
+function filter(map: {[key: string]: (e: Event, m: string) => any}, e: KeyboardEvent) {
   let modifiers = ''  // 表示 Alt,Ctrl,Meta,Shift这些前缀
   let keyname = null	// 键盘上显示的名字
 
@@ -98,9 +100,9 @@ function filter(map, e: KeyboardEvent) {
   }
 }
 
-function reverse(obj) {
+function reverse(obj: any) {
   return Object.keys(obj).reduce((all, k) => {
     all[obj[k]] = k
     return all
-  }, {})
+  }, {} as any)
 }

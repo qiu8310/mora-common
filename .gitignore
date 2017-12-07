@@ -10,7 +10,7 @@ type
 util
 widget
 ## INJECT_END ##
-!src/*
+!src/**
 
 index.d.ts
 index.d.json

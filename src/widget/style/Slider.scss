@@ -1,0 +1,92 @@
+.wSlider {
+  position: relative;
+}
+.wSliderSlide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
+  // max-width: 100%;
+  // max-height: 100%;
+
+  animation-duration: .8s;
+  animation-timing-function: ease;
+  animation-fill-mode: both;
+}
+
+// to 是离开， from 是进入
+.wSlider {
+  // move vertical
+  z-index: 2;
+  > .current {
+    z-index: 3;
+  }
+
+  &.vertical {
+    > .moveEnter {
+      animation-name: moveFromBottom;
+    }
+    > .moveLeave {
+      animation-name: moveToTop;
+    }
+  }
+  &.verticalReverse {
+    > .moveEnter {
+      animation-name: moveFromTop;
+    }
+    > .moveLeave {
+      animation-name: moveToBottom;
+    }
+  }
+
+  &.horizontal {
+    > .moveEnter {
+      animation-name: moveFromRight;
+    }
+    > .moveLeave {
+      animation-name: moveToLeft;
+    }
+  }
+  &.horizontalReverse {
+    > .moveEnter {
+      animation-name: moveFromLeft;
+    }
+    > .moveLeave {
+      animation-name: moveToRight;
+    }
+  }
+}
+
+@keyframes moveToLeft {
+  from { }
+  to { transform: translateX(-100%); }
+}
+@keyframes moveToRight {
+  from { }
+  to { transform: translateX(100%); }
+}
+@keyframes moveToTop {
+  from { }
+  to { transform: translateY(-100%); }
+}
+@keyframes moveToBottom {
+  from { }
+  to { transform: translateY(100%); }
+}
+
+@keyframes moveFromLeft {
+  from { transform: translateX(-100%); }
+}
+@keyframes moveFromRight {
+  from { transform: translateX(100%); }
+}
+@keyframes moveFromTop {
+  from { transform: translateY(-100%); }
+}
+
+@keyframes moveFromBottom {
+  from { transform: translateY(100%); }
+}

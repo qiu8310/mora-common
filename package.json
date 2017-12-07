@@ -6,7 +6,7 @@
     "build": "./script.ts clean && ./script.ts exports && tsc && ./script.ts cpStyle && ./script.ts exportsMap && chmod a+x bin/*",
     "build:watch": "./script.ts watch",
     "release": "npm version patch && npm run build && snpm publish && cnpm sync mora-common",
-    "installToSkill": "npm run build && ./script.ts installTo ../skill/node_modules/mora-common",
+    "toskill": "./script.ts installTo ../skill/node_modules/mora-common",
     "test": "jest"
   },
   "bin": {
@@ -68,6 +68,7 @@
     "@types/react-dom": "~16.0.0",
     "@types/react-router": "~4.0.15",
     "@types/react-router-dom": "~4.0.8",
+    "@types/react-side-effect": "~1.0.5",
     "@types/react-transition-group": "~1.1.0",
     "alloyfinger": "~0.1.10",
     "chokidar": "~1.7.0",
@@ -78,7 +79,7 @@
     "loader-utils": "~1.1.0",
     "mobx": "~3.3.0",
     "mobx-react": "~4.3.3",
-    "mora-scripts": "~1.6.4",
+    "mora-scripts": "1.6.15",
     "react": "~16.0.0",
     "react-dom": "~16.0.0",
     "react-router": "~4.2.0",
@@ -88,7 +89,11 @@
     "react-transition-group": "^1.2.0",
     "tinify": "~1.5.0",
     "ts-jest": "^21.0.1",
+    "tslib": "^1.7.1",
     "tslint": "^5.7.0",
     "typescript": "^2.5.2"
+  },
+  "dependencies": {
+    "@types/loader-utils": "1.1.0"
   }
 }

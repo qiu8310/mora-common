@@ -27,8 +27,10 @@ export interface IIndexifyOptions {
 }
 
 interface IInnerOptions extends IIndexifyOptions {
-  filter?: (stats: fs.Stats, name: string, absolutePath: string) => boolean
-  getRelativePath?: (absolutePath: string) => string
+  deep: number
+  rename: (file: string) => string
+  filter: (stats: fs.Stats, name: string, absolutePath: string) => boolean
+  getRelativePath: (absolutePath: string) => string
   imports: string[]
   exports: string[]
   exportAll: string[]
@@ -45,14 +47,14 @@ function rename(file: string): string {
 }
 
 export function indexify(folder: string, options: IIndexifyOptions = {}): string {
-  options = {rename, deep: 0, filter: () => true, ...options}
+  let optionFilter = options.filter || (() => true)
 
   folder = path.resolve(folder)
   let getRelativePath = (absolutePath: string) => {
     return path.relative(options.root || folder, absolutePath)
   }
 
-  let map = {}
+  let map: {[key: string]: string} = {}
   let addExportName = (name: string, from: string) => {
     let exists = map.hasOwnProperty(name)
     if (exists) {
@@ -64,19 +66,19 @@ export function indexify(folder: string, options: IIndexifyOptions = {}): string
     }
     return !exists
   }
-  let filter = (stats: fs.Stats, name: string, absolutePath: string) => options.filter(stats, name, getRelativePath(absolutePath), absolutePath)
-  let opts: IInnerOptions = {...options, filter, getRelativePath, imports: [], exports: [], exportAll: [], addExportName}
+  let filter = (stats: fs.Stats, name: string, absolutePath: string) => optionFilter(stats, name, getRelativePath(absolutePath), absolutePath)
+  let opts: IInnerOptions = {rename, deep: 0, ...options, filter, getRelativePath, imports: [], exports: [], exportAll: [], addExportName}
 
   indexifyFolder(folder, 1, opts)
 
-  let lines = []
+  let lines: string[] = []
   opts.imports.forEach(i => lines.push(i))
   opts.exports.forEach(e => lines.push(e))
   if (opts.exportAll.length) lines.push(`export {${opts.exportAll.join(', ')}}`)
   return lines.join(os.EOL)
 }
 
-function indexifyFolder(folder, currentDeep: number, opts: IInnerOptions) {
+function indexifyFolder(folder: string, currentDeep: number, opts: IInnerOptions) {
   const indexes = ['index.d.ts', 'index.ts', 'index.tsx']
 
   if (opts.deep !== 0 && currentDeep > opts.deep) return

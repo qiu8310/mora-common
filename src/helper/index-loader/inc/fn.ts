@@ -41,14 +41,14 @@ export function isFileExists(file: string): boolean {
   return exists(file)
 }
 
-export function warn(...args) {
+export function warn(...args: any[]) {
   _warn('[index-loader]', ...args)
 }
 
-export function info(...args) {
+export function info(...args: any[]) {
   _info(...args)
 }
 
-export function error(...args) {
+export function error(...args: any[]) {
   _error('[index-loader]', ...args)
 }

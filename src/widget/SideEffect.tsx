@@ -21,8 +21,8 @@ export class BodyClassName extends SideEffect<{className: string}, any> {}
 })
 export class DocumentTitle extends SideEffect<{title: string}, any> {}
 
-function makeReducePropsToState(key) {
-  return (propsList) => {
+function makeReducePropsToState(key: string) {
+  return (propsList: any) => {
     let innermostProps = propsList[propsList.length - 1]
     if (innermostProps) {
       return innermostProps[key]

@@ -13,8 +13,6 @@ import * as Config from 'mora-scripts/libs/storage/Config'
 import * as Storage from 'mora-scripts/libs/storage/Storage'
 import * as FileStorage from 'mora-scripts/libs/storage/FileStorage'
 
-import {Partial} from '../type/Object'
-
 export interface ITokenPickerOptions {
   /**
    * token 超过使用限制后多长时间才能恢复；
@@ -34,6 +32,8 @@ interface ITokenObject {
   availableTimestamp: number
 }
 
+const DEFAULT_RECOVER_SECONDS = 30 * 24 * 3600
+
 /**
  * @example
  * let tp = new TokenPicker(['token1', 'token2'])
@@ -46,18 +46,15 @@ interface ITokenObject {
  */
 export class TokenPicker {
   public tokens: string[] = []
-  private options: ITokenPickerOptions = {
-    recoverSeconds: 30 * 24 * 3600,   // 默认一个月
-    recordFile: null
-  }
-  private currentToken: string
+  private currentToken: string | null
   private config: Config
+  private options: ITokenPickerOptions
 
-  constructor(tokens: string[], options?: ITokenPickerOptions) {
-    options = assign(this.options, options)
-
-    let storageOpts = {format: 2, autoInit: true, file: options.recordFile}
-    let storage = options.recordFile ? new FileStorage(storageOpts) : new Storage(storageOpts)
+  constructor(tokens: string[], options: ITokenPickerOptions = {}) {
+    let storageOpts = {format: 2, autoInit: true}
+    let storage = options.recordFile
+      ? new FileStorage({...storageOpts, file: options.recordFile})
+      : new Storage(storageOpts)
 
     this.config = new Config(storage)
     this.options = options
@@ -72,7 +69,7 @@ export class TokenPicker {
   /**
    *  获取最近未使用的 token
    */
-  get token(): string {
+  get token(): string | undefined {
     let {tokenObjects, currentToken} = this
     if (currentToken) return currentToken
 
@@ -98,7 +95,7 @@ export class TokenPicker {
     if (this.currentToken) {
       this.updateTokenObject(
         this.currentToken,
-        {availableTimestamp: availableTimestamp || Date.now() + this.options.recoverSeconds * 1000}
+        {availableTimestamp: availableTimestamp || Date.now() + (this.options.recoverSeconds || DEFAULT_RECOVER_SECONDS) * 1000}
       )
       this.currentToken = null
     }
@@ -147,7 +144,7 @@ export class TokenPicker {
     let tokenObjectsMap = this.tokenObjects.reduce((map, obj) => {
       map[obj.token] = obj
       return map
-    }, {})
+    }, {} as {[key: string]: ITokenObject})
 
     tokens.forEach(token => {
       if (!tokenObjectsMap.hasOwnProperty(token)) {

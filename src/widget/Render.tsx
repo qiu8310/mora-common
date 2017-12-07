@@ -1,20 +1,20 @@
 import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
-export interface IRender {
+export interface IRenderProps {
   className?: string
   container?: Element
-  children?: JSX.Element
+  children: JSX.Element
 }
 
-export class Render extends React.PureComponent<IRender, any> {
+export class Render extends React.PureComponent<IRenderProps, any> {
   private container: Element = this.props.container || getDefaultContainer(this.props.className)
 
   componentDidMount() {
     renderComponent(this.props.children, this.container, this)
   }
 
-  componentDidUpdate(prevProps, prevState) {
+  componentDidUpdate() {
     renderComponent(this.props.children, this.container, this)
   }
 

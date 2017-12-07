@@ -9,7 +9,7 @@ export interface IDts2djsonResult {
 export function dts2djson(dtsFile: string, opts: IDts2djsonOptions = {}): IDts2djsonResult {
   let file = compile(dtsFile, opts)
 
-  let result = {}
+  let result: IDts2djsonResult = {}
   file.declares.forEach(key => result[key] = '')
   Object.keys(file.exports).forEach(key => {
     let {from, ref} = file.exports[key]

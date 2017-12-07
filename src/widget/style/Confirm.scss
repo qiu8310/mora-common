@@ -1,0 +1,44 @@
+.wConfirm {
+  z-index: 1001;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .mask {
+    background: black;
+    opacity: .1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .content {
+    transform-origin: bottom center;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+  .row {
+    text-align: center;
+    display: block;
+    line-height: 49px;
+    background: white;
+  }
+  .title {
+    height: 50px;
+    border-bottom: 1px solid #EFEFEF;
+  }
+  .ok {
+    margin-bottom: 5px;
+  }
+  .slideUpEnter { transform: scaleY(0); transition: transform .3s ease-out; }
+  .slideUpEnterActive { transform: scaleY(1); }
+  .slideUpLeave { transform: scaleY(1); transition: transform .2s ease-in; }
+  .slideUpLeaveActive { transform: scaleY(0); }
+}

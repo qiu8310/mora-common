@@ -37,7 +37,7 @@ export function parseSimpleHTML(text: string): JSX.Element[] {
 }
 
 function replaceSimpleHtmlLines(html: string): JSX.Element[] {
-  let elements = []
+  let elements: JSX.Element[] = []
   html.split(REG_LINE).forEach((t, i) => {
     elements.push(...replaceSimpleHtmlSpaces(t, i), <br key={'br' + i} />)
   })
@@ -46,7 +46,7 @@ function replaceSimpleHtmlLines(html: string): JSX.Element[] {
 }
 
 function replaceSimpleHtmlSpaces(html: string, lineNo: number): JSX.Element[] {
-  let elements = []
+  let elements: JSX.Element[] = []
   let index = 0
   let prefix = 't' + lineNo + '-'
   html.replace(REG_SPACES, (spaces, i) => {
@@ -59,7 +59,7 @@ function replaceSimpleHtmlSpaces(html: string, lineNo: number): JSX.Element[] {
   return elements
 }
 
-function createHtmlSpaces(size) {
+function createHtmlSpaces(size: number) {
   let arr = []
   for (let i = 0; i < size; i++) {
     arr.push('&nbsp')

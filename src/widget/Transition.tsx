@@ -4,6 +4,7 @@
 import * as React from 'react'
 import {onTransitionEnd} from '../dom/onTransitionEnd'
 import * as TransitionGroup from 'react-transition-group/TransitionGroup'
+import { IReactComponentRenderResult } from '../type/React'
 
 export interface ITransitionGroupItemProps {
   name: string
@@ -53,22 +54,22 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
 
   private el: HTMLElement
 
-  reflow(el) {
+  reflow(el: HTMLElement) {
     /* tslint:disable */
     el.scrollTop
     /* tslint:enable */
   }
 
-  call(location, type) {
-    let fn = this.props[location + type[0].toUpperCase() + type.slice(1)]
+  call(location: string, type: string) {
+    let fn = (this.props as any)[location + type[0].toUpperCase() + type.slice(1)]
     if (typeof fn === 'function') fn(this.el)
   }
 
-  will(type, callback) {
-    this['_will_' + type] = true
-    if (!this.props[type]) return callback()
+  will(type: string, callback: () => void) {
+    // this['_will_' + type] = true
+    if (!(this.props as any)[type]) return callback()
 
-    let {el, props} = this
+    let {el, props} = this as any
     let {name} = props
 
     this.call('before', type)
@@ -80,8 +81,8 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
       onTransitionEnd(el, callback)
     }, 16)
   }
-  did(type) {
-    let {el, props} = this
+  did(type: string) {
+    let {el, props} = this as any
     let {name} = props
 
     if (!props[type]) return
@@ -91,7 +92,7 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
     this.call('after', type)
   }
 
-  componentWillAppear(callback) {
+  componentWillAppear(callback: () => void) {
     this.will('appear', callback)
   }
 
@@ -99,14 +100,14 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
     this.did('appear')
   }
 
-  componentWillEnter(callback) {
+  componentWillEnter(callback: () => void) {
     this.will('enter', callback)
   }
   componentDidEnter() {
     this.did('enter')
   }
 
-  componentWillLeave(callback) {
+  componentWillLeave(callback: () => void) {
     this.will('leave', callback)
   }
   componentDidLeave() {
@@ -115,17 +116,17 @@ export class TransitionGroupItem extends React.PureComponent<ITransitionGroupIte
 
   render() {
     let {component, componentProps, className, style, children} = this.props
-    let ref = e => this.el = e
+    let ref = (e: HTMLElement) => this.el = e
     let props = {ref, className, style, ...componentProps}
-    return React.createElement(component, props, children)
+    return React.createElement(component as string, props, children)
     // return <span ref={e => this.el = e} className={className} style={style} children={children} />
   }
 }
 
 export interface ITransition extends ITransitionGroupItemProps {
-  itemKey: string | number
+  itemKey?: string | number
   /** 切换到只显示单个 item 的模式, itemKey 则应该是 items 的当前显示的 item 的索引；提供了此字段便不需要 children */
-  items?: JSX.Element[]
+  items?: IReactComponentRenderResult[]
   groupProps?: TransitionGroup.TransitionGroupProps
 }
 
@@ -141,7 +142,7 @@ export class Transition extends React.PureComponent<ITransition, any> {
 
     if (!rest.name) return rest.children as any // 如果没有指定动画的名称，或者动画名称为 null，则没必要做动画了
 
-    if (items && items.length && !rest.children) (rest as any).children = items[key]
+    if (items && items.length && !rest.children) (rest as any).children = items[key as number]
 
     return <TransitionGroup {...groupProps}>
       <TransitionGroupItem key={key} {...rest} />

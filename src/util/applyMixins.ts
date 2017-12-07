@@ -1,3 +1,5 @@
+import {toArray} from './array'
+
 export interface IApplyMixinsOptions {
   overwrites?: string[]
   merges?: string[]
@@ -8,15 +10,14 @@ export interface IApplyMixinsOptions {
 export function applyMixins<T extends Function>(toCtor: T, fromCtors: any | any[], {overwrites = [], merges = []}: IApplyMixinsOptions = {}): T {
   const exists = Object.getOwnPropertyNames(toCtor.prototype)
 
-  if (!Array.isArray(fromCtors)) fromCtors = [fromCtors]
-  fromCtors.forEach(fromCtor => {
+  toArray(fromCtors).forEach(fromCtor => {
     if (!fromCtor) return
 
     let fromProp = typeof fromCtor === 'function' ? fromCtor.prototype : fromCtor
 
     Object.getOwnPropertyNames(fromProp).forEach(name => {
       if (name !== 'constructor') {
-        let fromDesc = Object.getOwnPropertyDescriptor(fromProp, name)
+        let fromDesc = Object.getOwnPropertyDescriptor(fromProp, name) as PropertyDescriptor
 
         if (exists.indexOf(name) < 0 || overwrites.indexOf(name) >= 0) {
           Object.defineProperty(toCtor.prototype, name, fromDesc)
@@ -24,12 +25,12 @@ export function applyMixins<T extends Function>(toCtor: T, fromCtors: any | any[
           let toDesc = Object.getOwnPropertyDescriptor(toCtor.prototype, name)
 
           // merge 的必须要是函数
-          if (typeof toDesc.value === 'function' && typeof fromDesc.value === 'function') {
+          if (toDesc && typeof toDesc.value === 'function' && typeof fromDesc.value === 'function') {
             Object.defineProperty(toCtor.prototype, name, {
               ...toDesc,
               value() {
-                fromDesc.value.apply(this, arguments)
-                toDesc.value.apply(this, arguments)
+                fromDesc.value.apply(this, arguments);
+                (toDesc as PropertyDescriptor).value.apply(this, arguments)
               }
             })
           }

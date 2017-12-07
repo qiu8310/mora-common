@@ -30,7 +30,7 @@ export function toast(message: string | React.ReactNode, options: IToastOptions 
   let modalProps = {animation, animationDuration, nomask: true, minWidth: 100, minHeight: 'auto'}
   let {destroy} = Modal.dialog(modalProps, el, instance)
 
-  let sid
+  let sid: NodeJS.Timer
   if (duration > 0) sid = setTimeout(destroy, duration)
 
   return {

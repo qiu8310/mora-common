@@ -1,0 +1,24 @@
+.wModalDOM {
+  &, .gOverlay {
+    position: fixed;
+    z-index: 9000;
+  }
+
+  .modalMask {
+    background-color: rgba(0, 0, 0, .7);
+  }
+
+  .modalContentWrap {
+    overflow: hidden;
+    outline: 0;
+  }
+
+  .modalContent {
+    overflow: scroll;
+    -webkit-overflow-scrolling: touch;
+    position: relative;
+    background: white;
+    box-shadow: rgba(0, 0, 0, .1) 0 10px 20px;
+    border-radius: 2px;
+  }
+}

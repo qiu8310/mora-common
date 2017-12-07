@@ -38,7 +38,7 @@ export class Tab extends React.PureComponent<ITabProps & IStorableProps, any> im
   storable: boolean
   store: IStoreFunc
 
-  constructor(props, context) {
+  constructor(props: ITabProps, context: any) {
     super(props, context)
     let {start} = props
     let currentIndex = 0
@@ -53,13 +53,18 @@ export class Tab extends React.PureComponent<ITabProps & IStorableProps, any> im
     this.state = {currentIndex}
   }
 
-  onClickNav(i) {
+  get current() {
+    return this.state.currentIndex
+  }
+
+  tabTo(index: number, callback?: (prevIndex: number) => void) {
     let {currentIndex} = this.state
     let {onChange} = this.props
-    if (i !== currentIndex) {
-      this.setState({currentIndex: i}, () => {
-        this.store('index', i)
-        if (onChange) onChange(i, currentIndex)
+    if (index !== currentIndex) {
+      this.setState({currentIndex: index}, () => {
+        this.store('index', index)
+        if (onChange) onChange(index, currentIndex)
+        if (callback) callback(currentIndex)
       })
     }
   }
@@ -74,8 +79,8 @@ export class Tab extends React.PureComponent<ITabProps & IStorableProps, any> im
     return (
       <div className={classSet('wTab', className)} style={style}>
         <div className='wTabNavs'>
-          {children.map((p, i) => (
-            <div key={i} className={classSet('wTabNav', {[activeClass]: i === currentIndex})} onClick={this.onClickNav.bind(this, i)}>
+          {children.map((p: any, i: number) => (
+            <div key={i} className={classSet('wTabNav', {[activeClass as string]: i === currentIndex})} onClick={() => this.tabTo(i)}>
               {p.props.title}
             </div>
           ))}

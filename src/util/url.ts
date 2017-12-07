@@ -15,7 +15,7 @@ export function parseSearch(search: string): IUrlQuery {
     let [key, value] = pair.split('=')
     if (key !== '_k') query[decodeURIComponent(key)] = decodeURIComponent(value)
     return query
-  }, {})
+  }, {} as IUrlQuery)
 }
 
 export function appendQuery(url: string, query: string | IUrlQuery) {

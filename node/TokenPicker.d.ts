@@ -4,11 +4,11 @@ export interface ITokenPickerOptions {
 }
 export declare class TokenPicker {
     tokens: string[];
-    private options;
     private currentToken;
     private config;
+    private options;
     constructor(tokens: string[], options?: ITokenPickerOptions);
-    readonly token: string;
+    readonly token: string | undefined;
     expire(availableTimestamp?: number): TokenPicker;
     do(callback: (token: string, expire: (availableTimestamp?: number) => void) => void): void;
     private tokenObjects;

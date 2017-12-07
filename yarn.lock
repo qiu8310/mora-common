@@ -26,6 +26,13 @@
   version "21.1.5"
   resolved "http://registry.npm.taobao.org/@types/jest/download/@types/jest-21.1.5.tgz#3db93d069d12602ca115d3604550e15131d8eb7a"
 
+"@types/loader-utils@1.1.0":
+  version "1.1.0"
+  resolved "http://registry.npm.taobao.org/@types/loader-utils/download/@types/loader-utils-1.1.0.tgz#6e71758ea4f529afca36fdebffd5b48c579e90da"
+  dependencies:
+    "@types/node" "*"
+    "@types/webpack" "*"
+
 "@types/node@*", "@types/node@~7.0.31":
   version "7.0.46"
   resolved "http://registry.npm.taobao.org/@types/node/download/@types/node-7.0.46.tgz#c3dedd25558c676b3d6303e51799abb9c3f8f314"
@@ -56,6 +63,12 @@
     "@types/history" "*"
     "@types/react" "*"
 
+"@types/react-side-effect@~1.0.5":
+  version "1.0.5"
+  resolved "http://registry.npm.taobao.org/@types/react-side-effect/download/@types/react-side-effect-1.0.5.tgz#60760404b5d9b6291630be3afa1b90c88b86a70e"
+  dependencies:
+    "@types/react" "*"
+
 "@types/react-transition-group@~1.1.0":
   version "1.1.2"
   resolved "http://registry.npm.taobao.org/@types/react-transition-group/download/@types/react-transition-group-1.1.2.tgz#a349e70788a6dc723a5f439217011ef926c27b4f"
@@ -65,6 +78,28 @@
 "@types/react@*", "@types/react@~16.0.0":
   version "16.0.18"
   resolved "http://registry.npm.taobao.org/@types/react/download/@types/react-16.0.18.tgz#c08eea79ada55bf10b5353e18c21797dd17afa23"
+
+"@types/source-map@*":
+  version "0.5.2"
+  resolved "http://registry.npm.taobao.org/@types/source-map/download/@types/source-map-0.5.2.tgz#973459e744cc7445c85b97f770275b479b138e08"
+
+"@types/tapable@*":
+  version "0.2.4"
+  resolved "http://registry.npm.taobao.org/@types/tapable/download/@types/tapable-0.2.4.tgz#8181a228da46185439300e600c5ae3b3b3982585"
+
+"@types/uglify-js@*":
+  version "2.6.29"
+  resolved "http://registry.npm.taobao.org/@types/uglify-js/download/@types/uglify-js-2.6.29.tgz#521347f69e20201d218f5991ae66e10878afcf1a"
+  dependencies:
+    "@types/source-map" "*"
+
+"@types/webpack@*":
+  version "3.8.1"
+  resolved "http://registry.npm.taobao.org/@types/webpack/download/@types/webpack-3.8.1.tgz#20c11ea43f1ea7bb09eee4d6d633d830653e5a55"
+  dependencies:
+    "@types/node" "*"
+    "@types/tapable" "*"
+    "@types/uglify-js" "*"
 
 abab@^1.0.3:
   version "1.0.4"
@@ -1878,9 +1913,9 @@ mobx@~3.3.0:
   version "3.3.1"
   resolved "http://registry.npm.taobao.org/mobx/download/mobx-3.3.1.tgz#c38fc1a287a0dda3f5d4b85efe1137fedd9dcdf0"
 
-mora-scripts@~1.6.4:
-  version "1.6.11"
-  resolved "http://registry.npm.taobao.org/mora-scripts/download/mora-scripts-1.6.11.tgz#c28710c13b7a19c1c8d735dca50f7daef28df4de"
+mora-scripts@1.6.15:
+  version "1.6.15"
+  resolved "http://registry.npm.taobao.org/mora-scripts/download/mora-scripts-1.6.15.tgz#a35d0bcf0f5f72d5fe1f40a68e47b6e62da58faf"
   dependencies:
     cross-spawn "5.1.0"
     semver-regex "1.0.0"

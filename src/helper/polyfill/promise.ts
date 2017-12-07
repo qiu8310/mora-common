@@ -14,8 +14,8 @@ interface PolyfillPromiseConstructor {
 }
 interface PromiseConstructor extends PolyfillPromiseConstructor {}
 
-Promise.prototype.finally = function(callback) {
-  let P = this.constructor
+Promise.prototype.finally = function<T>(callback: () => T): Promise<T> {
+  let P = this.constructor as PromiseConstructor
   return this.then(
     function(value) { return P.resolve(callback()).then(function() { return value }) },
     function(reason) { return P.resolve(callback()).then(function() { throw reason }) }

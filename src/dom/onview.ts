@@ -1,6 +1,7 @@
 import {throttle as throttleCall, debounce as debounceCall} from '../util/delay'
 import {onload} from './onload'
 import {once} from '../util/once'
+import {toArray} from '../util/array'
 
 export declare type IOnViewOptionsEvent = 'load' | 'resize' | 'scroll' | 'orientationchange' | 'pageshow'
 export interface IOnViewOptions {
@@ -13,7 +14,7 @@ export interface IOnViewOptions {
 // debounce & throttle: http://drupalmotion.com/article/debounce-and-throttle-visual-explanation
 export function onview(fn: (e: Event | {type: string}) => void, options: IOnViewOptions = {}): () => void {
   let {throttle = 0, debounce = 0, container = null, events = ['load', 'resize', 'scroll', 'orientationchange', 'pageshow']} = options
-  let cb
+  let cb: (e: any) => void
 
   if (throttle && throttle > 0) {
     cb = throttleCall(fn, throttle)
@@ -23,9 +24,9 @@ export function onview(fn: (e: Event | {type: string}) => void, options: IOnView
     cb = fn
   }
 
-  if (events.indexOf('pageshow')) cb = wrapPageshow(cb)
+  let eventArray = toArray(events)
+  if (eventArray.indexOf('pageshow')) cb = wrapPageshow(cb)
 
-  let eventArray = [].concat(events)
   if (eventArray.indexOf('load') >= 0) onload(cb)
   eventArray = eventArray.filter(type => type !== 'load')
 
@@ -43,7 +44,7 @@ export function onview(fn: (e: Event | {type: string}) => void, options: IOnView
   })
 }
 
-function wrapPageshow(cb) {
+function wrapPageshow(cb: (e: any) => void): (e: any) => void {
   return (e) => {
     if (e && e.type === 'pageshow') {
       // Persisted user state

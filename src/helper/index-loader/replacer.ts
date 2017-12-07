@@ -69,7 +69,7 @@ export interface IReplacerResult {
 }
 
 const getModuleExportImportExpReg: ((name: string) => RegExp) = (() => {
-  let cache = {}
+  let cache: {[key: string]: RegExp} = {}
   return (name: string) => {
     if (!cache[name]) cache[name] = new RegExp(`^([ \\t]*)(import|export)\\s+\\{([^}]+)\\}\\s+from\\s+(['"])${name}\\4`, 'mg')
     return cache[name]
@@ -128,13 +128,14 @@ const getDJson: ((sourceFile: string, module: IReplacerModule) => IDts2djsonResu
   }
 })()
 
-function tryToGetFile(module: IReplacerModule, key: 'djsonFile' | 'dtsFile', defaultFile: string): string {
+function tryToGetFile(module: IReplacerModule, key: 'djsonFile' | 'dtsFile', defaultFile: string): string | undefined {
   if (module[key]) return module[key]
   if (defaultFile && isFileExists(defaultFile)) {
     if (module.debug) info(`====> 自动读取到 ${module.name} 的 ${key} 文件 ${defaultFile}`)
     module[key] = defaultFile
     return defaultFile
   }
+  return
 }
 
 export function replacer(sourceFile: string, modules: IReplacerModule[]): IReplacerResult
@@ -148,7 +149,7 @@ export function replacer(sourceFile: string, contentOrModules: string | IReplace
   let logHead = once(() => console.log(`${EOL}::::: ${sourceFile} :::::`))
 
   const refModules: string[] = []
-  let replacedContent = modules.reduce((content: string, module: IReplacerModule) => {
+  let replacedContent = (modules as IReplacerModule[]).reduce((content: string, module: IReplacerModule) => {
     return content.replace(getModuleExportImportExpReg(module.name), (...args: any[]) => {
       args.unshift(refModules, getDJson(sourceFile, module))
 
@@ -161,18 +162,20 @@ export function replacer(sourceFile: string, contentOrModules: string | IReplace
 }
 
 function replace(this: IReplacerModule, refModules: string[], djson: IDts2djsonResult, raw: string, preSpaces: string, inOut: string, rawimports: string, quote: string) {
-  const bracketPrefixSpace = rawimports.match(/^\s*/)[0]
-  const bracketSuffixSpace = rawimports.match(/^\s*/)[0]
+  const p = rawimports.match(/^\s*/)
+  const s = rawimports.match(/\s*$/)
+  const bracketPrefixSpace = p ? p[0] : ''
+  const bracketSuffixSpace = s ? s[0] : ''
   const joinBracketFields = (fields: string[]) => `${bracketPrefixSpace}${fields.join(', ')}${bracketSuffixSpace}`
 
-  interface IVariable {alias: string, field: string, fieldKey: string, fieldRef: string}
+  interface IVariable {alias: string, field: string, fieldKey: string, fieldRef: string | undefined}
   interface IAnalyzeResult { variables: {[file: string]: IVariable[]}, files: string[]}
 
   // 先分析出要导出或导入的变量，方便后面的批量操作
   const result: IAnalyzeResult = {variables: {}, files: []}
   stripInlineComment(rawimports.trim()).split(splitRegexp).reduce((res: IAnalyzeResult, field: string) => {
     let fieldKey: string = field
-    let fieldRef: string
+    let fieldRef: string | undefined
     if (asRegexp.test(field)) {
       fieldRef = RegExp.$1
       fieldKey = RegExp.$2

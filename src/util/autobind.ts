@@ -39,7 +39,7 @@ export function autobind<F extends T, T extends Function>(fromCtor: F, toCtorOrW
  */
 export function autobind<F extends T, T extends Function>(fromCtor: F, toCtor?: T, wontBinds?: string[]): F
 
-export function autobind(fromCtor, toCtor = null, wontBinds: any = WONT_BINDS) {
+export function autobind(fromCtor: any, toCtor: any = null, wontBinds: any = WONT_BINDS) {
   if (!fromCtor.prototype && typeof toCtor === 'string' && !Array.isArray(wontBinds)) return autobindClassMethod(fromCtor, toCtor, wontBinds)
 
   if (Array.isArray(toCtor)) {
@@ -64,10 +64,10 @@ function autobindClassMethod(target: any, method: string, desc: PropertyDescript
   return bindMethod(getPrototypeOf(target), method, desc)
 }
 
-function _iteraterProperty(proto, wontBinds) {
+function _iteraterProperty(proto: any, wontBinds: string[]) {
   Object.getOwnPropertyNames(proto)
     .filter(method => wontBinds.indexOf(method) < 0)
-    .forEach(method => bind(proto, method, Object.getOwnPropertyDescriptor(proto, method)))
+    .forEach(method => bind(proto, method, Object.getOwnPropertyDescriptor(proto, method) as PropertyDescriptor))
 }
 
 function bind(proto: any, method: string, desc: PropertyDescriptor) {
@@ -98,7 +98,7 @@ function bindMethod(proto: any, method: string, {value: fn, configurable, enumer
     },
 
     // 为了使子类可以覆写父类的方法
-    set(value) {
+    set(value: any) {
       Object.defineProperty(this, method, {
         configurable: true,
         writable: true,

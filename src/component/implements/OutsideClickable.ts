@@ -2,8 +2,13 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 import {applyMixins} from '../../util/applyMixins'
 
-export declare type IGetInsideContainer = () => Element
-export declare type IOnClickOutside = (e: MouseEvent) => void
+export type IOutsideClickableGetInsideContainer = () => Element | undefined | null | false
+export type IOutsideClickableOnClickOutside = (e: MouseEvent) => void
+
+export interface OutsideClickable {
+  __outsideClickableOff?: any
+  getInsideContainer?: IOutsideClickableGetInsideContainer
+}
 
 export abstract class OutsideClickable extends React.PureComponent<any, any> {
   /**
@@ -15,33 +20,33 @@ export abstract class OutsideClickable extends React.PureComponent<any, any> {
    * 而不会等到函数执行完后将所有 state 综合起来再触发 render，所以在 onClickOutside 函数内要注意
    */
   static apply({sensitive = false} = {}) {
-    return Ctor => applyMixins(
-      Ctor,
-      [OutsideClickable, {
-        componentDidMount() {
-          let handle = (e: MouseEvent) => {
-            const root = this.getInsideContainer()
-            if (!root || root.contains(e.target as Node) || root === e.target || (e.button && e.button !== 0)) return
-            e.stopPropagation()
-            this.onClickOutside(e)
-          }
-          document.addEventListener('click', handle, sensitive)
-          this.__outsideClickableOff = () => {
-            document.removeEventListener('click', handle, sensitive)
-            this.__outsideClickableOff = null
-          }
-        },
-        componentWillUnmount() {
-          if (this.__outsideClickableOff) this.__outsideClickableOff()
+    let base = {
+      getInsideContainer(this: OutsideClickable): Element {
+        return ReactDOM.findDOMNode(this)
+      },
+      componentDidMount(this: OutsideClickable) {
+        let handle = (e: MouseEvent) => {
+          const root = (this as any).getInsideContainer()
+          if (!root || root.contains(e.target as Node) || root === e.target || (e.button && e.button !== 0)) return
+          e.stopPropagation()
+          this.onClickOutside(e)
         }
-      }],
+        document.addEventListener('click', handle, sensitive)
+        this.__outsideClickableOff = () => {
+          document.removeEventListener('click', handle, sensitive)
+        }
+      },
+      componentWillUnmount(this: OutsideClickable) {
+        this.__outsideClickableOff()
+      }
+    }
+
+    return (Ctor: any) => applyMixins(
+      Ctor,
+      [OutsideClickable, base],
       {merges: ['componentDidMount', 'componentWillUnmount']}
     )
   }
 
-  abstract onClickOutside: IOnClickOutside
-
-  getInsideContainer(): Element {
-    return ReactDOM.findDOMNode(this)
-  }
+  abstract onClickOutside: IOutsideClickableOnClickOutside
 }

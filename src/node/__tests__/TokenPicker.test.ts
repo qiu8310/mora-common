@@ -113,7 +113,7 @@ describe('File', () => {
   })
 })
 
-function basicTest(done, opts: ITokenPickerOptions) {
+function basicTest(done: any, opts: ITokenPickerOptions) {
   expect.assertions(5)
   let tokens = ['token1', 'token2']
   let tp = new TokenPicker(tokens, opts)

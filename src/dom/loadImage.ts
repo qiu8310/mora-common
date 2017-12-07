@@ -1,21 +1,24 @@
 export interface ILoadImageOptions {
   success?: (e: Event) => void
-  error?: (e: Event) => void
+  error?: (e: ErrorEvent) => void
+  complete?: () => void
 }
 
-export function loadImage(src: string, options: ILoadImageOptions = {}) {
+export function loadImage(src: string, {success, error, complete}: ILoadImageOptions = {}) {
   let img = new Image()
   let successHandler = (e: Event) => {
-    if (options.success) options.success(e)
+    if (success) success(e)
     off()
   }
-  let errorHandler = (e: Event) => {
-    if (options.error) options.error(e)
+  let errorHandler = (e: ErrorEvent) => {
+    if (error) error(e)
     off()
   }
+
   let off = () => {
     img.removeEventListener('load', successHandler)
     img.removeEventListener('error', errorHandler)
+    if (complete) complete()
   }
 
   img.addEventListener('load', successHandler)

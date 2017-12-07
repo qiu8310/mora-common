@@ -1,0 +1,12 @@
+.wFixed {
+  .fixedHolder {
+    display: block;
+    width: 1px;
+  }
+  .fixedContent {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+  }
+}

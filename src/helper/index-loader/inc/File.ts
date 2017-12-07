@@ -113,7 +113,7 @@ export class File {
           locals.split(config.splitRegexp)
             .map(local => {
               let {key, ref} = this.splitToKeyRef(local)
-              this._addExportKey(key, {from, ref})
+              this._addExportKey(key, {from: from as string, ref})
             })
         } else {
           refFile.declares.forEach(key => this._addExportKey(key, {from: refFile.src}))
@@ -172,7 +172,7 @@ export class File {
     if (!from) {
       // 如果是相对目录时，不应该解析失败！
       // 绝对目录可能是 node_modules 下的目录
-      if (obj.from.charAt[0] === '.') fn.warn(`无法解析到文件 "${obj.from}"，来自文件 ${this.src}，已自动忽略`)
+      if (obj.from.charAt(0) === '.') fn.warn(`无法解析到文件 "${obj.from}"，来自文件 ${this.src}，已自动忽略`)
       return
     }
 
@@ -232,12 +232,12 @@ export class File {
   }
   //#endregion
 
-  private splitToKeyRef(key): {key: string, ref?: string} {
+  private splitToKeyRef(key: string): {key: string, ref?: string} {
     if (config.asRegexp.test(key)) return {key: RegExp.$2, ref: RegExp.$1}
     return {key}
   }
 
-  private findReferedFile(ref: string, tryDirectory = true): string {
+  private findReferedFile(ref: string, tryDirectory = true): string | null {
     if (ref[ref.length - 1] === '/') {
       tryDirectory = false
       ref += 'index' // 如果是目录的话，取目录下的 index 文件

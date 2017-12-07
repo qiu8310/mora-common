@@ -28,7 +28,7 @@ export const lineExportAllFromRegExp = /^export\s+(\*)\s+from\s+['"](.*?)['"]/
 export const lineExportDefaultRegexp = /^export\s+(default)\s+/
 
 /** 匹配的变量的声明，如 export interface xxx,  export class yyy */
-export const lineExportVariableRegexp = /^export\s+(?:declare\s+)?(?:abstract\s+)?(?:class|type|function|interface|const|let)\s+(\w+)/
+export const lineExportVariableRegexp = /^export\s+(?:declare\s+)?(?:abstract\s+)?(?:async\s+)?(?:class|type|function|interface|const|let)\s+(\w+)/
 
 /** 匹配的变量的声明，如 export {a, b as c}，注意和 lineExportLocalsFromRegexp 区分，这里没有 from */
 export const lineExportLocalsRegexp = /^export\s+\{([^}]*?)\}/

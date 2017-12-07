@@ -25,9 +25,7 @@ export class Slider extends React.PureComponent<ISliderProps, any> {
     start: 0,
     direction: 'vertical',
     animation: 'move',
-    offset: 20,
-    beforeChange: () => {},
-    afterChange: () => {}
+    offset: 20
   }
 
   isSliding = false
@@ -35,15 +33,14 @@ export class Slider extends React.PureComponent<ISliderProps, any> {
   state = {
     total: React.Children.toArray(this.props.children).length,
     reverse: false,
-    currentSlide: this.props.start
+    currentSlide: this.props.start as number
   }
 
-  private slider: HTMLDivElement
-  private slide: TransitionGroupItem
+  private slider: HTMLDivElement | null
   private canSlideNext: boolean
   private canSlidePrev: boolean
 
-  slideTo(index, reverse: boolean = null) {
+  slideTo(index: number, reverse: boolean | null = null) {
     let last = this.state.total - 1
     let prevSlide = this.state.currentSlide
     index = index < 0 ? 0 : index > last ? last : index
@@ -75,9 +72,8 @@ export class Slider extends React.PureComponent<ISliderProps, any> {
 
     return (
       <TransitionGroupItem
-          ref={s => this.slide = s}
           key={child.key || this.state.currentSlide}
-          name={animation}
+          name={animation as string}
           beforeEnter={this.beforeChildEnter}
           afterEnter={this.afterChildEnter}
           beforeLeave={this.beforeChildLeave}
@@ -107,15 +103,15 @@ export class Slider extends React.PureComponent<ISliderProps, any> {
     )
   }
 
-  @autobind private beforeChildEnter(el) {
+  @autobind private beforeChildEnter(el: HTMLSpanElement) {
     this.isSliding = true
     el.classList.add('current')
-    this.props.beforeChange(this.state.currentSlide - 1)
+    if (this.props.beforeChange) this.props.beforeChange(this.state.currentSlide - 1)
   }
 
   @autobind private afterChildEnter(el: HTMLSpanElement) {
     this.isSliding = false
-    this.props.afterChange(this.state.currentSlide)
+    if (this.props.afterChange) this.props.afterChange(this.state.currentSlide)
   }
 
   @autobind private beforeChildLeave(el: HTMLSpanElement) {
@@ -123,11 +119,12 @@ export class Slider extends React.PureComponent<ISliderProps, any> {
   }
 
   @autobind private onTouchStart() {
+    if (!this.slider) return
     let container = this.slider.children[0].children[0]
     let {clientHeight: containerHeight, clientWidth: containerWidth, scrollTop, scrollLeft} = container
     let {clientHeight: childHeight, clientWidth: childWidth} = container.children[0]
 
-    let {offset, direction} = this.props
+    let {offset, direction} = this.props as any
     switch (direction) {
       case 'vertical':
         this.canSlideNext = containerHeight + scrollTop + offset - childHeight >= 0
@@ -140,7 +137,7 @@ export class Slider extends React.PureComponent<ISliderProps, any> {
     }
   }
 
-  @autobind private onSwipe(e) {
+  @autobind private onSwipe(e: any) {
     let swipe = e.direction.toLowerCase()
     if (this.props.direction === 'vertical') {
       if (swipe === 'up' && this.canSlideNext) {

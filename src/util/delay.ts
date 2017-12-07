@@ -14,8 +14,8 @@
   }
  */
 
-export function debounce(fn: (...args) => void, wait: number): (...args) => void {
-  let sid
+export function debounce(fn: (...args: any[]) => void, wait: number): (...args: any[]) => void {
+  let sid: NodeJS.Timer | null
   return (...args) => {
     if (sid) {
       clearTimeout(sid)
@@ -25,9 +25,9 @@ export function debounce(fn: (...args) => void, wait: number): (...args) => void
   }
 }
 
-export function throttle(fn: (...args) => void, wait: number): (...args) => void {
+export function throttle(fn: (...args: any[]) => void, wait: number): (...args: any[]) => void {
   let lastCall: number = 0
-  let sid
+  let sid: NodeJS.Timer | null
   let clearSid = () => {
     if (sid) {
       clearTimeout(sid)
@@ -52,7 +52,7 @@ export function throttle(fn: (...args) => void, wait: number): (...args) => void
   }
 }
 
-export function async(fn: (...args) => void, wait = 0): (...args) => void {
+export function async(fn: (...args: any[]) => void, wait = 0): (...args: any[]) => void {
   return (...args) => {
     setTimeout(() => fn(...args), wait)
   }

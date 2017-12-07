@@ -1,9 +1,27 @@
 import * as React from 'react'
 
-export class Component<P> extends React.Component<P, any> {
-  state = {loading: false}
+export interface IComponentState {
+  loading: boolean
+}
 
-  get loading() { return this.state.loading }
-  doLoading(data: any = {}, cb?: () => void) { this.setState({...data, loading: true}, cb) }
-  doneLoading(data: any = {}, cb?: () => void) { this.setState({...data, loading: false}, cb) }
+export class Component<P = {}, S extends IComponentState = IComponentState> extends React.Component<P, S> {
+  /**
+   * 当前 loading 状态
+   */
+  get loading() { return !!this.state.loading }
+
+
+  /**
+   * 将 state.loading 设置成 true
+   */
+  doLoading<K extends keyof S>(state?: Pick<S, K>, cb?: () => any) {
+    this.setState({...(state || {}), loading: true}, cb)
+  }
+
+  /**
+   * 将 state.loading 设置成 false
+   */
+  doneLoading<K extends keyof S>(state?: Pick<S, K>, cb?: () => any) {
+    this.setState({...(state || {}), loading: false}, cb)
+  }
 }

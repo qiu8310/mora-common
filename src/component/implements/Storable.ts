@@ -10,7 +10,7 @@ export declare type IStoreFunc = (key: IStorableKey, value?: any) => any
 
 export class Storable extends React.PureComponent<IStorableProps, any> {
   static apply() {
-    return Ctor => applyMixins(Ctor, Storable)
+    return (Ctor: any) => applyMixins(Ctor, Storable)
   }
 
   get storable() {

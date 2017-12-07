@@ -1,21 +1,20 @@
-export function rAF(fn: () => boolean | void): () => void {
+export function rAF(fn: () => boolean | void): {destroy: () => void} {
   let w: any = window
-  let canceled
+  let canceled: boolean
 
   let request = w.requestAnimationFrame
     || w.webkitRequestAnimationFrame
     || w.mozRequestAnimationFrame
     || w.msRequestAnimationFrame
     || w.oRequestAnimationFrame
-
-  if (request) {
-    request = f => setTimeout(f, 16)
-  }
+    || ((f: any) => setTimeout(f, 16))
 
   let cb = () => {
     if (!canceled && fn() !== false) request(cb)
   }
   request(cb)
 
-  return () => (canceled = true)
+  return {
+    destroy: () => (canceled = true)
+  }
 }

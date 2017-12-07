@@ -98,10 +98,10 @@ export interface IViewportVisiableOptions {
 }
 
 export interface IViewport {
-  top?: number
-  left?: number
-  right?: number
-  bottom?: number
+  top: number
+  left: number
+  right: number
+  bottom: number
 }
 
 export declare type IOffset = number | IViewport
@@ -123,7 +123,7 @@ function getDefaultViewport(): IViewport {
   }
 }
 
-function expendViewport(rect: IViewport, offset: IOffset): IViewport {
+function expendViewport(rect: IViewport, offset?: IOffset): IViewport {
   if (!offset) return rect
   let offsetRect = typeof offset === 'number' ? {left: offset, top: offset, bottom: offset, right: offset} : offset
   let {top = 0, left = 0, right = 0, bottom = 0} = offsetRect

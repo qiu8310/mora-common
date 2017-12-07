@@ -60,7 +60,7 @@ let gre = /(?:yyyy|yy|mm|m|MM|M|dd|d|DD|Do|D|HH|H|hh|h|A|a|ii|i|ss|s|X|x)/g
 export function formatDate(format: string): string
 export function formatDate(data: Date, format: string): string
 
-export function formatDate(date, format?: string): string {
+export function formatDate(date: any, format?: string): string {
   if (!format) {
     format = date
     date = new Date()
@@ -78,7 +78,7 @@ export function formatDate(date, format?: string): string {
   let h = hour % 12
   let a = hour > 11 ? 'pm' : 'am'
 
-  return format.replace(gre, function(key) {
+  return (format as string).replace(gre, function(key) {
     switch (key) {
       case 'yyyy': return year
       case 'yy': return year.toString().substr(2)
@@ -109,14 +109,14 @@ export function formatDate(date, format?: string): string {
   })
 }
 
-function pad(num) {
+function pad(num: number) {
   return num < 10 ? '0' + num : num
 }
 
-function order(day) {
+function order(day: number) {
   let prefix = day.toString()
   let suffix = 'th'
-  let map = {1: 'st', 2: 'nd', 3: 'rd'}
+  let map: any = {1: 'st', 2: 'nd', 3: 'rd'}
 
   if (day < 4 || day > 20) {
     suffix = map[prefix.toString().slice(-1)] || 'th'

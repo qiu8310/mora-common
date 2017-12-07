@@ -1,20 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+var tslib_1 = require("tslib");
 var assign = require("mora-scripts/libs/lang/assign");
 var Config = require("mora-scripts/libs/storage/Config");
 var Storage = require("mora-scripts/libs/storage/Storage");
 var FileStorage = require("mora-scripts/libs/storage/FileStorage");
+var DEFAULT_RECOVER_SECONDS = 30 * 24 * 3600;
 var TokenPicker = (function () {
     function TokenPicker(tokens, options) {
+        if (options === void 0) { options = {}; }
         var _this = this;
         this.tokens = [];
-        this.options = {
-            recoverSeconds: 30 * 24 * 3600,
-            recordFile: null
-        };
-        options = assign(this.options, options);
-        var storageOpts = { format: 2, autoInit: true, file: options.recordFile };
-        var storage = options.recordFile ? new FileStorage(storageOpts) : new Storage(storageOpts);
+        var storageOpts = { format: 2, autoInit: true };
+        var storage = options.recordFile
+            ? new FileStorage(tslib_1.__assign({}, storageOpts, { file: options.recordFile }))
+            : new Storage(storageOpts);
         this.config = new Config(storage);
         this.options = options;
         tokens.forEach(function (t) {
@@ -45,7 +45,7 @@ var TokenPicker = (function () {
     TokenPicker.prototype.expire = function (availableTimestamp) {
         if (availableTimestamp === void 0) { availableTimestamp = 0; }
         if (this.currentToken) {
-            this.updateTokenObject(this.currentToken, { availableTimestamp: availableTimestamp || Date.now() + this.options.recoverSeconds * 1000 });
+            this.updateTokenObject(this.currentToken, { availableTimestamp: availableTimestamp || Date.now() + (this.options.recoverSeconds || DEFAULT_RECOVER_SECONDS) * 1000 });
             this.currentToken = null;
         }
         return this;

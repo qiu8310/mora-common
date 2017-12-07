@@ -5,7 +5,7 @@ const TRANSITION: IAnimateType = 'transition'
 const ANIMATION: IAnimateType = 'animation'
 
 
-export function onTransitionEnd(el: Element, callback: () => {}, expectAnimType?: IAnimateType) {
+export function onTransitionEnd(el: Element, callback: () => any, expectAnimType?: IAnimateType) {
   const {type, timeout, propCount} = getTransitionInfo(el, expectAnimType)
   if (!type) return callback()
   let event = type === TRANSITION ? transitionEndEvent : animationEndEvent
@@ -14,7 +14,7 @@ export function onTransitionEnd(el: Element, callback: () => {}, expectAnimType?
     el.removeEventListener(event, onEnd)
     callback()
   }
-  const onEnd = e => {
+  const onEnd = (e: any) => {
     if (e.target === el) {
       if (++ended >= propCount) end()
     }
@@ -28,7 +28,7 @@ export function onTransitionEnd(el: Element, callback: () => {}, expectAnimType?
 }
 
 export function getTransitionInfo(el: Element, expectAnimType?: IAnimateType) {
-  const styles = window.getComputedStyle(el)
+  const styles = window.getComputedStyle(el) as any
   const transitionDelays: string[] = styles[transitionProp + 'Delay'].split(', ')
   const transitionDurations: string[] = styles[transitionProp + 'Duration'].split(', ')
   const transitionTimeout: number = getTimeout(transitionDelays, transitionDurations)
@@ -37,7 +37,7 @@ export function getTransitionInfo(el: Element, expectAnimType?: IAnimateType) {
   const animationDurations: string[] = styles[animationProp + 'Duration'].split(', ')
   const animationTimeout: number = getTimeout(animationDelays, animationDurations)
 
-  let type: IAnimateType
+  let type: IAnimateType | undefined
   let timeout = 0
   let propCount = 0
 
@@ -59,7 +59,7 @@ export function getTransitionInfo(el: Element, expectAnimType?: IAnimateType) {
       ? transitionTimeout > animationTimeout
         ? TRANSITION
         : ANIMATION
-      : null
+      : undefined
     propCount = type
       ? type === TRANSITION
         ? transitionDurations.length
@@ -69,7 +69,7 @@ export function getTransitionInfo(el: Element, expectAnimType?: IAnimateType) {
   return {type, timeout, propCount}
 }
 
-function getTimeout(delays, durations): number {
+function getTimeout(delays: string[], durations: string[]): number {
   while (delays.length < durations.length) {
     delays = delays.concat(delays)
   }
