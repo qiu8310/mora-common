@@ -1,27 +1,23 @@
-export interface ILoadImageOptions {
-  success?: (e: Event) => void
-  error?: (e: ErrorEvent) => void
-  complete?: () => void
-}
+export function loadImage(src: string): Promise<HTMLImageElement> {
+  return new Promise((resolve, reject) => {
+    let img = new Image()
+    let off = () => {
+      img.removeEventListener('load', success)
+      img.removeEventListener('error', error)
+    }
 
-export function loadImage(src: string, {success, error, complete}: ILoadImageOptions = {}) {
-  let img = new Image()
-  let successHandler = (e: Event) => {
-    if (success) success(e)
-    off()
-  }
-  let errorHandler = (e: ErrorEvent) => {
-    if (error) error(e)
-    off()
-  }
+    img.addEventListener('load', success)
+    img.addEventListener('error', error)
+    img.src = src
 
-  let off = () => {
-    img.removeEventListener('load', successHandler)
-    img.removeEventListener('error', errorHandler)
-    if (complete) complete()
-  }
+    function success() {
+      off()
+      resolve(img)
+    }
 
-  img.addEventListener('load', successHandler)
-  img.addEventListener('error', errorHandler)
-  img.src = src
+    function error(e: ErrorEvent) {
+      off()
+      reject(e)
+    }
+  })
 }

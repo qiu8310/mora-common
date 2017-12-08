@@ -1,28 +1,25 @@
-export interface ILoadScriptOptions {
-  success?: (e: Event) => void
-  error?: (e: Event) => void
-  complete?: () => void
-}
+export function loadScript(url: string): Promise<HTMLScriptElement> {
+  return new Promise((resolve, reject) => {
+    let script = document.createElement('script') as any
+    script.src = url
+    script.type = 'text/javascript'
 
-export function loadScript(url: string, {success, error, complete}: ILoadScriptOptions = {}) {
-  let script = document.createElement('script') as any
-  script.src = url
-  script.type = 'text/javascript'
-  let destroy = () => {
-    script.onerror = null
-    script.onload = null
-    if (script.parentNode) script.parentNode.removeChild(script)
-    if (complete) complete()
-  }
-  script.onload = function(e: Event) {
-    destroy()
-    if (success) success(e)
-  }
-  script.onerror = function(e: Event) {
-    destroy()
-    if (error) error(e)
-  }
+    script.onload = function(e: Event) {
+      destroy()
+      resolve(script)
+    }
+    script.onerror = function(e: ErrorEvent) {
+      destroy()
+      reject(e)
+    }
 
-  // sync way of adding script tags to the page
-  document.body.appendChild(script)
+    // sync way of adding script tags to the page
+    document.body.appendChild(script)
+
+    function destroy() {
+      script.onerror = null
+      script.onload = null
+      if (script.parentNode) script.parentNode.removeChild(script)
+    }
+  })
 }

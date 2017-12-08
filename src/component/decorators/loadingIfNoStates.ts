@@ -16,7 +16,7 @@ export function loadingIfNoStates(options: string | string[] | ILoadingIfNoState
         let state: any = this.state || {}
         let show = true
         if (opts.required && opts.required.length) {
-          show = !toArray(opts.required).every(key => state[key] != null)
+          show = toArray(opts.required).every(key => state[key] != null)
         }
 
         if (opts.oneOf && opts.oneOf.length) {

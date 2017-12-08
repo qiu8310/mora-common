@@ -96,51 +96,59 @@ export class Image extends React.PureComponent<IImageProps, any> {
   }
 
   load() {
-    let {destroied, loaded, el} = this
-    if (loaded || destroied) return
-
-    this.loaded = true
-    this.destroy()
+    let {el} = this
     let {bg, error, successClass, errorClass, loadingClass, fade} = this.props
 
     if (loadingClass) el.classList.add(loadingClass)
     let src = this.getRealSrc()
-    let successHandle = () => {
-      if (!el) return // 执行此异步函数时，可能已经 destroy 过了
-      if (bg) {
-        el.style.backgroundImage = `url(${src})`
-      } else {
-        el.setAttribute('src', src)
-      }
-      if (loadingClass) el.classList.remove(loadingClass)
-      if (successClass) el.classList.add(successClass)
 
-      if (fade && ('transition' in el.style)) {
-        el.style.opacity = '0'
-        setTimeout(() => {
-          /* tslint:disable */
-          el.scrollTop
-          /* tslint:enable */
-          el.style.transition = `opacity ${typeof fade === 'number' ? fade : 600}ms ease-in`
-          el.style.opacity = '1'
-        }, 16)
-      }
-    }
-    let errorHandle = (e: ErrorEvent) => {
-      if (!el) return // 执行此异步函数时，可能已经 destroy 过了
-      if (error) error(e)
-      if (loadingClass) el.classList.remove(loadingClass)
-      if (errorClass) el.classList.add(errorClass)
-    }
-    loadImage(src, {success: successHandle, error: errorHandle})
+    loadImage(src)
+      .then((img: HTMLImageElement) => {
+        if (!el) return // 执行此异步函数时，可能已经 destroy 过了
+
+        if (bg) el.style.backgroundImage = `url(${src})`
+        else el.setAttribute('src', src)
+
+        if (loadingClass) el.classList.remove(loadingClass)
+        if (successClass) el.classList.add(successClass)
+
+        if (fade && ('transition' in el.style)) {
+          el.style.opacity = '0'
+          setTimeout(() => {
+            /* tslint:disable */
+            el.scrollTop
+            /* tslint:enable */
+            el.style.transition = `opacity ${typeof fade === 'number' ? fade : 600}ms ease-in`
+            el.style.opacity = '1'
+          }, 16)
+        }
+      })
+      .catch((e: ErrorEvent) => {
+        if (!el) return // 执行此异步函数时，可能已经 destroy 过了
+        if (error) error(e)
+        if (loadingClass) el.classList.remove(loadingClass)
+        if (errorClass) el.classList.add(errorClass)
+      })
   }
 
   componentDidMount() {
     let container = this.getContainer()
     let {enableIntersectionObserver, offset} = this.props
-    this.offBind = viewport.listen(this.el, () => this.load(), {
+    this.offBind = viewport.listen(this.el, () => {
+      let {destroied, loaded} = this
+      if (loaded || destroied) return
+      this.loaded = true
+      this.destroy()
+      this.load()
+    }, {
       enableIntersectionObserver, container, offset, throttle: 200
     })
+  }
+
+  componentDidUpdate(prevProps: IImageProps) {
+    if (this.props.src !== prevProps.src) {
+      this.load()
+    }
   }
 
   destroy() {
