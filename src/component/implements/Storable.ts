@@ -9,6 +9,15 @@ export interface IStorableProps {
 export declare type IStoreFunc = (key: IStorableKey, value?: any) => any
 
 export class Storable extends React.PureComponent<IStorableProps, any> {
+  /**
+   * 在继承的子类中写
+   *
+   * ```
+   * store: IStoreFunc
+   * ```
+   *
+   * 继承的子类的 props 需要合并 `IStorableProps`
+   */
   static apply() {
     return (Ctor: any) => applyMixins(Ctor, Storable)
   }
@@ -21,7 +30,7 @@ export class Storable extends React.PureComponent<IStorableProps, any> {
     let isGet = typeof value === 'undefined'
 
     if (store != null && storeKey != null) {
-      storeKey = 'Storable--' + storeKey
+      storeKey = 'Storable__' + storeKey
       if (!store[storeKey]) {
         if (isGet) return
         else store[storeKey] = {}

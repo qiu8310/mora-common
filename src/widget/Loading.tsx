@@ -9,7 +9,7 @@ export class Loading extends React.PureComponent<ILoadingProps, any> {
     defaultProps = props
   }
   render() {
-    let props = {defaultProps, ...this.props}
+    let props = {...defaultProps, ...this.props}
     return (
       <svg className='wLoading' width='38' height='38' viewBox='0 0 38 38' stroke='#fff' {...props}>
         <g fill='none' fillRule='evenodd'>
