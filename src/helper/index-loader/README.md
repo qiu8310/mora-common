@@ -7,7 +7,7 @@
 
 * [ ] 支持导出 node_modules 下的组件中的变量，如 `export {Link} from 'react-router-dom'`
 * [ ] 支持将 export {foo, bar} 写在多行上
-* [x] 支持分开写的语法，如：
+* [x] 支持分开写的语法(注意，有可能会修改组件属性，此配置默认开启，可配置关闭)，如：
 
   ```ts
   import a from './a'

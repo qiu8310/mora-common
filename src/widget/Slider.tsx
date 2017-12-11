@@ -20,7 +20,7 @@ export interface ISliderProps {
 }
 
 export class Slider extends React.PureComponent<ISliderProps, any> {
-  static defaultProps = {
+  static defaultProps: Partial<ISliderProps> = {
     loop: false,
     start: 0,
     direction: 'vertical',

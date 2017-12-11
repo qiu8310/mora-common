@@ -1,27 +1,12 @@
 import * as React from 'react'
 
-export interface IComponentState {
-  loading: boolean
+export type IComponentProps<P = {}, DP = {}> = Readonly<{ children?: React.ReactNode }> & Readonly<P> & Readonly<DP>
+
+/**
+ * 如果组件下不会嵌入其它子组件，则建议不要使用 Component
+ */
+export class Component<P = {}, DP = {}, S = {}> extends React.Component<P, S> {
+  p: IComponentProps<P, DP> = this.props as any
 }
 
-export class Component<P = {}, S extends IComponentState = IComponentState> extends React.Component<P, S> {
-  /**
-   * 当前 loading 状态
-   */
-  get loading() { return !!this.state.loading }
-
-
-  /**
-   * 将 state.loading 设置成 true
-   */
-  doLoading<K extends keyof S>(state?: Pick<S, K>, cb?: () => any) {
-    this.setState({...(state || {}), loading: true}, cb)
-  }
-
-  /**
-   * 将 state.loading 设置成 false
-   */
-  doneLoading<K extends keyof S>(state?: Pick<S, K>, cb?: () => any) {
-    this.setState({...(state || {}), loading: false}, cb)
-  }
-}
+export {React}

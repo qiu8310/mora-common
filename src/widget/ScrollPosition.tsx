@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {Scrollable} from '../component/implements/Scrollable'
-import {Storable, IStoreFunc, IStorableProps} from '../component/implements/Storable'
+import {Storable, IStorableFunc, IStorableProps} from '../component/implements/Storable'
 import {onview} from '../dom/onview'
 import {warn} from '../util/warn'
 
@@ -55,7 +55,7 @@ export class ScrollRestore extends ScrollPosition<IScrollRestoreProps & IStorabl
 
   // implements
   scrollTop: number
-  store: IStoreFunc
+  store: IStorableFunc
   storable: boolean
 
   private offview: any

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import {classSet} from '../util/classSet'
-import {Storable, IStoreFunc, IStorableProps} from '../component/implements/Storable'
+import {Storable, IStorableFunc, IStorableProps} from '../component/implements/Storable'
 
 export interface IPanelProps {
   title: any
@@ -36,7 +36,7 @@ export class Tab extends React.PureComponent<ITabProps & IStorableProps, any> im
   }
 
   storable: boolean
-  store: IStoreFunc
+  store: IStorableFunc
 
   constructor(props: ITabProps, context: any) {
     super(props, context)

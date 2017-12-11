@@ -39,6 +39,15 @@ export interface KeyboardEvents {
   __keyboardEventOff?: any
 }
 export abstract class KeyboardEvents extends React.PureComponent<any, any> {
+  /**
+   * 在继承类上写
+   *
+   * ```
+   * keyboard = {
+   *   'ctrl+t': (e: KeyboardEvent) => void
+   * }
+   * ```
+   */
   static apply() {
     return (Ctor: any) => applyMixins(Ctor, [KeyboardEvents, base], {merges: ['componentDidMount', 'componentWillUnmount']})
   }

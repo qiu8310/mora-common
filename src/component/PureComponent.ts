@@ -1,29 +1,17 @@
 import * as React from 'react'
 
-import {Component, IComponentState} from './Component'
+import {Component, IComponentProps} from './Component'
 import {applyMixins} from '../util/applyMixins'
 
-export interface IPureComponentState extends IComponentState {
+export type IPureComponentProps<P = {}, DP = {}> = IComponentProps<P, DP>
 
-}
-
-class PureComponent<P = {}, S extends IPureComponentState = IPureComponentState> extends React.PureComponent<P, S> implements Component<P, S> {
-  /**
-   * 当前 loading 状态
-   */
-  readonly loading: boolean
-
-  /**
-   * 将 state.loading 设置成 true
-   */
-  doLoading: <K extends keyof S>(state: Pick<S, K>, callback?: () => any) => void
-
-  /**
-   * 将 state.loading 设置成 false
-   */
-  doneLoading: <K extends keyof S>(state: Pick<S, K>, callback?: () => any) => void
+/**
+ * 如果组件下会嵌入其它子组件，则建议不要使用 PureComponent
+ */
+class PureComponent<P = {}, DP = {}, S = {}> extends React.PureComponent<P, S> implements Component<P, DP, S> {
+  p: IPureComponentProps<P, DP> = this.props as any
 }
 
 applyMixins(PureComponent, [Component])
 
-export {PureComponent}
+export {PureComponent, React}

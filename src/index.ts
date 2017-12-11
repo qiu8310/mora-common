@@ -4,7 +4,7 @@
 
 /*# INJECT_START exports #*/
 export * from './component/Component'
-export * from './component/PureComponent'
+export {IPureComponentProps, PureComponent} from './component/PureComponent'
 export * from './component/decorators/disableTouchMove'
 export * from './component/decorators/loadingIfNoStates'
 export * from './component/decorators/renderAfterDidMount'

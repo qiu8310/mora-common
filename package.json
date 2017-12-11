@@ -7,6 +7,7 @@
     "build:watch": "./script.ts watch",
     "release": "npm version patch && npm run build && snpm publish && cnpm sync mora-common",
     "toskill": "./script.ts installTo ../skill/node_modules/mora-common",
+    "tofantasy": "./script.ts installTo ../fantasy/node_modules/mora-common",
     "test": "jest"
   },
   "bin": {

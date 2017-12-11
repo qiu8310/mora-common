@@ -6,14 +6,15 @@ export interface IStorableProps {
   store?: any
   storeKey?: IStorableKey
 }
-export declare type IStoreFunc = (key: IStorableKey, value?: any) => any
+export declare type IStorableFunc = (key: IStorableKey, value?: any) => any
 
 export class Storable extends React.PureComponent<IStorableProps, any> {
   /**
    * 在继承的子类中写
    *
    * ```
-   * store: IStoreFunc
+   * storable: boolean
+   * store: IStorableFunc
    * ```
    *
    * 继承的子类的 props 需要合并 `IStorableProps`
