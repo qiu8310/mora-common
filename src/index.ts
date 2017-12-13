@@ -4,7 +4,7 @@
 
 /*# INJECT_START exports #*/
 export * from './component/Component'
-export {IPureComponentProps, PureComponent} from './component/PureComponent'
+export * from './component/PureComponent'
 export * from './component/decorators/disableTouchMove'
 export * from './component/decorators/loadingIfNoStates'
 export * from './component/decorators/renderAfterDidMount'
@@ -41,6 +41,7 @@ export * from './util/delay'
 export * from './util/deprecated'
 export * from './util/formatDate'
 export * from './util/formatElapsedSeconds'
+export * from './util/function'
 export * from './util/getPrototypeOf'
 export * from './util/hoistNonReactStatics'
 export * from './util/iterateInheritedPrototype'

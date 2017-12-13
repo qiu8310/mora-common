@@ -1,7 +1,7 @@
 import * as path from 'path'
 import * as fs from 'fs'
 import * as os from 'os'
-import {upperFirst} from '../../util/string'
+import {capitalize} from '../../util/string'
 import {isFileExists, warn, info} from './inc/fn'
 import {KEY_DEFAULT} from './inc/config'
 import {compile} from './inc/File'
@@ -41,7 +41,7 @@ function rename(file: string): string {
   let name = path.basename(file, path.extname(file)).replace(/\.d$/, '')
   if (/index/i.test(name)) name = path.basename(path.dirname(file))
   name = name.toLowerCase()
-    .split(/[-_\s]+/).map(w => upperFirst(w))
+    .split(/[-_\s]+/).map(w => capitalize(w))
     .join('')
   return name
 }

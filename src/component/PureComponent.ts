@@ -13,5 +13,3 @@ class PureComponent<P = {}, DP = {}, S = {}> extends React.PureComponent<P, S> i
 }
 
 applyMixins(PureComponent, [Component])
-
-export {PureComponent, React}

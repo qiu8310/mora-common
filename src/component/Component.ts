@@ -8,5 +8,3 @@ export type IComponentProps<P = {}, DP = {}> = Readonly<{ children?: React.React
 export class Component<P = {}, DP = {}, S = {}> extends React.Component<P, S> {
   p: IComponentProps<P, DP> = this.props as any
 }
-
-export {React}

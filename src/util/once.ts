@@ -1,4 +1,4 @@
-import {toArray} from './array'
+import {toArray, head} from './array'
 
 /**
  * 保证函数 fn 只会被调用一次，并且以后每次调用都会返回第一次的结果
@@ -31,5 +31,5 @@ export function once(fns: any): any {
     return result
   })
 
-  return isArray ? newFns : newFns[0]
+  return isArray ? newFns : head(newFns)
 }
