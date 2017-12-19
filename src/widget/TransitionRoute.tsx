@@ -8,6 +8,7 @@ export interface ITransitionRouteProps extends React.HTMLAttributes<HTMLDivEleme
   items: RouteProps[]
   animation?: string
   animationDuration?: string
+  extra?: (activeRouteProps: RouteProps | undefined, activeRouteKey: string) => any
 }
 
 // 不能继承 PureComponent， 否则 Route 不会更新
@@ -34,16 +35,19 @@ export class TransitionRoute extends React.Component<ITransitionRouteProps, any>
     })
 
     return m
-      ? {key: m.url + search, route: <Route {...matchedItem} /> }
-      : {key: '', route: null}
+      ? {key: m.url + search, route: <Route {...matchedItem} />, routeProps: matchedItem }
+      : {key: '', route: null, routeProps: matchedItem}
   }
 
   render() {
-    let {items, animation: animationName, animationDuration, ...props} = this.props
+    let {items, animation: animationName, animationDuration, extra, ...props} = this.props
     return (
       <Route render={routeProps => {
-        let {key, route} = this.getRoute(routeProps)
-        return <Transition
+        let {key, route, routeProps: rp} = this.getRoute(routeProps)
+        let extraEl: any
+        if (extra) extraEl = extra(rp, key)
+
+        let trans = <Transition
           className='wTransitionRoute gInEffect'
           groupProps={{component: 'span'}}
           itemKey={key}
@@ -54,6 +58,8 @@ export class TransitionRoute extends React.Component<ITransitionRouteProps, any>
           enter
           children={route}
         />
+
+        return extraEl ? <div>{trans}{extraEl}</div> : trans
       }}/>
     )
   }
