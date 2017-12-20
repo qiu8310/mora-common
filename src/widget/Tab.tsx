@@ -81,7 +81,7 @@ export class Tab extends React.PureComponent<ITabProps & IStorableProps, any> im
         <div className='wTabNavs'>
           {children.map((p: any, i: number) => (
             <div key={i} className={classSet('wTabNav', {[activeClass as string]: i === currentIndex})} onClick={() => this.tabTo(i)}>
-              {p.props.title}
+              <span className='wTabNavText'>{p.props.title}</span>
             </div>
           ))}
         </div>
