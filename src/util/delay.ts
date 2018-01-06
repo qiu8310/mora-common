@@ -67,3 +67,15 @@ export function delay(fn: () => void, wait = 0): void {
   if (wait && wait > 0) setTimeout(fn, wait)
   else fn()
 }
+
+
+/**
+ * 返回 Promise，可以这样使用
+ *
+ * ```
+ * await sleep(3000)
+ * ```
+ */
+export function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms))
+}

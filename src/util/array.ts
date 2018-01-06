@@ -32,6 +32,13 @@ export function shuffle<T>(arr: T[]): T[] {
 }
 
 /**
+ * Returns a random element from an array
+ */
+export function sample<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)]
+}
+
+/**
  * Head of list
  *
  * return arr[0]
