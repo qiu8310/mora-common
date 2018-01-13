@@ -17,6 +17,6 @@ export function renderAfterDidMount(options?: any) {
       render() {
         return this.state.mounted ? React.createElement(Component, this.props) : null
       }
-    }
+    } as any
   }
 }
