@@ -7,10 +7,22 @@
     {
       "type": "node",
       "request": "launch",
+      "name": "TS Debug",
+      "runtimeExecutable": "/Users/Mora/.nvm/versions/node/v8.9.3/bin/node",
+      "program": "${workspaceRoot}/node_modules/.bin/ts-node",
+      "args": [
+        "${file}"
+      ],
+      "internalConsoleOptions": "openOnSessionStart"
+    },
+
+    {
+      "type": "node",
+      "request": "launch",
       "name": "Jest Tests",
       "program": "${workspaceRoot}/node_modules/.bin/jest",
       "args": [
-        "${file}"
+        "--runInBand", "${file}"
       ],
       "internalConsoleOptions": "openOnSessionStart"
     }
