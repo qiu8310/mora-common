@@ -33,6 +33,9 @@ export function parseSearch(search: string): IUrlQuery {
 /*
   参考 nodejs 原生 api: querystring.parse
 
+  有些不同，如 a=3&a[b]=2 在原生中会得到 {a: ['2', {b: '2'}]}，而此 api 解析后是 {a: {0: '3', b: '2'}}
+
+
   将 'a[a1]=1&a[a2]=2&b[b1]=3' =>
     - a1 - 1
   a
