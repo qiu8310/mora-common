@@ -62,3 +62,30 @@ export async function map<T, R>(tasks: T[], map: (task: T, index: number, ref: T
     run()
   })
 }
+
+
+export async function replace(src: string, gregexp: RegExp, iterator: (mat: RegExpMatchArray) => Promise<string>, limit = 1) {
+  let matches: RegExpExecArray[] = []
+
+  let mat: RegExpExecArray | null
+  /* tslint:disable: no-conditional-assignment */
+  while ((mat = gregexp.exec(src))) {
+    matches.push(mat)
+  }
+
+  let replacers = await map(matches, iterator, limit)
+
+  let i = replacers.length
+  let result: string[] = []
+  let lastIndex = src.length
+  while (i--) {
+    let replacer = replacers[i]
+    let match = matches[i]
+    let raw = match[0]
+    result.unshift(replacer + src.substring(match.index + raw.length, lastIndex))
+    lastIndex = match.index
+  }
+
+  if (lastIndex) result.unshift(src.substring(0, lastIndex))
+  return result.join('')
+}
