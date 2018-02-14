@@ -5,7 +5,7 @@
   "scripts": {
     "build": "./script.ts clean && ./script.ts exports && tsc && ./script.ts cpStyle && ./script.ts exportsMap && chmod a+x bin/*",
     "build:watch": "./script.ts watch",
-    "release": "npm version patch && npm run build && snpm publish && cnpm sync mora-common",
+    "release": "npm version patch && npm run build && snpm publish && cnpm sync mora-common && git push --follow-tags",
     "toskill": "./script.ts installTo ../skill/node_modules/mora-common",
     "tofantasy": "./script.ts installTo ../fantasy/node_modules/mora-common",
     "test": "jest"
