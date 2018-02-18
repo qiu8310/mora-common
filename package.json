@@ -1,6 +1,6 @@
 {
   "name": "mora-common",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "",
   "loader": "./loader.js",
   "scripts": {
