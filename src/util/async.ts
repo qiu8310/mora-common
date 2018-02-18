@@ -26,7 +26,7 @@ export async function series<T, R>(tasks: T[], run: (task: T, index: number, tas
 }
 
 
-export async function map<T, R>(tasks: T[], map: (task: T, index: number, ref: T[]) => Promise<R>, limit: number = 1): Promise<R[]> {
+export async function map<T, R>(tasks: T[], iterator: (task: T, index: number, ref: T[]) => Promise<R>, limit: number = 1): Promise<R[]> {
   return new Promise<R[]>((resolve, reject) => {
     let finished = false
     let runningCount = 0
@@ -40,7 +40,7 @@ export async function map<T, R>(tasks: T[], map: (task: T, index: number, ref: T
 
     let queue = tasks.map((task, index, ref) => () => {
       runningCount++
-      map(task, index, ref)
+      iterator(task, index, ref)
         .then(res => {
           result[index] = res
           runningCount--

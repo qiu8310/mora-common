@@ -2,6 +2,7 @@
   "name": "mora-common",
   "version": "1.0.7",
   "description": "",
+  "loader": "./loader.js",
   "scripts": {
     "build": "./script.ts clean && ./script.ts exports && tsc && ./script.ts cpStyle && ./script.ts exportsMap && chmod a+x bin/*",
     "build:watch": "./script.ts watch",
