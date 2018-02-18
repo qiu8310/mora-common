@@ -16,6 +16,19 @@ export interface IClassInstanceToObjectOptions {
   till?: any
 }
 
+/**
+ *
+ * 将一个可能包含原型链的对象扁平化成单个对象
+ *
+ * 如，现有这样的类的继承关系 A -> B -> C，当创建一个实例 a = new A() 时
+ *
+ * a 实例会存有 B、C 的原型链，使用此函数 newa = toObject(a) 之后，
+ * newa 就会变成一个 PlainObject，但它有 A、B、C 上的所有属性和方法，
+ * 当然不包括静态属性或方法
+ *
+ * 注意：用此方法的话，尽量避免在类中使用胖函数，胖函数的 this 死死的绑定
+ * 在原对象中，无法重新绑定
+ */
 export function toObject(something: any, options: IClassInstanceToObjectOptions = {}): {[key: string]: any} {
   let obj = {}
   if (!isObject(something)) return obj
