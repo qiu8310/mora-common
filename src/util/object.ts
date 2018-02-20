@@ -2,6 +2,13 @@ import {iterateInheritedPrototype} from './iterateInheritedPrototype'
 
 export interface IClassInstanceToObjectOptions {
   /**
+   * 将所有的对象中的函数绑定到指定的对象上
+   *
+   * **注意：对象中的箭头函数无法重新绑定**
+   */
+  bindTo?: any
+
+  /**
    * 要排除的键名
    *
    * 默认： ['constructor']
@@ -45,8 +52,8 @@ export function toObject(something: any, options: IClassInstanceToObjectOptions 
       fnKeys.forEach((k) => {
         if (typeof desc[k] === 'function') {
           let oldFn = desc[k] as any
-          desc[k] = (...args: any[]) => {
-            return oldFn.apply(obj, args)
+          desc[k] = function(...args: any[]) {
+            return oldFn.apply(options.hasOwnProperty('bindTo') ? options.bindTo : this, args)
           }
         }
       })
