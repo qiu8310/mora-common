@@ -43,7 +43,7 @@ export function toObject(something: any, options: IClassInstanceToObjectOptions 
   let excludes = options.excludes || ['constructor']
 
   iterateInheritedPrototype((proto) => {
-    Object.keys(proto).forEach(key => {
+    Object.getOwnPropertyNames(proto).forEach(key => {
       if (excludes.indexOf(key) >= 0) return
       if (obj.hasOwnProperty(key)) return
       let desc = Object.getOwnPropertyDescriptor(proto, key) as PropertyDescriptor
