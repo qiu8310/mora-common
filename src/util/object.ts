@@ -21,6 +21,19 @@ export interface IClassInstanceToObjectOptions {
    * 默认： Object
    */
   till?: any
+
+  /**
+   * 生成的新对象的键值是否需要 enumerable， 0 表示使用原本的配置，此值默认为 true
+   */
+  enumerable?: 0 | boolean
+  /**
+   * 生成的新对象的键值是否需要 configurable， 不指定或指定 0 则使用原本的
+   */
+  configurable?: 0 | boolean
+  /**
+   * 生成的新对象的键值是否需要 writable，不指定或指定 0 则使用原本的
+   */
+  writable?: 0 | boolean
 }
 
 /**
@@ -33,14 +46,21 @@ export interface IClassInstanceToObjectOptions {
  * newa 就会变成一个 PlainObject，但它有 A、B、C 上的所有属性和方法，
  * 当然不包括静态属性或方法
  *
- * 注意：用此方法的话，尽量避免在类中使用胖函数，胖函数的 this 死死的绑定
+ * 注意1：用此方法的话，尽量避免在类中使用胖函数，胖函数的 this 死死的绑定
  * 在原对象中，无法重新绑定
+ *
+ * 注意2：类继承的时候不要在函数中调用 super，toObject 之后是扁平的，没有 super 之说
  */
 export function toObject(something: any, options: IClassInstanceToObjectOptions = {}): {[key: string]: any} {
   let obj = {}
   if (!isObject(something)) return obj
 
   let excludes = options.excludes || ['constructor']
+  let {enumerable = true, configurable = 0, writable = 0} = options
+  let defaultDesc: PropertyDescriptor = {}
+  if (enumerable !== 0) defaultDesc.enumerable = enumerable
+  if (configurable !== 0) defaultDesc.configurable = configurable
+  if (writable !== 0) defaultDesc.writable = writable
 
   iterateInheritedPrototype((proto) => {
     Object.getOwnPropertyNames(proto).forEach(key => {
@@ -57,8 +77,7 @@ export function toObject(something: any, options: IClassInstanceToObjectOptions 
           }
         }
       })
-
-      Object.defineProperty(obj, key, desc)
+      Object.defineProperty(obj, key, {...desc, ...defaultDesc})
     })
   }, something, options.till || Object, false)
 
