@@ -22,7 +22,6 @@
     "roots": [
       "src"
     ],
-    "mapCoverage": true,
     "collectCoverage": true,
     "coverageReporters": [
       "text",
@@ -61,6 +60,7 @@
     "react-transition-group": "^1.2.0"
   },
   "devDependencies": {
+    "@types/loader-utils": "1.1.0",
     "@types/chokidar": "~1.7.1",
     "@types/core-decorators": "0.10.32",
     "@types/fs-extra": "~4.0.0",
@@ -97,7 +97,5 @@
     "tslint": "^5.7.0",
     "typescript": "^2.5.2"
   },
-  "dependencies": {
-    "@types/loader-utils": "1.1.0"
-  }
+  "dependencies": {}
 }
