@@ -74,7 +74,8 @@ export class File {
 
   constructor(src: string, content?: string) {
     this.src = src
-    this.content = content == null ? fs.readFileSync(src).toString() : content
+    this.content = (content == null ? fs.readFileSync(src).toString() : content)
+      .replace(config.exportNamespaceRegExp, '') // 清除 namespace 的定义
   }
 
   compile(options: IFileCompileOptions = {}) {

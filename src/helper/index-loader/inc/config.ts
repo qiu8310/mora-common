@@ -39,6 +39,17 @@ export const importLineRegExp = /^import\s+.*?$/gm
 export const lineImportAllRegExp = /^import\s+\*\s+as\s+(\w+)\s+from\s+['"](.*?)['"]/
 
 /**
+ * 匹配
+ *
+ * export namespace xxx {
+ *  // ....
+ * }
+ *
+ * 会将 namespace 中的所有 export 清空，所以要保证当前有个同名的 export 存在
+ */
+export const exportNamespaceRegExp = /^export namespace[\s\S]*?\n\}/gm
+
+/**
  * 匹配 import xxx from './xxx'
  *
  * 还需要去检查 from 的文件内容是否有 export default，因为 tsconfig 可以开启 allowSyntheticDefaultImports

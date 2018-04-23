@@ -1,0 +1,11 @@
+// https://slides.com/davidkhourshid/illusions?#/19
+
+.enter {
+  animation-timing-function: cubic-bezier(0, .5, .5, 1);
+}
+.move {
+  animation-timing-function: cubic-bezier(.5, 0, .5, 1);
+}
+.exit {
+  animation-timing-function: cubic-bezier(.5, 0, 0, 1);
+}

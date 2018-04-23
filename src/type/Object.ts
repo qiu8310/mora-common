@@ -37,6 +37,9 @@ export type Proxify<T> = {
     [P in keyof T]: { get(): T[P]; set(v: T[P]): void }
 }
 
+/** 去除对象中指定的 key */
+// export type Omit<O, K> = Pick<O, Exclude<keyof O, K>>  // Exclude in ts2.8
+
 export interface Point {
     x: number
     y: number
