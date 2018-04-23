@@ -47,7 +47,7 @@ export const lineImportAllRegExp = /^import\s+\*\s+as\s+(\w+)\s+from\s+['"](.*?)
  *
  * 会将 namespace 中的所有 export 清空，所以要保证当前有个同名的 export 存在
  */
-export const exportNamespaceRegExp = /^export namespace[\s\S]*?\n\}/gm
+export const exportNamespaceRegExp = /^export\s+(?:declare\s+)?namespace[\s\S]*?\n\}/gm
 
 /**
  * 匹配 import xxx from './xxx'
