@@ -44,7 +44,7 @@ describe('Memory', function () {
     test('do error', function () {
         var tokens = ['t1', 't2', 't3'];
         var tp = new TokenPicker_1.TokenPicker(tokens);
-        expect.assertions(tokens.length + 1);
+        expect.assertions(tokens.length + 1); // 最后一个是 throw
         expect(function () {
             tp.do(function (token, expire) {
                 expect(tokens).toContain(token);
@@ -86,7 +86,7 @@ describe('File', function () {
         var tp2 = new TokenPicker_1.TokenPicker(tokens, { recordFile: recordFile });
         expect(tokens).toContain(tp2.token);
         tp2.expire();
-        expect(tp1.token).not.toBeUndefined();
+        expect(tp1.token).not.toBeUndefined(); // tp1 没有更新，不会重复去读文件数据
         expect(tp2.token).toBeUndefined();
     });
     test('reload', function () {
@@ -105,7 +105,7 @@ function basicTest(done, opts) {
     expect(tokens).toContain(tp.token);
     tp.expire();
     expect(tokens).toContain(tp.token);
-    tp.expire(Date.now() + 10);
+    tp.expire(Date.now() + 10); // 设置 10 毫秒后恢复有效
     expect(tp.token).toBeUndefined();
     setTimeout(function () {
         try {
