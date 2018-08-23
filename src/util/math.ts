@@ -83,7 +83,7 @@ export function random(min: number, max: number, integer: boolean): number {
  * 计算数组中的数字的平均值
  */
 export function average(arr: number[]): number {
-  return arr.reduce((acc, val) => acc + val, 0)
+  return arr.reduce((acc, val) => acc + val, 0) / arr.length
 }
 
 /**

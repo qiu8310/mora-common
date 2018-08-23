@@ -95,20 +95,8 @@ export class CustomStorage {
    * @memberof CustomStorage
    */
   get<T>(key: string, defaultValue?: any): T {
-    let storeKey = this.getStoreKey(key)
-    let rawVal = this.memory && this.cache[storeKey] || this.store && this.store.getItem(storeKey)
-    if (!rawVal) return defaultValue
-
-    try {
-      let [value, expiredAt] = JSON.parse(rawVal)
-      if (expiredAt && Date.now() > expiredAt) {
-        this.del(key)
-        return defaultValue
-      }
-      return value
-    } catch (e) {
-      return defaultValue
-    }
+    let obj = this.rawget(key)
+    return obj ? obj.value : defaultValue
   }
 
   /**
@@ -118,7 +106,7 @@ export class CustomStorage {
    * @memberof CustomStorage
    */
   has(key: string): boolean {
-    return !!this.get(key)
+    return !!this.rawget(key)
   }
 
   /**
@@ -159,6 +147,23 @@ export class CustomStorage {
 
   private getStoreKey(key: string): string {
     return this.getKeyPrefix() + key
+  }
+
+  private rawget(key: string) {
+    let storeKey = this.getStoreKey(key)
+    let rawVal = this.memory && this.cache[storeKey] || this.store && this.store.getItem(storeKey)
+    if (!rawVal) return
+
+    try {
+      let [value, expiredAt] = JSON.parse(rawVal)
+      if (expiredAt && Date.now() > expiredAt) {
+        this.del(key)
+        return
+      }
+      return {value}
+    } catch (e) {
+      return
+    }
   }
 }
 
