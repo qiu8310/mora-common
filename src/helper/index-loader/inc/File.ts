@@ -87,7 +87,7 @@ export class File {
   //#region analyzeExport
   stringifyExportKey(obj: IFileExportKey) {
     let from = obj.from.replace(/(\.d)?\.tsx?$/, '').replace(/\/index$/, '/')
-    return (from + (obj.ref ? config.KEY_SEPARATOR + obj.ref : '')).replace(/\\/, '/')
+    return (from + (obj.ref ? config.KEY_SEPARATOR + obj.ref : '')).replace(/\\/g, '/')
   }
 
   private _addExportKey(key: string, obj: IFileExportKey) {
