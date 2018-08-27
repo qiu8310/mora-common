@@ -201,7 +201,8 @@ function replace(this: IReplacerModule, refModules: string[], djson: IDts2djsonR
 
   // 再来一个个替换
   const rawReplace = result.files.reduce((lines: string[], file: string) => {
-    const fromFile = `from ${quote}${file}${quote}`
+    // 兼容 window 换行符
+    const fromFile = `from ${quote}${file.replace(/\\/g, '/')}${quote}`
     let variables: IVariable[] = result.variables[file]
 
     let aliasFields = variables
@@ -224,4 +225,3 @@ function replace(this: IReplacerModule, refModules: string[], djson: IDts2djsonR
   if (this.debug) info(`${raw}  =>  ${EOL}${rawReplace}`)
   return rawReplace
 }
-
