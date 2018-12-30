@@ -105,3 +105,69 @@ export function sum(arr: number[]): number {
 export function round(n: number, decimals: number = 0) {
   return Number(`${Math.round(`${n}e${decimals}` as any)}e-${decimals}`)
 }
+
+
+/**
+ * 从数组中取 m 个组成的组合
+ */
+function c<T>(arr: T[], m: number): T[][] {
+  let n = arr.length
+  if (n < m || m < 1) return []
+  if (m === 1) return arr.map(it => [it])
+
+  let result: T[][] = []
+  for (let i = 0; i < n; i++) {
+    let start = arr[i]
+    c(arr.slice(i + 1), m - 1).forEach(it => {
+      result.push([start, ...it])
+    })
+  }
+  return result
+}
+
+/**
+ * 数组的组合
+ *
+ * 如果指定了 n，则表示从数组中取 n 个项的组合情况
+ * 如果没指定 n，表示所有的组合情况
+ */
+export function combination<T>(arr: T[], n?: number) {
+  if (n) return c(arr, n)
+  let result: T[][] = []
+  for (let i = 0; i < arr.length; i++) {
+    result.push(...c(arr, i + 1))
+  }
+  return result
+}
+
+
+/**
+ * 一个数组的所有排列可能
+ */
+function p<T>(arr: T[]): T[][] {
+  let n = arr.length
+  if (n === 0) return []
+  if (n === 1) return [[...arr]]
+
+  let result: T[][] = []
+  for (let i = 0; i < n; i++) {
+    let start = arr[i]
+    let subResult = p([...arr.slice(0, i), ...arr.slice(i + 1, n)])
+    result.push(...subResult.map(l => [start, ...l]))
+  }
+  return result
+}
+
+/**
+ * 数组的排列
+ *
+ * 如果指定了 n，则表示从数组中取 n 个项的排列情况
+ * 如果没指定 n，表示所有的排列情况
+ */
+export function permutation<T>(arr: T[], n?: number) {
+  let result: T[][] = []
+  combination(arr, n).forEach(list => {
+    result.push(...p(list))
+  })
+  return result
+}
