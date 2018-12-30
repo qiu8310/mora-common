@@ -2,6 +2,7 @@
   "extends": "tslint:recommended",
   "rulesDirectory": [],
   "rules": {
+    "unified-signatures": false,
     "quotemark": [true, "single", "jsx-single"],
     "semicolon": [true, "never"],
     "member-access": false,

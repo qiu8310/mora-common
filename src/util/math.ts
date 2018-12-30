@@ -110,7 +110,7 @@ export function round(n: number, decimals: number = 0) {
 /**
  * 从数组中取 m 个组成的组合
  */
-function c<T>(arr: T[], m: number): T[][] {
+function __combination<T>(arr: T[], m: number): T[][] {
   let n = arr.length
   if (n < m || m < 1) return []
   if (m === 1) return arr.map(it => [it])
@@ -118,7 +118,7 @@ function c<T>(arr: T[], m: number): T[][] {
   let result: T[][] = []
   for (let i = 0; i < n; i++) {
     let start = arr[i]
-    c(arr.slice(i + 1), m - 1).forEach(it => {
+    __combination(arr.slice(i + 1), m - 1).forEach(it => {
       result.push([start, ...it])
     })
   }
@@ -132,10 +132,10 @@ function c<T>(arr: T[], m: number): T[][] {
  * 如果没指定 n，表示所有的组合情况
  */
 export function combination<T>(arr: T[], n?: number) {
-  if (n) return c(arr, n)
+  if (n) return __combination(arr, n)
   let result: T[][] = []
   for (let i = 0; i < arr.length; i++) {
-    result.push(...c(arr, i + 1))
+    result.push(...__combination(arr, i + 1))
   }
   return result
 }
@@ -144,7 +144,7 @@ export function combination<T>(arr: T[], n?: number) {
 /**
  * 一个数组的所有排列可能
  */
-function p<T>(arr: T[]): T[][] {
+function __permutation<T>(arr: T[]): T[][] {
   let n = arr.length
   if (n === 0) return []
   if (n === 1) return [[...arr]]
@@ -152,7 +152,7 @@ function p<T>(arr: T[]): T[][] {
   let result: T[][] = []
   for (let i = 0; i < n; i++) {
     let start = arr[i]
-    let subResult = p([...arr.slice(0, i), ...arr.slice(i + 1, n)])
+    let subResult = __permutation([...arr.slice(0, i), ...arr.slice(i + 1, n)])
     result.push(...subResult.map(l => [start, ...l]))
   }
   return result
@@ -167,7 +167,39 @@ function p<T>(arr: T[]): T[][] {
 export function permutation<T>(arr: T[], n?: number) {
   let result: T[][] = []
   combination(arr, n).forEach(list => {
-    result.push(...p(list))
+    result.push(...__permutation(list))
   })
   return result
+}
+
+
+/**
+ * Creates an array of numbers progressing from start up to, but not including, end.
+ */
+export function range(end: number): number[]
+/**
+ * Creates an array of numbers progressing from start up to, but not including, end.
+ */
+export function range(start: number, end: number): number[]
+/**
+ * Creates an array of numbers progressing from start up to, but not including, end.
+ */
+export function range(start: number, end: number, step: number): number[]
+export function range(a: number, b?: number, c?: number) {
+  let len = arguments.length
+  let start = 0
+  let end = 0
+  let step = 1
+  if (len === 1) {
+    end = a
+  } else if (len > 1) {
+    start = a
+    // @ts-ignore
+    end = b
+    // @ts-ignore
+    if (len > 2) step = c
+  }
+  let arr: number[] = []
+  for (let i = start; i < end; i += step) arr.push(i)
+  return arr
 }
