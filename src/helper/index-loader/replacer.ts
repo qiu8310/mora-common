@@ -25,6 +25,11 @@ export interface IReplacerModule {
   root?: string
 
   /**
+   * 如果指定了此函数，优先使用此函数返回的字符串，如果没返回字符串，则忽略此函数，使用 djsonFile 或 dtsFile
+   */
+  transformFrom?: (name: string) => any
+
+  /**
    * 模块的 .d.json 文件，默认会去模块目录下查找 index.d.json
    */
   djsonFile?: string
@@ -154,7 +159,7 @@ export function replacer(sourceFile: string, contentOrModules: string | IReplace
       args.unshift(refModules, getDJson(sourceFile, module))
 
       if (module.debug) logHead()
-      return replace.apply(module, args)
+      return replace.apply(module, args as any)
     })
   }, sourceContent)
 
@@ -181,7 +186,13 @@ function replace(this: IReplacerModule, refModules: string[], djson: IDts2djsonR
       fieldKey = RegExp.$2
     }
 
-    let rawfile = djson[fieldRef || fieldKey]
+    let rawfile: string = ''
+    if (this.transformFrom) {
+      let transResult = this.transformFrom(fieldRef || fieldKey)
+      if (transResult && typeof transResult === 'string') rawfile = transResult
+    }
+
+    if (!rawfile) rawfile = djson[fieldRef || fieldKey]
     if (!rawfile) throw new Error(`要导出的字段 "${field}" 不在 ${this.name} 的模块中`)
 
     // file 和 alias 都可能是 空字符串
