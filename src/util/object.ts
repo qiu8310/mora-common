@@ -59,8 +59,8 @@ export function toObject(something: any, options: IClassInstanceToObjectOptions 
   let {enumerable = true, configurable = 0, writable = 0} = options
   let defaultDesc: PropertyDescriptor = {}
   if (enumerable !== 0) defaultDesc.enumerable = enumerable
-  if (configurable !== 0) defaultDesc.configurable = configurable
-  if (writable !== 0) defaultDesc.writable = writable
+  if (configurable !== 0) defaultDesc.configurable = configurable as boolean
+  if (writable !== 0) defaultDesc.writable = writable as boolean
 
   iterateInheritedPrototype((proto) => {
     Object.getOwnPropertyNames(proto).forEach(key => {
@@ -85,11 +85,130 @@ export function toObject(something: any, options: IClassInstanceToObjectOptions 
 }
 
 /**
- * 判断 something 是不是一个 JS Object (从 mora-script 中取过来的)
+ * Checks if `value` is the
+ * [language type](http://www.ecma-international.org/ecma-262/7.0/#sec-ecmascript-language-types)
+ * of `Object`. (e.g. arrays, functions, objects, regexes, `new Number(0)`, and `new String('')`)
  *
- * 除了 null, 及字面量，其它一般都是 Object，包括 函数
+ * 除了 null, 及字面量，其它一般都是 Object，包括函数
+ *
+ * **如果只需要判断是不是纯 Object，请使用 `isPlainObject`**
+ *
+ * @example
+ *
+ * isObject({})
+ * // => true
+ *
+ * isObject([1, 2, 3])
+ * // => true
+ *
+ * isObject(Function)
+ * // => true
+ *
+ * isObject(null)
+ * // => false
  */
-export function isObject(something: any) {
+export function isObject(something: any): something is any {
   let type = typeof something
   return something !== null && (type === 'function' || type === 'object')
+}
+
+/**
+ * Checks if `value` is object-like. A value is object-like if it's not `null`
+ * and has a `typeof` result of "object".
+ *
+ * @param {*} value The value to check.
+ * @returns {boolean} Returns `true` if `value` is object-like, else `false`.
+ * @example
+ *
+ * isObjectLike({})
+ * // => true
+ *
+ * isObjectLike([1, 2, 3])
+ * // => true
+ *
+ * isObjectLike(Function)
+ * // => false
+ *
+ * isObjectLike(null)
+ * // => false
+ */
+export function isObjectLike(value: any) {
+  return typeof value === 'object' && value !== null
+}
+
+/**
+ * 判断 something 是不是一个原生的 Object
+ */
+export function isPlainObject(something: any): something is {[key: string]: any} {
+  return toString(something) === '[object Object]'
+}
+
+/**
+ * 判断 obj 是否是空（即不含任何 keys）
+ *
+ * 需要保证参数是一个 PlainObject
+ */
+export function isPlainObjectEmpty<T extends object>(obj: T) {
+  if (!isPlainObject(obj)) throw new Error('argument is not a plain object')
+  return Object.keys(obj).length === 0
+}
+
+/**
+ * 从一个对象中取出需要的属性，组成一个新对象
+ */
+export function pick<T>(obj: T, keys: Array<keyof T>) {
+  let res: Partial<T> = {};
+  (Object.keys(obj) as Array<keyof T>).forEach(k => {
+    if (keys.indexOf(k) >= 0) res[k] = obj[k]
+  })
+  return res
+}
+
+/**
+ * 从一个对象中排除指定的 keys，返回一个新对象
+ */
+export function omit<T>(obj: T, keys: Array<keyof T>) {
+  let res: Partial<T> = {};
+  (Object.keys(obj) as Array<keyof T>).forEach(k => {
+    if (keys.indexOf(k) < 0) res[k] = obj[k]
+  })
+  return res
+}
+
+/**
+ * 获取 something 对象的原生的 toString 的结果
+ */
+export function toString(something: any) {
+  return Object.prototype.toString.call(something)
+}
+
+
+/**
+ * 判断 obj 对象是否含有某个 key （ 利用 hasOwnProperty ）
+ */
+export function hasOwnProp<T extends object>(obj: T, key: string) {
+  if (obj == null) return false
+  return Object.prototype.hasOwnProperty.call(obj, key)
+}
+
+
+/**
+ * 深度合并 sources 对象到 target 上
+ */
+export function deepMerge(target: any, ...sources: any[]) {
+  sources.forEach(source => {
+    if (source) {
+      for (const s in source) {
+        if (source.hasOwnProperty(s)) {
+          const value = source[s]
+          if (isPlainObject(value) && isPlainObject(target[s])) {
+            target[s] = deepMerge(target[s], value)
+          } else {
+            target[s] = value
+          }
+        }
+      }
+    }
+  })
+  return target
 }
