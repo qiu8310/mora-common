@@ -201,7 +201,8 @@ export function deepMerge(target: any, ...sources: any[]) {
       for (const s in source) {
         if (source.hasOwnProperty(s)) {
           const value = source[s]
-          if (isPlainObject(value) && isPlainObject(target[s])) {
+          if (isPlainObject(value)) {
+            if (!isPlainObject(target[s])) target[s] = {}
             target[s] = deepMerge(target[s], value)
           } else {
             target[s] = value
