@@ -1,44 +1,60 @@
-// // 参考 https://github.com/mridgway/hoist-non-react-statics
+// 参考 https://github.com/mridgway/hoist-non-react-statics
 
-// const REACT_STATICS = {
-//   childContextTypes: true,
-//   contextTypes: true,
-//   defaultProps: true,
-//   displayName: true,
-//   getDefaultProps: true,
-//   mixins: true,
-//   propTypes: true,
-//   type: true
-// }
+const REACT_STATICS: any = {
+  childContextTypes: true,
+  contextTypes: true,
+  defaultProps: true,
+  displayName: true,
+  getDefaultProps: true,
+  getDerivedStateFromProps: true,
+  mixins: true,
+  propTypes: true,
+  type: true
+}
 
-// const KNOWN_STATICS = {
-//   name: true,
-//   length: true,
-//   prototype: true,
-//   caller: true,
-//   arguments: true,
-//   arity: true
-// }
+const KNOWN_STATICS: any = {
+  name: true,
+  length: true,
+  prototype: true,
+  caller: true,
+  callee: true,
+  arguments: true,
+  arity: true
+}
 
-// const isGetOwnPropertySymbolsAvailable = typeof Object.getOwnPropertySymbols === 'function'
+const defineProperty = Object.defineProperty
+const getOwnPropertyNames = Object.getOwnPropertyNames
+const getOwnPropertySymbols = Object.getOwnPropertySymbols
+const getOwnPropertyDescriptor = Object.getOwnPropertyDescriptor
+const getPrototypeOf = Object.getPrototypeOf
+const objectPrototype = getPrototypeOf && getPrototypeOf(Object)
 
-// export default function hoistNonReactStatics(targetComponent, sourceComponent, customStatics) {
-//   if (typeof sourceComponent !== 'string') { // don't hoist over string (html) components
-//     var keys = Object.getOwnPropertyNames(sourceComponent)
+export function hoistNonReactStatics<T>(targetComponent: T, sourceComponent: any, blacklist?: { [key: string]: boolean }) {
+  if (typeof sourceComponent !== 'string') { // don't hoist over string (html) components
+    if (objectPrototype) {
+      let inheritedComponent = getPrototypeOf(sourceComponent)
+      if (inheritedComponent && inheritedComponent !== objectPrototype) {
+        hoistNonReactStatics(targetComponent, inheritedComponent, blacklist)
+      }
+    }
 
-//     /* istanbul ignore else */
-//     if (isGetOwnPropertySymbolsAvailable) {
-//       keys = keys.concat(Object.getOwnPropertySymbols(sourceComponent))
-//     }
+    let keys = getOwnPropertyNames(sourceComponent)
 
-//     for (var i = 0; i < keys.length; ++i) {
-//       if (!REACT_STATICS[keys[i]] && !KNOWN_STATICS[keys[i]] && (!customStatics || !customStatics[keys[i]])) {
-//         try {
-//           targetComponent[keys[i]] = sourceComponent[keys[i]]
-//         } catch (e) {}
-//       }
-//     }
-//   }
-//   return targetComponent
-// }
-export function hoistNonReactStatics() {}
+    if (getOwnPropertySymbols) {
+      // @ts-ignore
+      keys = keys.concat(getOwnPropertySymbols(sourceComponent))
+    }
+
+    for (let i = 0; i < keys.length; ++i) {
+      let key = keys[i]
+      if (!REACT_STATICS[key] && !KNOWN_STATICS[key] && (!blacklist || !blacklist[key])) {
+        let descriptor: any = getOwnPropertyDescriptor(sourceComponent, key)
+        try { // Avoid failures from read-only properties
+          defineProperty(targetComponent, key, descriptor)
+        } catch (e) { }
+      }
+    }
+  }
+
+  return targetComponent
+}

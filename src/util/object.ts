@@ -1,5 +1,3 @@
-import {iterateInheritedPrototype} from './iterateInheritedPrototype'
-
 export interface IClassInstanceToObjectOptions {
   /**
    * 将所有的对象中的函数绑定到指定的对象上
@@ -153,6 +151,7 @@ export function isPlainObjectEmpty<T extends object>(obj: T) {
   return Object.keys(obj).length === 0
 }
 
+export type Omit<O, K> = Pick<O, Exclude<keyof O, K>>
 /**
  * 从一个对象中取出需要的属性，组成一个新对象
  */
@@ -191,6 +190,40 @@ export function hasOwnProp<T extends object>(obj: T, key: string) {
   return Object.prototype.hasOwnProperty.call(obj, key)
 }
 
+/**
+ * 获取对象的原型
+ */
+export function getPrototypeOf<T extends object>(obj: T): any {
+  // @ts-ignore
+  return Object.getPrototypeOf ? Object.getPrototypeOf(obj) : obj.__proto__
+}
+
+/**
+ * 判断两个对象是会浅相等（对象中的引用相等即可，值相等不一定引用相等）
+ */
+export function shallowEqual(objA: any, objB: any): boolean {
+  if (objA === objB) {
+    return true
+  }
+
+  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+    return false
+  }
+
+  let keysA = Object.keys(objA)
+  let keysB = Object.keys(objB)
+
+  if (keysA.length !== keysB.length) {
+    return false
+  }
+
+  // Test for A's keys different from B.
+  let bHasOwnProperty = Object.prototype.hasOwnProperty.bind(objB)
+  for (let key of keysA) {
+    if (!bHasOwnProperty(key) || objA[key] !== objB[key]) return false
+  }
+  return true
+}
 
 /**
  * 深度合并 sources 对象到 target 上
@@ -212,4 +245,31 @@ export function deepMerge(target: any, ...sources: any[]) {
     }
   })
   return target
+}
+
+/**
+ * 遍历继承关系类的 prototype
+ *
+ * @export
+ * @param {Function} callback - 回调函数，函数参数是遍历的每个实例的 prototype，函数如果返回 false，会终止遍历
+ * @param {any} fromCtor  - 要遍历的起始 class 或 prototype
+ * @param {any} toCtor    - 要遍历的结束 class 或 prototype
+ * @param {boolean} [includeToCtor=true] - 是否要包含结束 toCtor 本身
+ *
+ * @example
+ * A -> B -> C
+ *
+ * 在 C 中调用： iterateInheritedPrototype(fn, A, C, true)
+ * 则，fn 会被调用三次，分别是 fn(A.prototype) fn(B.prototype) fn(C.prototype)
+ */
+export function iterateInheritedPrototype(callback: (proto: Object) => boolean | void, fromCtor: any, toCtor: any, includeToCtor = true) {
+  let proto = fromCtor.prototype || fromCtor
+  let toProto = toCtor.prototype || toCtor
+
+  while (proto) {
+    if (!includeToCtor && proto === toProto) break
+    if (callback(proto) === false) break
+    if (proto === toProto) break
+    proto = getPrototypeOf(proto)
+  }
 }

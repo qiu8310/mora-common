@@ -1,13 +1,54 @@
-import * as isObject from 'mora-scripts/libs/lang/isObject'
+import {isObject} from './object'
 
-export interface IUrlQuery {
-  [key: string]: any
+export namespace url {
+  export interface Query {
+    [key: string]: any
+  }
+  export interface Node {
+    key: string
+    numbric: boolean
+    isLeaf: boolean
+    children: Node[]
+  }
 }
 
-// 支持处理 {obj: {a: 1, b: 2}, arr: [0, {c: 3}]} => obj.a=1&obj.b=2&arr[0]=1&arr[1].c=3
-export function buildSearch(query: IUrlQuery): string {
+export const url = {
+  buildSearch, parseSearch, appendQuery
+}
+
+/**
+ * 将一个对象转化成 url 上的 search 字段（如果有 search，则自动加上 "?"，如果没有，则返回的是一个空字符串）
+ *
+ * @example
+ *
+ * buildSearch({obj: {a: 1, b: 2}, arr: [0, {c: 3}]})
+ *
+ * "obj.a=1&obj.b=2&arr[0]=1&arr[1].c=3"
+ */
+function buildSearch(query: url.Query): string {
   let search = serialize(query).join('&')
   return (search ? '?' : '') + search
+}
+
+/**
+ * 将 url 上的 search 转化成一个对象
+ */
+function parseSearch(search: string): url.Query {
+  search = search[0] === '?' ? search.substr(1) : search
+  return search.length ? unserialize(search) : {}
+}
+
+/**
+ * 将 query 字段串或对象 append 到指定的 url 上
+ */
+function appendQuery(srcUrl: string, query: string | url.Query) {
+  if (typeof query === 'object') {
+    query = buildSearch(query).slice(1) // 去掉第一个问号
+  }
+
+  if (query === '') return srcUrl
+  let parts = srcUrl.split('#')
+  return (parts[0] + '&' + query).replace(/[&?]{1,2}/, '?') + (parts.length === 2 ? ('#' + parts[1]) : '')
 }
 
 function serialize(query: any, scope: string = ''): string[] {
@@ -23,11 +64,6 @@ function serialize(query: any, scope: string = ''): string[] {
     }
     return arr
   }, [])
-}
-
-export function parseSearch(search: string): IUrlQuery {
-  search = search[0] === '?' ? search.substr(1) : search
-  return search.length ? unserialize(search) : {}
 }
 
 /*
@@ -62,17 +98,11 @@ export function parseSearch(search: string): IUrlQuery {
     - b - 2
 
 */
-interface ITreeNode {
-  key: string
-  numbric: boolean
-  isLeaf: boolean
-  children: ITreeNode[]
-}
 const PLACEHOLDER_KEY = '__:placeholder:__'
 const SCOPE_REG = /(.*?)\[([^\]]*)\]$/
 const NUM_REG = /^\d+$/
-function search2treeNode(search: string): ITreeNode[] {
-  return search.split('&').reduce((nodes: ITreeNode[], raw: string) => {
+function search2treeNode(search: string): url.Node[] {
+  return search.split('&').reduce((nodes: url.Node[], raw: string) => {
     let [key, val] = raw.split('=').map(r => decodeURIComponent(r))
     if (!key) return nodes
     let scopes: string[] = []
@@ -86,7 +116,7 @@ function search2treeNode(search: string): ITreeNode[] {
     let parents = nodes
     for (let i = 0; i < scopes.length; i++) {
       let scope = scopes[i] || PLACEHOLDER_KEY
-      let current: ITreeNode = parents.filter(n => n.key === scope && !n.isLeaf)[0] // 为什么要限制 !n.isLeaf，如 a=1&a[1]=2 这种结构会导致 a=1 消失
+      let current: url.Node = parents.filter(n => n.key === scope && !n.isLeaf)[0] // 为什么要限制 !n.isLeaf，如 a=1&a[1]=2 这种结构会导致 a=1 消失
 
       if (!current) {
         current = {key: scope, numbric: scope === PLACEHOLDER_KEY || NUM_REG.test(scope), isLeaf: i === scopes.length - 1, children: []}
@@ -97,10 +127,10 @@ function search2treeNode(search: string): ITreeNode[] {
     }
 
     return nodes
-  }, [] as ITreeNode[])
+  }, [] as url.Node[])
 }
 
-function treeNode2value(node: ITreeNode): any {
+function treeNode2value(node: url.Node): any {
   // Leaf 节点不会有 children 字段
   if (node.isLeaf) return node.key
 
@@ -151,7 +181,7 @@ function treeNode2value(node: ITreeNode): any {
    * a=1&a[0]=3&a[1]=2&a=4 => [1, 4, 3, 2]
    * a[0]=3&a=1&a[1]=2&a=4 => [3, 2, 1, 4]
    */
-  let nodeWeight = (n: ITreeNode) => n.isLeaf ? (firstChild.isLeaf ? - children.indexOf(n) - childCount : children.indexOf(n) + childCount) : (parseInt(n.key, 10) || 0)
+  let nodeWeight = (n: url.Node) => n.isLeaf ? (firstChild.isLeaf ? - children.indexOf(n) - childCount : children.indexOf(n) + childCount) : (parseInt(n.key, 10) || 0)
 
   if (leafCount === childCount) { // 全部是叶子节点，可以是 a=1 或者 a=1&a=2 结构
     nodeValue = leafCount === 1 ? treeNode2value(firstChild) : children.map(child => treeNode2value(child))
@@ -171,20 +201,9 @@ function treeNode2value(node: ITreeNode): any {
   return nodeValue
 }
 
-function unserialize(search: string): IUrlQuery {
-  return search2treeNode(search).reduce((query: IUrlQuery, node) => {
+function unserialize(search: string): url.Query {
+  return search2treeNode(search).reduce((query: url.Query, node) => {
     query[node.key] = treeNode2value(node)
     return query
-  }, {} as IUrlQuery)
+  }, {} as url.Query)
 }
-
-export function appendQuery(url: string, query: string | IUrlQuery) {
-  if (typeof query === 'object') {
-    query = buildSearch(query).slice(1) // 去掉第一个问号
-  }
-
-  if (query === '') return url
-  let parts = url.split('#')
-  return (parts[0] + '&' + query).replace(/[&?]{1,2}/, '?') + (parts.length === 2 ? ('#' + parts[1]) : '')
-}
-

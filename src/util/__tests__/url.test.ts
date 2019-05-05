@@ -1,6 +1,8 @@
-import {buildSearch, parseSearch, IUrlQuery, appendQuery} from '../url'
+import {url} from '../url'
 
-let bs = (q: IUrlQuery) => decodeURIComponent(buildSearch(q))
+const {buildSearch, parseSearch, appendQuery} = url
+
+let bs = (q: url.Query) => decodeURIComponent(buildSearch(q))
 
 const data = [
   ['空对象', {}, ''],

@@ -1,3 +1,4 @@
+import {Dict} from '../type/type'
 /**
  * 将单个元素转化成数组，保证结果一定是个数据
  *
@@ -55,6 +56,78 @@ export function last<T>(arr: T[]): T {
 }
 
 /**
+ * Flatten array
+ *
+ * Use reduce() to get all elements inside the array and concat() to flatten them
+ *
+ * @example
+ *
+ * flatten([1,[2],3,4]) -> [1,2,3,4]
+ */
+export function flatten<T>(arr: any[]): T[] {
+  return arr.reduce((a, v) => a.concat(v), [])
+}
+
+/**
+ * Groups array elements by the key returned from the categorize function.
+ */
+export function groupBy<T>(arr: T[], categorize: (item: T, index: number, ref: T[]) => string) {
+  let group: Dict<T[]> = {}
+  arr.forEach((item, index, ref) => {
+    let id = categorize(item, index, ref)
+    if (!group.hasOwnProperty(id)) group[id] = [item]
+    else group[id].push(item)
+  })
+  return group
+}
+
+
+export function min(arr: number[]): number
+export function min<T>(arr: T[], iterator: (item: T, index: number, ref: T[]) => number): T | undefined
+export function min<T>(arr: T[], iterator?: (item: T, index: number, ref: T[]) => number): T | undefined {
+  let result: T | undefined
+  let compare = Infinity
+  arr.forEach((item, index, ref) => {
+    let value = iterator ? iterator(item, index, ref) : ((item as any) as number)
+    if (value < compare) {
+      compare = value
+      result = item
+    }
+  })
+  return result
+}
+
+
+export function max(arr: number[]): number
+export function max<T>(arr: T[], iterator: (item: T, index: number, ref: T[]) => number): T | undefined
+export function max<T>(arr: T[], iterator?: (item: T, index: number, ref: T[]) => number): T | undefined {
+  let result: T | undefined
+  let compare = -Infinity
+  arr.forEach((item, index, ref) => {
+    let value = iterator ? iterator(item, index, ref) : ((item as any) as number)
+    if (value > compare) {
+      compare = value
+      result = item
+    }
+  })
+  return result
+}
+
+
+/**
+ * Invokes the iteratee n times, returning an array of the results of each invocation. The iteratee is invoked with one argument; (index).
+ */
+export function times<T>(n: number, iteratee: T | ((n: number) => T)) {
+  let i = -1
+  let res: T[] = []
+  let isFn = typeof iteratee === 'function'
+  while (++i < n) {
+    res.push(isFn ? (iteratee as any)(i) : iteratee)
+  }
+  return res
+}
+
+/**
  * 初始化一个数字组成的数组
  */
 export function initial(end: number, start: number = 0): number[] {
@@ -71,18 +144,4 @@ export function initial(end: number, start: number = 0): number[] {
  */
 export function powerset<T>(arr: T[]): T[][] {
   return arr.reduce( (a, v) => a.concat(a.map( r => [v].concat(r) )), [[]] as T[][])
-}
-
-
-/**
- * Flatten array
- *
- * Use reduce() to get all elements inside the array and concat() to flatten them
- *
- * @example
- *
- * flatten([1,[2],3,4]) -> [1,2,3,4]
- */
-export function flatten<T>(arr: any[]): T[] {
-  return arr.reduce((a, v) => a.concat(v), [])
 }

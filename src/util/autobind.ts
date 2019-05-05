@@ -1,6 +1,5 @@
 
-import {iterateInheritedPrototype} from './iterateInheritedPrototype'
-import {getPrototypeOf} from './getPrototypeOf'
+import {getPrototypeOf, iterateInheritedPrototype} from './object'
 
 const WONT_BINDS: string[] = [
   'constructor',

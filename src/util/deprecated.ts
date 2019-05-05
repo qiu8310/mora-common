@@ -1,4 +1,4 @@
-import {warn} from './warn'
+import {warn} from './logger'
 
 const DEFAULT_MSG = 'This function will be removed in future versions.'
 

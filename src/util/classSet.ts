@@ -1,4 +1,4 @@
-import {warn} from './warn'
+import {warn} from './logger'
 
 export interface IClassSetObjectArg {
   [className: string]: any
