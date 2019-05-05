@@ -1,50 +1,73 @@
+// 这里的样式 PC 和 移动端都可以用
+
 @import "../mixin/index";
 @import "../animate/index";
 
-.gEllipsis { @include ellipsis; }
-.gPullLeft { float: left; }
-.gPullRight { float: right; }
-.gClearfix { @include clearfix; }
-.gNoSelect { @include noSelect; }
-.gTextCenter { @include textCenter; }
-.gOverlay { @include overlay; }
-.gClickThrough { pointer-events: none; }
-.gClickable    { pointer-events: all;  }
 
+/** 将 box-sizing 设置成 border-box */
+.gBorderBox {
+  &, &::before, &::after {
+    box-sizing: border-box; // IE 6/7 不支持
+  }
+}
+
+/** 单行显示不下时，出现 "..." */
+.gEllipsis { @include ellipsis; }
+
+/** float: left */
+.gPullLeft { float: left; }
+
+/** float: right */
+.gPullRight { float: right; }
+
+/** clear float */
+.gClearfix { @include clearfix; }
+
+/** 文本不可选择（此属性具有继承性，即所有子元素中的文本也不能选择） */
+.gNoSelect { @include noSelect; }
+
+/** text-align: center */
+.gTextCenter { @include textCenter; }
+
+/** absolute 定位，且各边距离为 0 */
+.gOverlay { @include overlay; }
+
+/** 多行显示不下时，出现 "..."，需要配合具体的行数使用，即 .gLineClamp1, .gLineClamp2, .gLineClamp3, .gLineClamp4 */
 .gLineClamp {
   display: -webkit-box;
   overflow: hidden;
   -webkit-box-orient: vertical;
 }
-@for $i from 1 through 4 {
-  .gLineClamp#{$i} { -webkit-line-clamp: $i; }
-}
+/** 1行显示不下就显示 "..." 需要和 .gLineClamp 一起使用 */
+.gLineClamp1 { -webkit-line-clamp: 1; }
+/** 2行显示不下就显示 "..." 需要和 .gLineClamp 一起使用 */
+.gLineClamp2 { -webkit-line-clamp: 2; }
+/** 3行显示不下就显示 "..." 需要和 .gLineClamp 一起使用 */
+.gLineClamp3 { -webkit-line-clamp: 3; }
+/** 4行显示不下就显示 "..." 需要和 .gLineClamp 一起使用 */
+.gLineClamp4 { -webkit-line-clamp: 4; }
 
+/** border-radius: 50% */
 .gRounded { border-radius: 50%; }
+/** width: 100% */
 .gFullWidth { width: 100%; }       // container width
+/** height: 100% */
 .gFullHeight { height: 100%; }     // container height
+/** min-height: 100% */
 .gRespHeight { min-height: 100%; } // responsive height
+/** min-width: 100% */
 .gRespWidth { min-width: 100%; }   // responsive width
 
+/** margin-left/right: center */
 .gCenter { @include center; }
+/** 使用 absolute 定位加 translate 使当前元素水平居中 */
 .gHCenter { @include hCenter; }
+/** 使用 absolute 定位加 translate 使当前元素垂直居中 */
 .gVCenter { @include vCenter; }
+/** 使用 absolute 定位加 translate 使当前元素水平垂直居中 */
 .gHVCenter { @include hvCenter; }
-.gHCenterChildren { @include hCenterChildren; }
-.gVCenterChildren { @include vCenterChildren; }
-.gHVCenterChildren { @include hvCenterChildren; }
-.gSpaceBetweenChildren { display: flex; justify-content: space-between; }
-.gSpaceAroundChildren { display: flex; justify-content: space-around; }
 
-.gFlexContainer { display: flex; }
-.gFlexVertical { flex-direction: column; }
-.gFlexWrap { flex-wrap: wrap; }
-.gFlex { flex: 1; }
-@for $i from 1 through 4 {
-  .gFlex#{$i} { flex: $i; }
-}
-
-// 进入类的动画可以加上此 timing-function
+/** 进入类的动画可以加上此 timing-function 会比较和谐 */
 .gInEffect {
   animation-fill-mode: both;
   animation-timing-function: cubic-bezier(0, 0, .25, 1);

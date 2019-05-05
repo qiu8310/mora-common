@@ -70,7 +70,6 @@ cli({
         clearTimeout(sid)
         sid = setTimeout(() => {
           shell.promise('npm run build')
-            .then(() => shell.promise('npm run toskill'))
             .then(() => console.log(new Date().toLocaleString() + ' build successfully'))
             .catch(e => console.error('build error'))
         }, 800)

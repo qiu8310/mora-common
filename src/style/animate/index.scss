@@ -1,9 +1,19 @@
 @keyframes zoomIn {
   from { opacity: 0; transform: scale3d(.3, .3, .3); }
 }
+@keyframes zoomOut {
+  from { opacity: 1; transform: scale3d(1, 1, 1); }
+  to { opacity: 0; transform: scale3d(.3, .3, .3); }
+}
+
 @keyframes fadeIn {
   from { opacity: 0; }
 }
+
+@keyframes fadeOut {
+  to { opacity: 0; }
+}
+
 @keyframes fadeInDown {
   from { transform: translate3d(0, -150px, 0); opacity: .3; }
 }
@@ -15,4 +25,17 @@
 }
 @keyframes fadeInRight {
   from { transform: translate3d(150px, 0, 0); opacity: .3; }
+}
+
+@keyframes fadeOutDown {
+  to { transform: translate3d(0, 150px, 0); opacity: 0; }
+}
+@keyframes fadeOutUp {
+  to { transform: translate3d(0, -150px, 0); opacity: 0; }
+}
+@keyframes fadeOutRight {
+  to { transform: translate3d(150px, 0, 0); opacity: 0; }
+}
+@keyframes fadeOutLeft {
+  to { transform: translate3d(-150px, 0, 0); opacity: 0; }
 }

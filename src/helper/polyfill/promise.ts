@@ -14,16 +14,17 @@ interface PolyfillPromiseConstructor {
 }
 interface PromiseConstructor extends PolyfillPromiseConstructor {}
 
-Promise.prototype.finally = function<T>(callback: () => T): Promise<T> {
-  let P = this.constructor as PromiseConstructor
-  return this.then(
-    function(value) { return P.resolve(callback()).then(function() { return value }) },
-    function(reason) { return P.resolve(callback()).then(function() { throw reason }) }
-  )
-}
+// 在 index.ts 中实现了
+// Promise.prototype.finally = function<T>(callback: () => T): Promise<T> {
+//   let P = this.constructor as PromiseConstructor
+//   return this.then(
+//     function(value) { return P.resolve(callback()).then(function() { return value }) },
+//     function(reason) { return P.resolve(callback()).then(function() { throw reason }) }
+//   )
+// }
 
-Promise.try = function(fn: () => any) {
-  return new Promise(function(resolve, reject) {
-    resolve(fn())
-  })
-}
+// Promise.try = function(fn: () => any) {
+//   return new Promise(function(resolve, reject) {
+//     resolve(fn())
+//   })
+// }

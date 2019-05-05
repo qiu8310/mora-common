@@ -1,17 +1,21 @@
-import {buildSearch, parseSearch, IUrlQuery} from '../util/url'
+import {url} from '../util/url'
 
-export interface ILocation {
-  url: string, search: string, pathname: string, nativeQuery: IUrlQuery, query: IUrlQuery, hash: string
-}
+const {buildSearch, parseSearch} = url
 
-export interface ILocationOptions {
-  hash?: boolean
-  /** 默认是 "#" */
-  separater?: string
+export namespace getLocation {
+  export interface Location {
+    url: string, search: string, pathname: string, nativeQuery: url.Query, query: url.Query, hash: string
+  }
+
+  export interface Options {
+    hash?: boolean
+    /** 默认是 "#" */
+    separater?: string
+  }
 }
 
 let cache: any = {}
-export function getLocation(options: ILocationOptions): ILocation {
+export function getLocation(options: getLocation.Options = {}): getLocation.Location {
   let {pathname, search, hash} = window.location
   let {l, p, s, h} = cache
   if (l && p === pathname && s === search && h === hash) return l
@@ -19,7 +23,7 @@ export function getLocation(options: ILocationOptions): ILocation {
   return cache.l
 }
 
-function _getLocation(options: ILocationOptions): ILocation {
+function _getLocation(options: getLocation.Options): getLocation.Location {
   let {pathname, search, hash} = window.location
 
   let href

@@ -22,9 +22,14 @@ audio, canvas, video {
   display: inline-block;
 }
 
-*, *::before, *::after {
-  box-sizing: border-box; // IE 6/7 不支持
-}
+// *, *::before, *::after {
+//   // 根据个人习惯，使用 common.scss 中 gBoardBox 样式名
+//   // box-sizing: border-box; // IE 6/7 不支持
+
+//   // 图片默认不重复
+//   // background-repeat: no-repeat;
+// }
+
 
 html {
   text-rendering: optimizelegibility;
@@ -46,7 +51,7 @@ html, body {
   background-color: $rootBackgroundColor;
   font-family: $rootFontFamily;
   font-size: $rootFontSize * 1px;
-  overflow-x: hidden; // 造成打印页中 x 轴被截断
+  // overflow-x: hidden; // 造成打印页中 x 轴被截断；也会造成 PC 端自定义的 Select 组件的下拉框被遮罩
   // 此属性会影响 position: fixed; bottom: 0; 的元素
   // 效果是：当拖到底后，再拖动的话，底部的 fixed 元素会逐渐被遮挡了
   // -webkit-overflow-scrolling: touch;
@@ -54,6 +59,14 @@ html, body {
 
 button, input, select, textarea, body {
   color: $baseColor;
+}
+
+input::-ms-clear {
+  display: none;
+}
+
+input[type=password]::-ms-reveal {
+  display: none;
 }
 
 // 表单元素不会继承父元素的字体
@@ -126,20 +139,20 @@ button, input {
   line-height: normal;
 }
 
-button, input[type="button"], input[type="reset"], input[type="submit"] {
+button, input[type=button], input[type=reset], input[type=submit] {
   cursor: pointer;
   -webkit-appearance: button;
 }
 
-input[type="checkbox"], input[type="radio"] {
+input[type=checkbox], input[type=radio] {
   padding: 0;
 }
 
-input[type="search"] {
+input[type=search] {
   -webkit-appearance: textfield;
 }
 
-input[type="search"]::-webkit-search-cancel-button, input[type="search"]::-webkit-search-decoration {
+input[type=search]::-webkit-search-cancel-button, input[type=search]::-webkit-search-decoration {
   -webkit-appearance: none;
 }
 

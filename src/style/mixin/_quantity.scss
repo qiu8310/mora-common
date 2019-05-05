@@ -1,0 +1,111 @@
+// QUANTITY:    http://alistapart.com/article/quantity-queries-for-css
+// GRID:        http://codepen.io/heydon/pen/bcdrl
+// 注意，性能不是很好 => http://jsbin.com/gozula/1/quiet
+
+@function _get-last-items-of-selector($selector) {
+  $items: ();
+  @each $s in $selector {
+    $items: append($items, nth($s, length($s)), comma);
+  }
+  @return $items;
+}
+
+
+/** 只有一个元素 https://codepen.io/qiu8310/pen/bdWbvm */
+@mixin equalToOne() {
+  &:only-child {
+    @content;
+  }
+}
+
+/** 不只一个元素 https://codepen.io/qiu8310/pen/bdWbvm */
+@mixin moreThanOne() {
+  &:not(:only-child) {
+    @content;
+  }
+}
+
+/** 只有 $total 个元素，并选择所有这些元素 https://codepen.io/qiu8310/pen/bdWbvm */
+@mixin equalTo($total) {
+  $items: _get-last-items-of-selector(&);
+  &:nth-last-child(#{$total}):first-child,
+  &:nth-last-child(#{$total}):first-child ~ #{$items} {
+    @content;
+  }
+}
+
+/** 只有 $total 个元素，并选择其中的第 $n 个元素 https://codepen.io/qiu8310/pen/bdWbvm */
+@mixin equalToNth($total, $n) {
+  $last: $total - $n + 1;
+  &:nth-child(#{$n}):nth-last-child(#{$last}) {
+    @content;
+  }
+}
+
+/** 元素个数大于或等于 $n 时，选择所有元素 https://codepen.io/qiu8310/pen/bdWbvm */
+@mixin moreOrEqualThan($n) {
+  $items: _get-last-items-of-selector(&);
+  $expr: "n+#{$n}";
+  &:nth-last-child(#{$expr}),
+  &:nth-last-child(#{$expr}) ~ #{$items} {
+    @content;
+  }
+}
+
+/** 元素个数大于 $n 时，选择所有元素 https://codepen.io/qiu8310/pen/bdWbvm */
+@mixin moreThan($n) {
+  @include moreOrEqualThan($n + 1) {
+    @content;
+  };
+}
+
+/** 元素个数小于或等于 $n 时，选择所有元素 https://codepen.io/qiu8310/pen/bdWbvm */
+@mixin lessOrEqualThan($n) {
+  $items: _get-last-items-of-selector(&);
+  $expr: "-n+#{$n}";
+  &:nth-last-child(#{$expr}):first-child,
+  &:nth-last-child(#{$expr}):first-child ~ #{$items} {
+    @content;
+  }
+}
+
+/** 元素个数小于 $n 时，选择所有元素 https://codepen.io/qiu8310/pen/bdWbvm */
+@mixin lessThan($n) {
+  @include lessOrEqualThan($n - 1) {
+    @content;
+  };
+}
+
+
+/**
+ * 效果请查看 https://codepen.io/qiu8310/pen/bdWbvm
+ */
+@mixin grid($cols) {
+  $last: _get-last-items-of-selector(&);
+  @for $i from 1 through $cols {
+    &:nth-child(#{$cols}n+1):nth-last-child(#{$i}) {
+      width: 100% / $i;
+      & ~ #{$last} {
+        width: 100% / $i;
+      }
+    }
+  }
+}
+
+
+
+// 其它 CSS 自带的
+/*
+  :empty                无子元素
+  :not(:empty)          有子元素
+  :last-nth-child(n+6)  从第1个元素到倒数第6个元素
+  :last-nth-child(-n+6) 倒数6个元素
+  :nth-child(n+6)       从第6个元素到最后1个元素
+  :nth-child(-n+6)      从第1个元素到第6个元素
+  type 和 child 类似，只是 type 不会管所有子元素的个数，它是管相同类型的子元素的个数
+  :only-of-type
+  :first-of-type
+  :last-of-type
+  :nth-of-type
+  :nth-last-of-type
+*/

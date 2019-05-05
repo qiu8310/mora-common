@@ -1,0 +1,35 @@
+// 这里的样式只有移动端可以用，PC 端不兼容 IE
+
+@import "../mixin/index";
+
+// IE 11 以下不支持 pointer-events
+.gClickThrough { pointer-events: none; }
+.gClickable    { pointer-events: all;  }
+
+/** 使用 flex 布局将子元素水平居中 */
+.gHCenterChildren { @include hCenterChildren; }
+/** 使用 flex 布局将子元素垂直居中 */
+.gVCenterChildren { @include vCenterChildren; }
+/** 使用 flex 布局将子元素水平垂直居中 */
+.gHVCenterChildren { @include hvCenterChildren; }
+/** display: flex; justify-content: space-between */
+.gSpaceBetweenChildren { display: flex; justify-content: space-between; }
+/** display: flex; justify-content: space-around */
+.gSpaceAroundChildren { display: flex; justify-content: space-around; }
+
+/** display: flex */
+.gFlexContainer { display: flex; }
+/** flex-direction: column */
+.gFlexVertical { flex-direction: column; }
+/** flex-wrap: wrap */
+.gFlexWrap { flex-wrap: wrap; }
+/** flex: 1 */
+.gFlex { flex: 1; }
+/** flex: 1 */
+.gFlex1 { flex: 1; }
+/** flex: 2 */
+.gFlex2 { flex: 2; }
+/** flex: 3 */
+.gFlex3 { flex: 3; }
+/** flex: 4 */
+.gFlex4 { flex: 4; }

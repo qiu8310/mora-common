@@ -151,7 +151,6 @@ export function isPlainObjectEmpty<T extends object>(obj: T) {
   return Object.keys(obj).length === 0
 }
 
-export type Omit<O, K> = Pick<O, Exclude<keyof O, K>>
 /**
  * 从一个对象中取出需要的属性，组成一个新对象
  */

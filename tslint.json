@@ -14,8 +14,9 @@
     "interface-name": [false],
     "no-var-requires": false,
     "no-debugger": false,
+    "no-namespace": false,
+    "member-ordering": false,
 
-    "no-unused-variable": true,
     "no-unused-expression": true,
     "no-var-keyword": true,
     "prefer-for-of": false,

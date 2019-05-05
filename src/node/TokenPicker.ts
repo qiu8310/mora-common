@@ -46,7 +46,7 @@ const DEFAULT_RECOVER_SECONDS = 30 * 24 * 3600
  */
 export class TokenPicker {
   public tokens: string[] = []
-  private currentToken: string | null
+  private currentToken: string | null = null
   private config: Config
   private options: ITokenPickerOptions
 

@@ -1,0 +1,185 @@
+$rootFontFamily: 'PingFangSC-Regular', 'Helvetica Neue', Helvetica, Arial, Tahoma, sans-serif !default;
+
+/**
+ * 参考 {@link https://purecss.io/grids/ | purecss}
+ */
+.gGrid {
+  letter-spacing: -0.31em; /* Webkit: collapse white-space between units */
+  text-rendering: optimizespeed; /* Webkit: fixes text-rendering: optimizeLegibility */
+
+  /*
+  Sets the font stack to fonts known to work properly with the above letter
+  and word spacings. See: https://github.com/yahoo/pure/issues/41/
+
+  The following font stack makes Pure Grids work on all known environments.
+
+  * FreeSans: Ships with many Linux distros, including Ubuntu
+
+  * Arimo: Ships with Chrome OS. Arimo has to be defined before Helvetica and
+    Arial to get picked up by the browser, even though neither is available
+    in Chrome OS.
+
+  * Droid Sans: Ships with all versions of Android.
+
+  * Helvetica, Arial, sans-serif: Common font stack on OS X and Windows.
+  */
+  font-family: FreeSans, Arimo, "Droid Sans", Helvetica, Arial, sans-serif;
+
+  /* Use flexbox when possible to avoid `letter-spacing` side-effects. */
+  display: flex;
+  flex-flow: row wrap;
+
+  /* Prevents distributing space between rows */
+  align-content: flex-start;
+}
+
+/* IE10 display: -ms-flexbox (and display: flex in IE 11) does not work inside a table; fall back to block and rely on font hack */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+	table .gGrid {
+		display: block;
+	}
+}
+
+
+/*
+  Resets the font family back to the OS/browser's default sans-serif font,
+  this the same font stack that Normalize.css sets for the `body`.
+*/
+.gGrid [class *= "gGrid-u"] {
+  font-family: $rootFontFamily;
+  display: inline-block;
+  zoom: 1;
+  letter-spacing: normal;
+  word-spacing: normal;
+  vertical-align: top;
+  text-rendering: auto;
+}
+
+// 1 2 3 4 5 6 24
+
+.gGrid-u-1-24 {
+  width: 4.1667%;
+}
+
+.gGrid-u-2-24 {
+  width: 8.3333%;
+}
+
+.gGrid-u-3-24 {
+  width: 12.5000%;
+}
+
+.gGrid-u-1-6,
+.gGrid-u-4-24 {
+  width: 16.6667%;
+}
+
+.gGrid-u-1-5 {
+  width: 20%;
+}
+
+.gGrid-u-5-24 {
+  width: 20.8333%;
+}
+
+.gGrid-u-1-4,
+.gGrid-u-6-24 {
+  width: 25%;
+}
+
+.gGrid-u-7-24 {
+  width: 29.1667%;
+}
+
+.gGrid-u-1-3,
+.gGrid-u-2-6,
+.gGrid-u-8-24 {
+  width: 33.3333%;
+
+}
+
+.gGrid-u-9-24 {
+  width: 37.5000%;
+
+}
+
+.gGrid-u-2-5 {
+  width: 40%;
+}
+
+.gGrid-u-10-24 {
+  width: 41.6667%;
+}
+
+.gGrid-u-11-24 {
+  width: 45.8333%;
+}
+
+.gGrid-u-1-2,
+.gGrid-u-2-4,
+.gGrid-u-3-6,
+.gGrid-u-12-24 {
+  width: 50%;
+}
+
+.gGrid-u-13-24 {
+  width: 54.1667%;
+}
+
+.gGrid-u-14-24 {
+  width: 58.3333%;
+}
+
+.gGrid-u-3-5 {
+  width: 60%;
+}
+
+.gGrid-u-15-24 {
+  width: 62.5000%;
+}
+
+.gGrid-u-2-3,
+.gGrid-u-4-6,
+.gGrid-u-16-24 {
+  width: 66.6667%;
+}
+
+.gGrid-u-17-24 {
+  width: 70.8333%;
+}
+
+.gGrid-u-3-4,
+.gGrid-u-18-24 {
+  width: 75%;
+}
+
+.gGrid-u-19-24 {
+  width: 79.1667%;
+}
+
+.gGrid-u-4-5 {
+  width: 80%;
+}
+
+.gGrid-u-5-6,
+.gGrid-u-20-24 {
+  width: 83.3333%;
+}
+
+.gGrid-u-21-24 {
+  width: 87.5000%;
+}
+
+.gGrid-u-22-24 {
+  width: 91.6667%;
+}
+
+.gGrid-u-23-24 {
+  width: 95.8333%;
+}
+
+.gGrid-u-1,
+.gGrid-u-1-1,
+.gGrid-u-24-24 {
+  width: 100%;
+}

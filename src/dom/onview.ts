@@ -1,18 +1,20 @@
-import {throttle as throttleCall, debounce as debounceCall} from '../util/delay'
+import {throttle as throttleCall, debounce as debounceCall} from '../util/time'
 import {onload} from './onload'
 import {once} from '../util/once'
 import {toArray} from '../util/array'
 
-export declare type IOnViewOptionsEvent = 'load' | 'resize' | 'scroll' | 'orientationchange' | 'pageshow'
-export interface IOnViewOptions {
-  events?: IOnViewOptionsEvent | IOnViewOptionsEvent[]
-  throttle?: number
-  debounce?: number
-  container?: Element
+export namespace onview {
+  export type EventType = 'load' | 'resize' | 'scroll' | 'orientationchange' | 'pageshow'
+  export interface Options {
+    events?: EventType | EventType[]
+    throttle?: number
+    debounce?: number
+    container?: Element
+  }
 }
 
 // debounce & throttle: http://drupalmotion.com/article/debounce-and-throttle-visual-explanation
-export function onview(fn: (e: Event | {type: string}) => void, options: IOnViewOptions = {}): () => void {
+export function onview(fn: (e: Event | {type: string}) => void, options: onview.Options = {}): () => void {
   let {throttle = 0, debounce = 0, container = null, events = ['load', 'resize', 'scroll', 'orientationchange', 'pageshow']} = options
   let cb: (e: any) => void
 

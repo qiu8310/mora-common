@@ -1,10 +1,20 @@
 // 只列出常用的，所有的可以参考项目 https://github.com/timoxley/keycode
-export interface IKeyCodeExpands {
-  a: number; b: number; c: number; d: number; e: number; f: number; g: number; h: number; i: number; j: number; k: number; l: number; m: number; n: number; o: number; p: number; q: number; r: number; s: number; t: number; u: number; v: number; w: number; x: number; y: number; z: number
-  0: number; 1: number; 2: number; 3: number; 4: number; 5: number; 6: number; 7: number; 8: number; 9: number
+export namespace KeyCode {
+  export interface LowerAlpha {
+    a: number; b: number; c: number; d: number; e: number; f: number; g: number; h: number; i: number; j: number; k: number; l: number; m: number; n: number; o: number; p: number; q: number; r: number; s: number; t: number; u: number; v: number; w: number; x: number; y: number; z: number
+  }
+
+  export interface BaseNumber {
+    0: number; 1: number; 2: number; 3: number; 4: number; 5: number; 6: number; 7: number; 8: number; 9: number
+  }
+
+  export type AlphaNumber = LowerAlpha & BaseNumber
+
+  export type Functional = typeof KeyCode['Functional']
+  export type Printable = typeof KeyCode['Printable']
 }
 
-function expand<T extends {[key: string]: number}>(codes: T): T & IKeyCodeExpands {
+function expand<T extends {[key: string]: number}>(codes: T): T & KeyCode.AlphaNumber {
   let i
   // lower case chars
   for (i = 97; i < 123; i++) codes[String.fromCharCode(i)] = i - 32
@@ -16,7 +26,7 @@ function expand<T extends {[key: string]: number}>(codes: T): T & IKeyCodeExpand
 }
 
 // 不要出现重复的 value
-export const FunctionKeyCode = {
+const FunctionalKeyCode = {
   backspace: 8,
   tab: 9,
   enter: 13,
@@ -45,7 +55,7 @@ export const FunctionKeyCode = {
   f1: 112, f2: 113, f3: 114, f4: 115, f5: 116, f6: 117, f7: 118, f8: 119, f9: 120, f10: 121, f11: 122
 }
 
-export const PrintKeyCode = expand({
+const PrintableKeyCode = expand({
   ';': 186,
   '=': 187,
   ',': 188,
@@ -59,4 +69,8 @@ export const PrintKeyCode = expand({
   '"': 222
 })
 
-export const KeyCode = {...FunctionKeyCode, ...PrintKeyCode}
+export const KeyCode = {
+  Functional: FunctionalKeyCode,
+  Printable: PrintableKeyCode,
+  All: {...FunctionalKeyCode, ...PrintableKeyCode}
+}

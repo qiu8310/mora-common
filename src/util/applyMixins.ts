@@ -1,13 +1,22 @@
 import {toArray} from './array'
 
-export interface IApplyMixinsOptions {
-  overwrites?: string[]
-  merges?: string[]
+export namespace applyMixins {
+  export interface Options<K = string> {
+    /** 覆盖原有的键 */
+    overwrites?: K[]
+    /** 需要忽略的键 */
+    ignores?: K[]
+    /** 如果原生不存在，才使用的键 */
+    fallbacks?: K[]
+  }
 }
 
-// 注意此库中的 autobind 后会去除 value 属性，需要无法在 autobind 之后的函数上使用 merges
-// 也无法在 getter setter 方法上使用 merges，因为它们也都没有 value
-export function applyMixins<T extends Function>(toCtor: T, fromCtors: any | any[], {overwrites = [], merges = []}: IApplyMixinsOptions = {}): T {
+/**
+ * 注意此库中的 autobind 后会去除 value 属性，所以无法在 autobind 之后的函数上使用 merges
+ *
+ * 也无法在 getter setter 方法上使用 merges，因为它们也都没有 value
+ */
+export function applyMixins<T extends Function>(toCtor: T, fromCtors: any | any[], {overwrites = [], ignores = [], fallbacks = []}: applyMixins.Options = {}): T {
   const exists = Object.getOwnPropertyNames(toCtor.prototype)
 
   toArray(fromCtors).forEach(fromCtor => {
@@ -16,14 +25,13 @@ export function applyMixins<T extends Function>(toCtor: T, fromCtors: any | any[
     let fromProp = typeof fromCtor === 'function' ? fromCtor.prototype : fromCtor
 
     Object.getOwnPropertyNames(fromProp).forEach(name => {
-      if (name !== 'constructor') {
+      if (name !== 'constructor' && !ignores.includes(name)) {
         let fromDesc = Object.getOwnPropertyDescriptor(fromProp, name) as PropertyDescriptor
 
-        if (exists.indexOf(name) < 0 || overwrites.indexOf(name) >= 0) {
+        if (!exists.includes(name) || overwrites.includes(name)) {
           Object.defineProperty(toCtor.prototype, name, fromDesc)
-        } else if (merges.indexOf(name) >= 0) {
+        } else if (!fallbacks.includes(name)) {
           let toDesc = Object.getOwnPropertyDescriptor(toCtor.prototype, name)
-
           // merge 的必须要是函数
           if (toDesc && typeof toDesc.value === 'function' && typeof fromDesc.value === 'function') {
             Object.defineProperty(toCtor.prototype, name, {

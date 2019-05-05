@@ -17,10 +17,7 @@
     "strictNullChecks": true,
     "noLib": false,
     "lib": [
-      "dom",
-      "es5",
-      "es2015.collection", // for react 16
-      "es2015.promise"
+      "es5", "dom", "es2015.promise", "es2015.core", "es2015.collection", "es2016.array.include"
     ],
     "outDir": "./",
     "jsx": "react"

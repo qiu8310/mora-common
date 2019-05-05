@@ -2,6 +2,8 @@
  *  https://css-tricks.com/snippets/css/momentum-scrolling-on-ios-overflow-elements/
  *
  *  为 iOS 平台打造更好的 scroll 体验
+ *
+ *  PC 不能用这个， window 系统如果设置 overflow: scroll  则不管有没有超出页面，都有滚动条，需要设置成 overflow: auto
  */
 @mixin scroll($direction: 'all') {
   @if $direction == 'x' {
@@ -15,7 +17,9 @@
   -webkit-overflow-scrolling: touch;
 }
 
+/** 适用于移动端，不适用于 PC */
 %scroll { @include scroll(); }
+/** 适用于移动端，不适用于 PC */
 %scrollX { @include scroll('x'); }
+/** 适用于移动端，不适用于 PC */
 %scrollY { @include scroll('y'); }
-

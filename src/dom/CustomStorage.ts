@@ -1,33 +1,43 @@
-import {warn} from '../util/warn'
+import {warn} from '../util/logger'
 import {toArray} from '../util/array'
 
-export interface ICustomStorageOptions {
-  id?: string
-  type?: 'local' | 'session'
-  memory?: boolean // 是否开启 cache 加速
-  maxMemoryValueLength?: number
+export namespace CustomStorage {
+  export interface Options {
+    id?: string
+    type?: 'local' | 'session'
+    /** 过期毫秒数 */
+    expireMS?: number
+    /** 是否开启 cache 加速，默认开启 */
+    memory?: boolean
+    /** 内存中最大可存储的字符串长度（避免占用太多内存） */
+    maxMemoryValueLength?: number
+  }
 }
 
-const DEFAULT_OPTIONS: ICustomStorageOptions = {
+const DEFAULT_OPTIONS: CustomStorage.Options = {
   id: 'v1',
   type: 'local',
+  expireMS: 0,
   memory: true,
-  maxMemoryValueLength: 300
+  maxMemoryValueLength: 300,
 }
 
-let globalCache: {[key: string]: any} = {}
+const globalCache: {[key: string]: any} = {}
+// @ts-ignore
+const PROJECT = typeof __PROJECT__ !== 'undefined' ? __PROJECT__ : 'cs'
 
 export class CustomStorage {
   public id: string
   public memory: boolean
-  private options: ICustomStorageOptions
 
   // localStorage
+  private options: Required<CustomStorage.Options>
   private store: Storage | null
   private cache: {[key: string]: any} = globalCache
 
-  constructor(options: ICustomStorageOptions = {}) {
-    this.options = {...DEFAULT_OPTIONS, ...options}
+  constructor(options: CustomStorage.Options = {}) {
+    this.options = {...DEFAULT_OPTIONS, ...options} as any
+
     let {id, memory} = this.options
 
     let store
@@ -44,8 +54,8 @@ export class CustomStorage {
 
     if (!store) memory = true
 
-    this.id = id as string
-    this.memory = memory as boolean
+    this.id = id
+    this.memory = memory
     this.store = store
   }
 
@@ -62,6 +72,7 @@ export class CustomStorage {
       this.options.id = id
       fn.call(this, id)
     })
+
     this.options.id = originalId
   }
 
@@ -69,16 +80,16 @@ export class CustomStorage {
    * 设置存储
    * @param {string} key  - 存储的键名
    * @param {*} value - 存储的值
-   * @param {number} [seconds] - 存储过期时间，默认永不过期
+   * @param {number} [ms] - 存储过期时间，默认永不过期
    * @memberof CustomStorage
    */
-  set(key: string, value: any, seconds?: number): void {
+  set(key: string, value: any, ms: number = this.options.expireMS): void {
     let storeKey = this.getStoreKey(key)
-    let expiredAt = seconds ? Date.now() + seconds * 1000 : 0
+    let expiredAt = ms ? Date.now() + ms : 0
     value = JSON.stringify([value, expiredAt])
 
     if (this.memory) {
-      if (value.length <= (this.options.maxMemoryValueLength as number)) this.cache[storeKey] = value
+      if (value.length <= this.options.maxMemoryValueLength) this.cache[storeKey] = value
       else delete this.cache[storeKey]
     }
     if (this.store) {
@@ -142,7 +153,7 @@ export class CustomStorage {
 
   private getKeyPrefix(): string {
     let {id} = this.options
-    return `__cs:${id}__`
+    return `:${PROJECT}:${id}:`
   }
 
   private getStoreKey(key: string): string {
@@ -166,5 +177,3 @@ export class CustomStorage {
     }
   }
 }
-
-export const storage = new CustomStorage({id: 'default'})

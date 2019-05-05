@@ -1,11 +1,14 @@
 import {once} from '../util/once'
 
-export type IOnloadCallback = (e: Event | {type: string}) => void
-export function onload(fn: IOnloadCallback): void {
-  let cb: IOnloadCallback = once((e: any) => {
+export namespace onload {
+  export type callback = (e: Event | {type: string}) => void
+}
+
+export function onload(callback: onload.callback): void {
+  let cb: onload.callback = once((e: any) => {
     window.removeEventListener('DOMContentLoaded', cb)
     window.removeEventListener('load', cb)
-    fn(e)
+    callback(e)
   })
 
   window.addEventListener('DOMContentLoaded', cb)

@@ -4,10 +4,11 @@ export function loadScript(url: string): Promise<HTMLScriptElement> {
     script.src = url
     script.type = 'text/javascript'
 
-    script.onload = function(e: Event) {
+    script.onload = function() {
       destroy()
       resolve(script)
     }
+
     script.onerror = function(e: ErrorEvent) {
       destroy()
       reject(e)
@@ -22,4 +23,10 @@ export function loadScript(url: string): Promise<HTMLScriptElement> {
       if (script.parentNode) script.parentNode.removeChild(script)
     }
   })
+}
+
+export async function loadScriptConditional(url: string, shouldLoad: boolean): Promise<void> {
+  if (shouldLoad) {
+    await loadScript(url)
+  }
 }
