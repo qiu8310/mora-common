@@ -143,12 +143,12 @@ export class File {
                 this._addExportKey(key, {from, ref: config.KEY_DEFAULT})
               } else {
                 const refKey = ipt.ref || iptKey
-                if (iptFile.declares.indexOf(refKey)) {
+                if (iptFile.declares.indexOf(refKey) >= 0) {
                   this._addExportKey(key, {from, ref: refKey === key ? undefined : refKey})
                 } else if (iptFile.exports[refKey]) {
                   this._addExportKey(key, iptFile.exports[refKey])
                 } else {
-                  fn.error(`在文件 ${from} 找不到文件 ${this.src} 需要的变量 ${refKey}`)
+                  fn.error(`在文件 ${from} 中找不到文件 ${this.src} 需要的变量 ${refKey}`)
                   throw new SyntaxError('compile 失败')
                 }
               }
