@@ -107,6 +107,11 @@ export type Intersect<T extends object, U extends Partial<T>> = Omit<U, DiffKeys
 // https://github.com/makeflow/tslang
 // ***********************************
 
+// ***********************************
+// https://github.com/pelotom/type-zoo
+// ***********************************
+
+
 // Extract keys
 
 /** KeyOfValueWithType<{a: string, b: number, c: string}, string> => 'a' | 'c' */
